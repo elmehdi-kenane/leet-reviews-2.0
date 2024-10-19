@@ -9,43 +9,54 @@ datasource db {
     url      = env("POSTGRES_URL")
 }
 
+enum account_type {
+  AUTH   // Used for logging in
+  CONNECTED // Just linked, not used for logging in
+}
+
+
 model Account {
-    id                 String  @id @default(cuid())
-    userId             String
-    type               String
-    provider           String
-    providerAccountId  String
-    refresh_token      String? @db.Text
-    access_token       String? @db.Text
-    expires_at         Int?
-    created_at         Int?
-    secret_valid_until Int?
-    token_type         String?
-    scope              String?
-    id_token           String? @db.Text
-    session_state      String?
-    oauth_token_secret String?
-    oauth_token        String?
+    id                  String  @id @default(cuid())
+    userId              String
+    username            String
+    type                String
+    provider            String
+    provider_account_id String
+    account_type        account_type
+    avatar              String?
+    refresh_token       String? @db.Text
+    access_token        String? @db.Text
+    expires_at          Int?
+    created_at          Int?
+    secret_valid_until  Int?
+    token_type          String?
+    scope               String?
+    id_token            String? @db.Text
+    session_state       String?
+    oauth_token_secret  String?
+    oauth_token         String?
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
+    @@unique([provider, provider_account_id])
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
+    id           String   @id
+    // sessionToken String   @unique
     userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    expiresAt    DateTime
+    
+    user         User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String    @id
+    username	  String
     name          String?
     email         String?   @unique
     emailVerified DateTime?
-    image         String?
+    avatar        String?
     accounts      Account[]
     sessions      Session[]
 }

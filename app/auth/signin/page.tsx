@@ -1,6 +1,5 @@
 "use client";
-import { signIn } from "next-auth/react"; // Use from 'next-auth/react'
-import { providers } from "@/utils/AuthProviders";
+import Link from "next/link";
 
 export interface providerInterface {
   id: string;
@@ -8,23 +7,18 @@ export interface providerInterface {
 }
 
 export default function SignIn() {
-  const providerMap = providers.map((provider) => {
-    if (typeof provider === "function") {
-      const providerData = (provider as () => { id: string; name: string })();
-      return { id: providerData.id, name: providerData.name };
-    } else {
-      return { id: provider.id, name: provider.name };
-    }
-  });
   return (
     <>
-      {providerMap.map((provider: providerInterface) => (
-        <div key={provider.name}>
-          <button onClick={() => signIn(provider.id, { callbackUrl: "/" })}>
-            Sign in with {provider.name}
-          </button>
-        </div>
-      ))}
+      <div>
+        <Link href={"/api/auth/login/github"}>
+          <button>Sign in with github</button>
+        </Link>
+      </div>
+      <div>
+        <Link href={"/api/auth/login/fortyTwo"}>
+          <button>Sign in with 42</button>
+        </Link>
+      </div>
     </>
   );
 }
