@@ -3,7 +3,6 @@ import { github } from "@/lib/providers";
 import { cookies } from "next/headers";
 import { lucia, prismaClient } from "@/lib/auth";
 import { OAuth2RequestError } from "arctic";
-import { generateIdFromEntropySize } from "lucia";
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);

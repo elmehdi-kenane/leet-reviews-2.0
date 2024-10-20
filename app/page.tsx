@@ -1,7 +1,6 @@
 "use client";
 
 // import { validateRequest } from "@/lib/auth";
-import Image from "next/image";
 // import { redirect } from "next/navigation";
 import Link from "next/link";
 import { DisplayAccounts } from "@/components/accounts";
@@ -10,7 +9,6 @@ import { UserContext } from "@/context/UserContext";
 
 export default function Home() {
   //   const { user } = await validateRequest();
-
   //   if (!user) return redirect("/auth/signin");
   const userContext = useContext(UserContext);
   if (!userContext) {

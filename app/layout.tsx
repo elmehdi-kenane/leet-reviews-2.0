@@ -2,8 +2,8 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import { validateRequest } from "@/lib/auth";
-import { redirect } from "next/navigation";
+// import { validateRequest } from "@/lib/auth";
+// import { redirect } from "next/navigation";
 import { UserProvider } from "@/context/UserContext";
 
 const geistSans = localFont({

@@ -18,11 +18,11 @@ enum account_type {
 model Account {
     id                  String  @id @default(cuid())
     userId              String
-    username            String
     type                String
     provider            String
     provider_account_id String
     account_type        account_type
+    username            String? // needed for connect accounts appearance
     avatar              String?
     refresh_token       String? @db.Text
     access_token        String? @db.Text
@@ -53,7 +53,7 @@ model Session {
 model User {
     id            String    @id
     username	  String
-    name          String?
+    name	      String
     email         String?   @unique
     emailVerified DateTime?
     avatar        String?

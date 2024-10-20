@@ -21,7 +21,7 @@ export const lucia = new Lucia(prismaAdapter, {
   getUserAttributes: (attributes) => {
     return {
       // attributes has the type of DatabaseUserAttributes
-      githubId: attributes.github_id,
+      id: attributes.id,
       username: attributes.username,
       avatar: attributes.avatar,
     };
@@ -38,7 +38,7 @@ declare module "lucia" {
 
 // Interface for Prisma User model attributes
 interface DatabaseUserAttributes {
-  github_id: number | null; // `null` if the user doesn't have a GitHub ID
+  id: number | null; // `null` if the user doesn't have a GitHub ID
   username: string | null; // `null` if the user hasn't set a username
   avatar: string | null; // `null` if the user hasn't set a username
 }
