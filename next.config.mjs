@@ -1,4 +1,29 @@
+// next.config.mjs
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.intra.42.fr",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
+};
 
-export default nextConfig;
+export default nextConfig; // Use export default instead of module.exports
