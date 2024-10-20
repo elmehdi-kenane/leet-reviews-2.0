@@ -1,18 +1,26 @@
-import { validateRequest } from "@/lib/auth";
+"use client";
+
+// import { validateRequest } from "@/lib/auth";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import Link from "next/link";
 import { DisplayAccounts } from "@/components/accounts";
+import { useContext } from "react";
+import { UserContext } from "@/context/UserContext";
 
-export default async function Home() {
-  const { user } = await validateRequest();
+export default function Home() {
+  //   const { user } = await validateRequest();
 
-  if (!user) return redirect("/auth/signin");
-  const avatar = user && user?.avatar !== null ? user?.avatar : "/default.jpeg";
+  //   if (!user) return redirect("/auth/signin");
+  const userContext = useContext(UserContext);
+  if (!userContext) {
+    console.log("user Context undefined");
+    return <div>user Context undefined</div>;
+  }
+  const { userInfo } = userContext;
   return (
     <div>
-      {user?.username}
-      <Image src={avatar} width={50} height={50} alt={"avatar"}></Image>
+      <h1>Welcome, {userInfo?.username}</h1>
       <Link href={"/api/auth/connect/discord"}>
         <button>connect with discord</button>
       </Link>

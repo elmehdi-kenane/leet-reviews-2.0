@@ -5,7 +5,8 @@ import { prismaClient } from "@/lib/auth";
 import { OAuth2RequestError } from "arctic";
 import { validateRequest } from "@/lib/auth";
 
-export const DiscordImageBaseUrl = "https://cdn.discordapp.com/avatars"; // /user_id/user_avatar.png *
+export const DiscordImageBaseUrl: string =
+  "https://cdn.discordapp.com/avatars" as string; // /user_id/user_avatar.png *
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);

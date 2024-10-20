@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
     const fortyTwoUser: fortyTwoUser = await fortyTwoUserResponse.json();
 
     const userId = fortyTwoUser.id.toString();
-    const fortyTwoUsername = fortyTwoUser.usual_full_name;
+    const fortyTwoUsername = fortyTwoUser.login;
+    const fortyTwoFullName = fortyTwoUser.usual_full_name;
 
     const existingUser = await prismaClient.user.findUnique({
       where: {
@@ -53,15 +54,16 @@ export async function GET(request: NextRequest) {
       data: {
         id: userId,
         username: fortyTwoUsername,
+        name: fortyTwoFullName,
+        email: fortyTwoUser.email,
         avatar: fortyTwoUser.image.link,
       },
     });
-    console.log("after create user on prisma");
 
     const existingAccount = await prismaClient.account.findUnique({
       where: {
         provider_provider_account_id: {
-          provider: "github",
+          provider: "fortyTwo",
           provider_account_id: userId,
         },
       },
@@ -70,9 +72,9 @@ export async function GET(request: NextRequest) {
       await prismaClient.account.create({
         data: {
           userId: userId,
-          username: fortyTwoUsername,
           account_type: "AUTH",
           type: "oauth2",
+          username: fortyTwoUsername,
           provider: "fortyTwo",
           provider_account_id: fortyTwoUser.id.toString(),
           access_token: tokens.accessToken,
@@ -126,6 +128,8 @@ interface image {
 
 interface fortyTwoUser {
   id: string;
+  login: string;
   usual_full_name: string;
+  email: string;
   image: image;
 }

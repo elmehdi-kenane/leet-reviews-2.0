@@ -10,11 +10,9 @@ export async function GET(request: NextRequest) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
 
-  // Validate the state cookie
   const storedState = cookies().get("state")?.value;
 
   if (!code || !storedState || state !== storedState) {
-    // 400 Bad Request
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
   try {
@@ -25,10 +23,12 @@ export async function GET(request: NextRequest) {
       },
     });
     const githubUser: GitHubUser = await githubUserResponse.json();
-
+    const githubUserId = githubUser.id.toString();
+    const githubUsername = githubUser.login;
+    const githubFullName = githubUser.name;
     const existingUser = await prismaClient.user.findUnique({
       where: {
-        id: githubUser.id,
+        id: githubUserId,
       },
     });
     if (existingUser) {
@@ -47,65 +47,48 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const userId = generateIdFromEntropySize(10); // 16 characters long
-
     await prismaClient.user.create({
       data: {
-        id: githubUser.id, // Assuming `userId` is already defined
-        username: githubUser.login, // GitHub username
+        id: githubUserId,
+        username: githubUsername,
         avatar: githubUser.avatar_url,
+        name: githubFullName,
       },
     });
-    console.log("after create user on prisma");
 
     const existingAccount = await prismaClient.account.findUnique({
       where: {
         provider_provider_account_id: {
           provider: "github",
-          provider_account_id: githubUser.id.toString(), // Convert ID to string
+          provider_account_id: githubUserId,
         },
       },
     });
-    console.log("githubUser", githubUser);
     if (!existingAccount) {
       await prismaClient.account.create({
         data: {
-          userId: userId,
-          username: githubUser.login,
+          userId: githubUserId,
           account_type: "AUTH",
           type: "oauth2",
+          username: githubUsername,
           provider: "github",
-          provider_account_id: githubUser.id.toString(),
+          provider_account_id: githubUserId,
           access_token: tokens.accessToken,
         },
       });
     } else {
-      // Optionally, update the existing account with new tokens
       await prismaClient.account.update({
         where: {
           id: existingAccount.id,
         },
         data: {
           access_token: tokens.accessToken,
-          // Update other fields as needed
         },
       });
     }
 
-    const session = await lucia.createSession(userId, {});
+    const session = await lucia.createSession(githubUserId, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
-
-    // console.log("before create session on prisma");
-    // // Create a session record in Prisma
-    // await prismaClient.session.create({
-    //     data: {
-    //         id: session.id,
-    //         sessionToken: session.id,
-    //         userId: userId,
-    //         expiresAt: new Date(Date.now() + 60 * 60 * 1000),
-    //     },
-    // });
-    // console.log("after create session on prisma");
 
     cookies().set(
       sessionCookie.name,
@@ -120,9 +103,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (e) {
-    // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
-      // invalid code
       return new Response(null, {
         status: 400,
       });
@@ -139,4 +120,5 @@ interface GitHubUser {
   id: string;
   login: string;
   avatar_url: string;
+  name: string;
 }
