@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { discord } from "@/lib/providers";
+import { discord, DiscordImageBaseUrl } from "@/lib/providers";
 import { cookies } from "next/headers";
 import { prismaClient } from "@/lib/auth";
 import { OAuth2RequestError } from "arctic";
 import { validateRequest } from "@/lib/auth";
-
-export const DiscordImageBaseUrl: string =
-  "https://cdn.discordapp.com/avatars" as string; // /user_id/user_avatar.png *
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);

@@ -21,7 +21,8 @@ export const fortyTwo = new FortyTwo(
 );
 
 // ================ CONNECT-PROVIDERS ================
-
+export const DiscordImageBaseUrl: string =
+  "https://cdn.discordapp.com/avatars" as string; // /user_id/user_avatar.png *
 const discordRedirectURI =
   "http://localhost:3000/api/auth/connect/discord/callback";
 export const discord = new Discord(
