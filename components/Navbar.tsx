@@ -7,10 +7,12 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
+import FeedbackForm from "./feedbackForm/FeedbackForm";
 
 const Navbar = () => {
   const [isSearchInputOnFocus, setIsSearchInputOnFocus] = useState(false);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+  const [isFeedbackFormOpen, setIsFeedbackFormOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
   const searchBarRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,9 @@ const Navbar = () => {
 
   const handleFocusInput = (inputRef: React.RefObject<HTMLInputElement>) => {
     if (inputRef.current) {
-      inputRef.current.focus(); // Focus the input
+      console.log("ref valid so activate focus");
+      console.log(inputRef.current);
+      inputRef.current.focus();
     } else console.log("inputRef.current invalid");
   };
 
@@ -112,9 +116,9 @@ const Navbar = () => {
     localStorage.setItem("searchTerm", event.target.value);
 
     // Trigger a custom event when the search term changes
-    window.dispatchEvent(
-      new CustomEvent("searchTermChange", { detail: event.target.value }),
-    );
+    // window.dispatchEvent(
+    //   new CustomEvent("searchTermChange", { detail: event.target.value })
+    // );
   };
 
   const avatar = userInfo?.avatar || "/default.jpeg";
@@ -180,11 +184,11 @@ const Navbar = () => {
           </button>
         </div>
         <button
-          className={`md:hidden flex justify-center bg-[red] items-center border-2 ${isSearchBarOpen === true ? "border-primary" : "border-secondary"} w-[50px] h-[50px] rounded-xl`}
+          className={`md:hidden flex justify-center items-center border-2 ${isSearchBarOpen === true ? "border-primary" : "border-secondary"} w-[50px] h-[50px] rounded-xl`}
           ref={searchButtonRef}
           onClick={() => {
             setIsSearchBarOpen(!isSearchBarOpen);
-            handleFocusInput(inputDesktopRef);
+            handleFocusInput(inputMobileRef);
           }}
         >
           <Image
@@ -198,7 +202,10 @@ const Navbar = () => {
             height={30}
           ></Image>
         </button>
-        <button className="font-SpaceGrotesk h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold">
+        <button
+          className="font-SpaceGrotesk h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold"
+          onClick={() => setIsFeedbackFormOpen(true)}
+        >
           <p className="max-md:text-sm">Create feedback</p>
           {/* <Image
               src={"/plus.svg"}
@@ -307,6 +314,11 @@ const Navbar = () => {
           ></Image>
         </button>
       </div>
+      {isFeedbackFormOpen && (
+        <div className="absolute w-full h-full bg-white/30 backdrop-blur-sm flex justify-center">
+          <FeedbackForm></FeedbackForm>
+        </div>
+      )}
     </div>
   );
 };
