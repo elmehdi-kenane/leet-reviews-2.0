@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 export interface User {
   username: string;
   avatar: string;
@@ -30,6 +30,7 @@ export const UserProvider: React.FC<{
 }> = ({ children }) => {
   const [userInfo, setUserInfo] = useState<User | null>(defaultUser);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const hiddenRoutes = ["/auth/signin", "/auth/signup"];
@@ -49,8 +50,10 @@ export const UserProvider: React.FC<{
         console.error("Error fetching user:", errorData.error);
         if (response.status === 401) {
           console.log("Unauthorized access. Please log in.");
+          router.push("/auth/signin");
         } else {
           console.log("An unexpected error occurred.");
+          router.push("/auth/signin");
         }
         return;
       }
