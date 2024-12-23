@@ -66,13 +66,15 @@ export const FormSelectOptionField = <
         <input
           id={selectId}
           type="hidden"
-          {...register(name, {
-            required: `Please select a ${label}`,
-          })}
+          {...register(
+            name,
+            // {required: `Please select a ${label}`,}
+          )}
         />
         {types.map((type, index) => {
           return (
             <button
+              type="button"
               key={index}
               className={`${selected === (typeof type === "object" ? type.name : type) ? "bg-blue-500" : "bg-gray-300"}`}
               onClick={() => handleSelect(type)}

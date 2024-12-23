@@ -316,7 +316,9 @@ const Navbar = () => {
       </div>
       {isFeedbackFormOpen && (
         <div className="absolute w-full h-full bg-white/30 backdrop-blur-sm flex justify-center">
-          <FeedbackForm></FeedbackForm>
+          <FeedbackForm
+            setIsFeedbackFormOpen={setIsFeedbackFormOpen}
+          ></FeedbackForm>
         </div>
       )}
     </div>
