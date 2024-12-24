@@ -93,3 +93,16 @@ body {
     /* @apply bg-background text-foreground; */
   }
 }
+
+@keyframes popUpAnimate {
+  from {
+    scale: 0;
+  }
+  to {
+    scale: 1;
+  }
+}
+.PopUpFormClose {
+  animation-name: popUpAnimate;
+  animation-duration: 0.3s;
+}

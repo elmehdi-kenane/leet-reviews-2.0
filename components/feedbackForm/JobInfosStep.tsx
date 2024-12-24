@@ -32,18 +32,21 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
       label: "Working type",
       error: errors.workingType,
       types: workingTypes,
+      step: 3,
     },
     {
       name: "contractType",
       label: "Contract type",
       error: errors.contractType,
       types: contractTypes,
+      step: 3,
     },
     {
       name: "jobProgressType",
       label: "JobProgress type",
       error: errors.jobProgressType,
       types: jobProgressTypes,
+      step: 3,
     },
   ];
   return (
@@ -65,6 +68,7 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
             error={item.error}
             setValue={setValue}
             types={item.types}
+            step={item.step}
           ></FormSelectOptionField>
         );
       })}

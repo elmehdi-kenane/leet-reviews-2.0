@@ -42,11 +42,25 @@ export type FormInputFieldProps = {
 };
 
 export type validFeedbackType =
-  | { name: "Publicly"; description: "text" }
-  | { name: "Anonymously"; description: "text" };
+  | {
+      name: "Publicly";
+      description: "Your feedback will display your profile information, and contribute to your";
+    }
+  | {
+      name: "Anonymously";
+      description: "Your feedback will appear without any identifying details, and it will not affect the overall";
+    };
 export const feedbackTypes: validFeedbackType[] = [
-  { name: "Publicly", description: "text" },
-  { name: "Anonymously", description: "text" },
+  {
+    name: "Publicly",
+    description:
+      "Your feedback will display your profile information, and contribute to your",
+  },
+  {
+    name: "Anonymously",
+    description:
+      "Your feedback will appear without any identifying details, and it will not affect the overall",
+  },
 ];
 
 export type validWorkingType = "On-site" | "Remote" | "Hybrid";
@@ -84,6 +98,7 @@ export type FormSelectFieldProps<
   T extends { type?: string; description?: string } | string,
 > = {
   label: string;
+  step: number;
   name: ValidSelectFieldName;
   setValue: UseFormSetValue<FormData>;
   types: T[]; // The options, passed as an array of strings
@@ -109,6 +124,7 @@ export type ValidSelectFieldName =
 export type FormSelectFieldItem = {
   name: ValidSelectFieldName;
   label: string;
+  step: number;
   error: FieldError | undefined;
   types: (
     | validWorkingType

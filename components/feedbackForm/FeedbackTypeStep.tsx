@@ -15,6 +15,7 @@ const FeedbackTypeStep: React.FC<FeedbackTypeStepProps> = ({
 }) => {
   const feedbackType: FormSelectFieldItem = {
     name: "feedbackType",
+    step: 1,
     label: "Feedback type",
     error: errors.feedbackType?.name,
     types: feedbackTypes,
@@ -27,6 +28,7 @@ const FeedbackTypeStep: React.FC<FeedbackTypeStepProps> = ({
       error={feedbackType.error}
       setValue={setValue}
       types={feedbackType.types}
+      step={feedbackType.step}
     ></FormSelectOptionField>
   );
 };
