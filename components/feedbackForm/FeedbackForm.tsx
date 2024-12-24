@@ -85,9 +85,50 @@ const Form = ({
         ></Image>
       </div>
       <div
-        className={`flex flex-col w-full h-full justify-center items-center ${currentStep === 1 ? "gap-24" : "gap-10"}`}
+        className={`flex flex-col w-full h-full items-center ${currentStep === 1 ? "gap-24 justify-center" : "gap-10"}`}
       >
-        {/* <h1 className="text-xl font-bold mb-4">step {currentStep}</h1> */}
+        {currentStep !== 1 && (
+          <div className="flex items-center gap-3">
+            {currentStep === 2 ? (
+              <p className="bg-primary p-[6px] rounded-xl text-neutral font-SpaceGrotesk font-semibold text-[20px] flex items-center gap-2 w-[320px]">
+                <span className="rounded-full bg-neutral text-primary w-[40px] h-[40px] text-center flex justify-center items-center">
+                  1
+                </span>
+                <span>Company information&apos;s</span>
+              </p>
+            ) : (
+              <p className="rounded-full bg-secondary w-10 h-10 text-neutral flex justify-center items-center font-semibold font-SpaceGrotesk text-[20px]">
+                1
+              </p>
+            )}
+            <div className="w-14 h-1 bg-secondary"></div>
+            {currentStep === 3 ? (
+              <p className="bg-primary p-[6px] rounded-xl text-neutral font-SpaceGrotesk font-semibold text-[20px] flex items-center gap-2 w-[320px]">
+                <span className="rounded-full bg-neutral text-primary w-[40px] h-[40px] text-center flex justify-center items-center">
+                  2
+                </span>
+                <span>Job information&apos;s</span>
+              </p>
+            ) : (
+              <p className="rounded-full bg-secondary w-10 h-10 text-neutral flex justify-center items-center font-semibold font-SpaceGrotesk text-[20px]">
+                2
+              </p>
+            )}
+            <div className="w-14 h-1 bg-secondary"></div>
+            {currentStep === 4 ? (
+              <p className="bg-primary p-[6px] rounded-xl text-neutral font-SpaceGrotesk font-semibold text-[20px] flex items-center gap-2 w-[320px]">
+                <span className="rounded-full bg-neutral text-primary w-[40px] h-[40px] text-center flex justify-center items-center">
+                  3
+                </span>
+                <span>Job feedback</span>
+              </p>
+            ) : (
+              <p className="rounded-full bg-secondary w-10 h-10 text-neutral flex justify-center items-center font-semibold font-SpaceGrotesk text-[20px]">
+                3
+              </p>
+            )}
+          </div>
+        )}
         {currentStep === 1 && (
           <h1 className="font-SpaceGrotesk font-semibold text-[30px] max-md:text-[20px] text-center">
             Choose How to Publish Your Feedback
@@ -137,18 +178,18 @@ const Form = ({
             />
           </>
         )}
-        <div className="flex flex-col items-center gap-2 w-full">
+        <div className="flex items-center gap-2 w-[80%]">
           {currentStep !== 1 && (
             <>
               <button
                 type="button"
-                className={`w-full bg-primary p-3 text-white font-bold font-SpaceGrotesk`}
+                className={`text-gray-400 border-2 border-gray-400 p-3 font-bold font-SpaceGrotesk rounded-md w-[130px]`}
               >
                 RESET
               </button>
               <button
                 type="button"
-                className={`w-full ${currentStep === firstStep ? "bg-gray-400" : "bg-primary"} p-3 text-white font-bold font-SpaceGrotesk`}
+                className={`p-3 font-bold font-SpaceGrotesk rounded-md w-[130px] bg-transparent text-primary border-2 border-primary ml-auto`}
                 onClick={() =>
                   setCurrentStep((prev) => {
                     return prev !== firstStep ? prev - 1 : prev;
@@ -162,7 +203,7 @@ const Form = ({
           {currentStep <= lastStep - 1 && (
             <button
               type="button"
-              className={`p-3 text-white font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%]" : "w-[100%]"} bg-primary rounded-md`}
+              className={`p-3 text-white font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%]" : "w-[100%]"} bg-primary border-2 border-primary rounded-md w-[130px]`}
               onClick={() => {
                 console.log("next button clicked");
 
@@ -177,7 +218,7 @@ const Form = ({
           {currentStep === lastStep && (
             <button
               type="submit"
-              className={`w-full bg-primary p-3 text-white font-bold`}
+              className={`bg-primary p-3 text-white font-bold w-[130px]`}
               onClick={() => {
                 console.log("publish button clicked");
                 //   console.log("publish clicked");
