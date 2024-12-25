@@ -21,18 +21,61 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   error,
   valueAsNumber,
 }) => {
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Generate a preview URL for images
+      const fileURL = URL.createObjectURL(file);
+      setPreview(fileURL);
+    } else {
+      setPreview(null);
+    }
+  };
+
   const inputId = `${name}-input`;
   return (
-    <>
-      <label htmlFor={inputId}>{placeholder}</label>
-      <input
-        id={inputId}
-        type={type}
-        placeholder={placeholder}
-        {...register(name, { valueAsNumber })}
-      />
+    <div className="flex flex-col w-[70%]">
+      <label htmlFor={inputId} className="font-semibold">
+        {placeholder}
+      </label>
+      <div className="flex w-full">
+        {name === "feedbackComment" ? (
+          <textarea
+            id={inputId}
+            placeholder={placeholder}
+            {...register(name, { valueAsNumber })}
+            className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] ${type === "file" && "border-dashed"} focus:outline-none focus:border-primary hover:outline-none hover:border-primary max-h-[200px] min-h-[55px]`}
+          />
+        ) : (
+          <input
+            id={inputId}
+            type={type}
+            placeholder={placeholder}
+            {...register(name, { valueAsNumber })}
+            className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] ${type === "file" && "border-dashed"} focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
+            onChange={type === "file" ? handleFileChange : undefined}
+          />
+        )}
+        {type === "file" && (
+          <div className="ml-2 h-[55px] w-[55px] min-h-[55px] min-w-[55px] rounded-2xl border-2 border-secondary flex justify-center items-center">
+            {preview ? (
+              <Image
+                src={preview}
+                width={55}
+                height={55}
+                alt="File Preview"
+                className="object-cover w-full h-full rounded-2xl"
+              />
+            ) : (
+              <p className="text-[13px]">Preview</p>
+            )}
+          </div>
+        )}
+      </div>
       {error && <span className="error-message">{error.message}</span>}
-    </>
+    </div>
   );
 };
 
@@ -50,7 +93,7 @@ export const FormSelectOptionField = <
   register,
   setValue,
   types,
-  step,
+  currentStep,
 }: FormSelectFieldProps<T>) => {
   const [selected, setSelected] = useState<string>("");
   const selectId = `${name}-select`;
@@ -65,10 +108,14 @@ export const FormSelectOptionField = <
     }
   };
   return (
-    <div className={`${step === 1 && "w-full"}`}>
-      {step !== 1 && <label htmlFor={selectId}>{label}</label>}
+    <div className={`${currentStep === 1 ? "w-full" : "w-[70%]"}`}>
+      {currentStep !== 1 && (
+        <label htmlFor={selectId} className="font-semibold">
+          {label}
+        </label>
+      )}
       <div
-        className={`flex gap-4 ${step === 1 && "flex-col"} w-full items-center`}
+        className={`flex gap-4 ${currentStep === 1 && "flex-col"} w-full items-center justify-between flex-wrap`}
       >
         <input
           id={selectId}
@@ -83,32 +130,59 @@ export const FormSelectOptionField = <
             <button
               type="button"
               key={index}
-              className={`flex items-center gap-3 p-4 ${selected === (typeof type === "object" ? type.name : type) ? "bg-blue-500" : "bg-gray-300"} ${step === 1 ? "w-[80%] bg-transparent h-28 border-2 rounded-[30px] text-secondary border-secondary" : ""}`}
+              className={`flex items-center gap-3 text-secondary ${currentStep === 4 ? "p-2 max-w-max" : "p-3"} border-2 border-secondary ${selected === (typeof type === "object" ? type.name : type) ? "bg-secondary text-neutral" : "bg-transparent"} ${currentStep === 1 ? "w-[80%] bg-transparent h-28 border-2 border-secondary rounded-[30px] text-secondary" : `rounded-[15px]`}`}
+              style={
+                currentStep !== 1
+                  ? { width: `${90 / types.length}%`, minWidth: "max-content" }
+                  : undefined
+              }
               onClick={() => handleSelect(type)}
             >
-              {step === 1 && (
-                <div className="min-w-[23px] w-[23px] h-[23px] border-2 border-secondary rounded-full flex justify-center items-center mr-3">
-                  <div
-                    className={`min-w-[15px] w-[15px] h-[15px] ${selected === (typeof type === "object" ? type.name : type) ? "bg-secondary" : "bg-transparent"} rounded-full`}
-                  ></div>
-                </div>
-              )}
-              {step === 1 && (
-                <Image
-                  className="min-w-[55px] max-sm:hidden"
-                  src={index === 0 ? PublicIcon : AnonymousIcon}
-                  height={55}
-                  width={55}
-                  alt={index === 0 ? PublicIcon : AnonymousIcon}
-                ></Image>
+              {currentStep === 1 && (
+                <>
+                  <div className="min-w-[23px] w-[23px] h-[23px] border-2 border-secondary rounded-full flex justify-center items-center mr-3">
+                    <div
+                      className={`min-w-[15px] w-[15px] h-[15px] ${selected === (typeof type === "object" ? type.name : type) ? "bg-secondary" : "bg-transparent"} rounded-full`}
+                    ></div>
+                  </div>
+                  <Image
+                    className="min-w-[55px] max-sm:hidden"
+                    src={index === 0 ? PublicIcon : AnonymousIcon}
+                    height={55}
+                    width={55}
+                    alt={index === 0 ? PublicIcon : AnonymousIcon}
+                  ></Image>
+                </>
               )}
               <div className="w-full justify-start">
-                <p
-                  className={`${step === 1 ? "font-semibold text-start" : ""}`}
-                >
-                  {typeof type === "object" ? type.name : type}
-                </p>
-                {step === 1 && (
+                {currentStep === 4 ? (
+                  <Image
+                    className="min-w-[30px]"
+                    src={
+                      typeof type === "string"
+                        ? selected === type
+                          ? `${type}Light.svg`
+                          : `${type}.svg`
+                        : ""
+                    }
+                    height={30}
+                    width={30}
+                    alt={
+                      typeof type === "string"
+                        ? selected === type
+                          ? `${type}Light.svg`
+                          : `${type}.svg`
+                        : ""
+                    }
+                  ></Image>
+                ) : (
+                  <p
+                    className={`${currentStep === 1 ? "font-semibold text-start" : ""} font-medium ${currentStep !== 1 && selected === (typeof type === "object" ? type.name : type) && "text-neutral"}`}
+                  >
+                    {typeof type === "object" ? type.name : type}
+                  </p>
+                )}
+                {currentStep === 1 && (
                   <p className={`font-thin text-[11px] text-start`}>
                     {typeof type === "object" && type.description}{" "}
                     <Tooltip

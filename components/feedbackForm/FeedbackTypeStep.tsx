@@ -28,7 +28,7 @@ const FeedbackTypeStep: React.FC<FeedbackTypeStepProps> = ({
       error={feedbackType.error}
       setValue={setValue}
       types={feedbackType.types}
-      step={feedbackType.step}
+      currentStep={feedbackType.step}
     ></FormSelectOptionField>
   );
 };

@@ -80,14 +80,21 @@ export const jobProgressTypes: validJobProgressType[] = [
   "In-progress",
 ];
 
+//   | "VeryPoor"
+//   | "Poor"
+//   | "Average"
+//   | "Good"
+//   | "Excellent";
+
+// nb: svg files
 export type validExperienceRateType =
-  | "Very Poor"
   | "Poor"
-  | "Average"
   | "Good"
+  | "Average"
+  | "VeryPoor"
   | "Excellent";
 export const experienceRateTypes: validExperienceRateType[] = [
-  "Very Poor",
+  "VeryPoor",
   "Poor",
   "Average",
   "Good",
@@ -98,7 +105,7 @@ export type FormSelectFieldProps<
   T extends { type?: string; description?: string } | string,
 > = {
   label: string;
-  step: number;
+  currentStep: number;
   name: ValidSelectFieldName;
   setValue: UseFormSetValue<FormData>;
   types: T[]; // The options, passed as an array of strings

@@ -68,7 +68,7 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
             error={item.error}
             setValue={setValue}
             types={item.types}
-            step={item.step}
+            currentStep={item.step}
           ></FormSelectOptionField>
         );
       })}

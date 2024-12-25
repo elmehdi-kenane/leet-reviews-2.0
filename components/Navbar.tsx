@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
 import FeedbackForm from "./feedbackForm/FeedbackForm";
+import logoIcon from "@/public/logoIcon.svg";
 
 const Navbar = () => {
   const [isSearchInputOnFocus, setIsSearchInputOnFocus] = useState(false);
@@ -128,9 +129,18 @@ const Navbar = () => {
       className={`${isHidden === true && "hidden"} bg-neutral flex flex-wrap justify-center w-full`}
     >
       <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max mt-3">
-        <p className="mr-11 max-md:mr-auto border border-secondary w-[60px] h-[60px] text-center rounded-xl">
+        <Link href={"/"} className="mr-11 max-md:mr-auto">
+          <Image
+            className="min-w-[9px] w-[50px] h-[50px]"
+            src={logoIcon}
+            height={50}
+            width={50}
+            alt={logoIcon}
+          ></Image>
+        </Link>
+        {/* <p className="mr-11 max-md:mr-auto border border-secondary w-[50px] h-[50px] text-center rounded-xl">
           LOGO
-        </p>
+        </p> */}
         <div
           className={`max-md:hidden flex rounded-xl bg-transparent flex-1 h-[50px] py-1 pl-1 border-2 ${
             isSearchInputOnFocus === true
@@ -203,7 +213,7 @@ const Navbar = () => {
           ></Image>
         </button>
         <button
-          className="font-SpaceGrotesk h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold"
+          className="font-SpaceGrotesk h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold text-neutral"
           onClick={() => setIsFeedbackFormOpen(true)}
         >
           <p className="max-md:text-sm">Create feedback</p>
