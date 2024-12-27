@@ -13,7 +13,6 @@ import {
   FieldErrors,
   UseFormWatch,
 } from "react-hook-form";
-import { watch } from "fs";
 
 export type JobInfosStepProps = {
   register: UseFormRegister<FormData>;

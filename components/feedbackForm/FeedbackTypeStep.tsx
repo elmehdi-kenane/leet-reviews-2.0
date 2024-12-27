@@ -24,7 +24,7 @@ const FeedbackTypeStep: React.FC<FeedbackTypeStepProps> = ({
     name: "feedbackType",
     step: 1,
     label: "Feedback type",
-    error: errors.feedbackType,
+    error: errors.feedbackType?.name,
     isRequired: true,
     types: feedbackTypes,
   };
