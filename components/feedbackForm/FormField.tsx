@@ -12,6 +12,7 @@ import PublicIcon from "@/public/PublicIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import Image from "next/image";
 import Tooltip from "@mui/material/Tooltip";
+import toast, { Toaster } from "react-hot-toast";
 
 export const FormInputField: React.FC<FormInputFieldProps> = ({
   type,
@@ -20,6 +21,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   register,
   error,
   valueAsNumber,
+  isRequired,
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -34,18 +36,24 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     }
   };
 
+  const notify = () => {
+    console.log("notify call in inputField");
+    return toast("Here is your toast.");
+  };
+
   const inputId = `${name}-input`;
   return (
     <div className="flex flex-col w-[70%]">
       <label htmlFor={inputId} className="font-semibold">
         {placeholder}
+        {isRequired && <span className="text-red-600">*</span>}
       </label>
       <div className="flex w-full">
         {name === "feedbackComment" ? (
           <textarea
             id={inputId}
             placeholder={placeholder}
-            {...register(name, { valueAsNumber })}
+            {...register(name, { required: isRequired, valueAsNumber })}
             className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] ${type === "file" && "border-dashed"} focus:outline-none focus:border-primary hover:outline-none hover:border-primary max-h-[200px] min-h-[55px]`}
           />
         ) : (
@@ -53,7 +61,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
             id={inputId}
             type={type}
             placeholder={placeholder}
-            {...register(name, { valueAsNumber })}
+            {...register(name, { required: isRequired, valueAsNumber })}
             className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] ${type === "file" && "border-dashed"} focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
             onChange={type === "file" ? handleFileChange : undefined}
           />
@@ -74,7 +82,9 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
           </div>
         )}
       </div>
-      {error && <span className="error-message">{error.message}</span>}
+      {/* {error && error.type === "required" && <span>This is required</span>} */}
+      {error && error.type === "required" && notify()}
+      <Toaster />
     </div>
   );
 };
@@ -93,25 +103,40 @@ export const FormSelectOptionField = <
   register,
   setValue,
   types,
+  isRequired,
   currentStep,
+  error,
+  watch,
 }: FormSelectFieldProps<T>) => {
-  const [selected, setSelected] = useState<string>("");
+  const result = watch(name);
+  const [selected, setSelected] = useState<string>(
+    typeof result === "object" ? result.name : result,
+  );
   const selectId = `${name}-select`;
 
   const handleSelect = (value: T) => {
     if (typeof value === "string") {
       setValue(name, value);
+      console.log("string value", value);
       setSelected(value);
     } else if (typeof value === "object" && value.name) {
       setValue(name, value);
       setSelected(value.name);
     }
   };
+  //   console.log("error", error);
+  //   console.log("error.type", error?.type);
+
+  //   const notify = () => {
+  //     console.log("notify call selectOptions");
+  //     return toast("Here is your toast.");
+  //   };
   return (
     <div className={`${currentStep === 1 ? "w-full" : "w-[70%]"}`}>
       {currentStep !== 1 && (
         <label htmlFor={selectId} className="font-semibold">
           {label}
+          {isRequired && <span className="text-red-600">*</span>}
         </label>
       )}
       <div
@@ -120,10 +145,7 @@ export const FormSelectOptionField = <
         <input
           id={selectId}
           type="hidden"
-          {...register(
-            name,
-            // {required: `Please select a ${label}`,}
-          )}
+          {...register(name, { required: isRequired })}
         />
         {types.map((type, index) => {
           return (
@@ -200,6 +222,11 @@ export const FormSelectOptionField = <
           );
         })}
       </div>
+      {/* {error && error.type === "required" && <span>This is required</span>} */}
+      <div className="hidden">
+        {error && error.type === "required" && toast("Here is your toast.")}
+      </div>
+      <Toaster />
     </div>
   );
 };

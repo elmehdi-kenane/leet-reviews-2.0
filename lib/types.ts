@@ -1,4 +1,9 @@
-import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import {
+  FieldError,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 
 // company information's
 // company name
@@ -39,16 +44,17 @@ export type FormInputFieldProps = {
   register: UseFormRegister<FormData>;
   error: FieldError | undefined;
   valueAsNumber?: boolean;
+  isRequired: boolean;
 };
 
 export type validFeedbackType =
   | {
-      name: "Publicly";
-      description: "Your feedback will display your profile information, and contribute to your";
+      name: string;
+      description: string;
     }
   | {
-      name: "Anonymously";
-      description: "Your feedback will appear without any identifying details, and it will not affect the overall";
+      name: string;
+      description: string;
     };
 export const feedbackTypes: validFeedbackType[] = [
   {
@@ -110,7 +116,9 @@ export type FormSelectFieldProps<
   setValue: UseFormSetValue<FormData>;
   types: T[]; // The options, passed as an array of strings
   register: UseFormRegister<FormData>;
+  isRequired: boolean;
   error: FieldError | undefined;
+  watch: UseFormWatch<FormData>;
 };
 
 export type ValidInputFieldName =
@@ -130,6 +138,7 @@ export type ValidSelectFieldName =
 
 export type FormSelectFieldItem = {
   name: ValidSelectFieldName;
+  isRequired: boolean;
   label: string;
   step: number;
   error: FieldError | undefined;
@@ -144,6 +153,7 @@ export type FormSelectFieldItem = {
 
 export type FormInputFieldItem = {
   type: string;
+  isRequired: boolean;
   name: ValidInputFieldName;
   placeholder: string;
   error: FieldError | undefined;

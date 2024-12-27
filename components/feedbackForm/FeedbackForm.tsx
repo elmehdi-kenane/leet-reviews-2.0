@@ -25,6 +25,7 @@ const Form = ({
     formState: { errors },
     setValue,
     watch,
+    trigger,
   } = useForm<FormData>();
 
   //   const handleSelect = (value: validWorkingTypes) => {
@@ -43,6 +44,7 @@ const Form = ({
     label: "Experience rate",
     step: 4,
     error: errors.experienceRate,
+    isRequired: true,
     types: experienceRateTypes,
   };
 
@@ -106,14 +108,15 @@ const Form = ({
             register={register}
             errors={errors}
             setValue={setValue}
+            watch={watch}
           ></FeedbackTypeStep>
         )}
-
         {currentStep === 2 && (
           <div className="flex flex-col w-full min-h-[390px] items-center gap-4">
             <CompanyInfosStep
               register={register}
               errors={errors}
+              watch={watch}
             ></CompanyInfosStep>
           </div>
         )}
@@ -123,15 +126,18 @@ const Form = ({
               register={register}
               errors={errors}
               setValue={setValue}
+              watch={watch}
             ></JobInfosStep>
           </div>
         )}
         {currentStep === 4 && (
           <div className="flex flex-col w-full min-h-[390px] items-center gap-4">
             <FormSelectOptionField
+              watch={watch}
               name={experienceRate.name}
               label={experienceRate.label}
               register={register}
+              isRequired={true}
               error={experienceRate.error}
               setValue={setValue}
               types={experienceRate.types}
@@ -141,6 +147,7 @@ const Form = ({
               type="text"
               placeholder="Feedback comment"
               name="feedbackComment"
+              isRequired={false}
               register={register}
               error={errors.feedbackComment}
             />
@@ -174,12 +181,12 @@ const Form = ({
             <button
               type="button"
               className={`p-3 text-white font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%]" : "max-sm:w-[48%]"} bg-primary border-2 border-primary rounded-md w-[130px] h-11 flex justify-center items-center`}
-              onClick={() => {
-                console.log("next button clicked");
-
-                setCurrentStep((prev) => {
-                  return prev !== lastStep ? prev + 1 : prev;
-                });
+              onClick={async () => {
+                const isValid = await trigger();
+                if (isValid) {
+                  console.log("step is valid");
+                  setCurrentStep((prevStep) => prevStep + 1);
+                } else console.log("step isn't valid");
               }}
             >
               {currentStep === 1 ? "Create a Public Feedback" : "NEXT"}
@@ -190,7 +197,7 @@ const Form = ({
               type="submit"
               className={`bg-primary p-3 text-white font-bold w-[130px] h-11 flex justify-center items-center rounded-md max-sm:min-w-[49%]`}
               onClick={() => {
-                console.log("publish button clicked");
+                // console.log("publish button clicked");
                 //   console.log("publish clicked");
                 //   setCurrentStep((prev) => {
                 //     return prev !== lastStep ? prev + 1 : prev;
