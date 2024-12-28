@@ -121,7 +121,7 @@ const Navbar = () => {
 
   return (
     <div
-      className={`${isHidden === true && "hidden"} bg-neutral flex flex-wrap justify-center w-full`}
+      className={`${isHidden === true && "hidden"} bg-neutral  flex flex-wrap justify-center w-full`}
     >
       <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max mt-3">
         <p className="mr-11 max-md:mr-auto border border-secondary w-[60px] h-[60px] text-center rounded-xl">
@@ -180,7 +180,7 @@ const Navbar = () => {
           </button>
         </div>
         <button
-          className={`md:hidden flex justify-center bg-[red] items-center border-2 ${isSearchBarOpen === true ? "border-primary" : "border-secondary"} w-[50px] h-[50px] rounded-xl`}
+          className={`md:hidden flex justify-center items-center border-2 ${isSearchBarOpen === true ? "border-primary" : "border-secondary"} w-[50px] h-[50px] rounded-xl`}
           ref={searchButtonRef}
           onClick={() => {
             setIsSearchBarOpen(!isSearchBarOpen);
