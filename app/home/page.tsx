@@ -6,6 +6,7 @@ import Link from "next/link";
 import { DisplayAccounts } from "@/components/accounts";
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
+import { FeedbackCard } from "@/components/FeedbackCard";
 
 export default function Home() {
   //   const { user } = await validateRequest();
@@ -21,6 +22,7 @@ export default function Home() {
       <h1>Welcome, {userInfo?.username}</h1>
       <Link href={"/api/auth/connect/discord"}>
         <button>connect with discord</button>
+        <FeedbackCard></FeedbackCard>
       </Link>
       <DisplayAccounts></DisplayAccounts>
     </div>
