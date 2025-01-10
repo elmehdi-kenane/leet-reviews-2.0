@@ -5,6 +5,7 @@
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
 import { FeedbackCard } from "@/components/FeedbackCard";
+import { Toaster } from "react-hot-toast";
 
 export default function Home() {
   //   const { user } = await validateRequest();
@@ -24,6 +25,15 @@ export default function Home() {
       <div className="w-full flex flex-col items-center my-[100px]">
         <FeedbackCard></FeedbackCard>
       </div>
+      <Toaster
+        toastOptions={{
+          className: "",
+          style: {
+            color: "#FFF5E0",
+            backgroundColor: "#141E46",
+          },
+        }}
+      />
     </div>
   );
 }

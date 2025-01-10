@@ -4,6 +4,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
+import { Dispatch, SetStateAction } from "react";
 
 // company information's
 // company name
@@ -43,8 +44,24 @@ export type FormInputFieldProps = {
   name: ValidInputFieldName;
   register: UseFormRegister<FormData>;
   error: FieldError | undefined;
+  trustScore: {
+    feedbackType: number;
+    companyLogo: number;
+    companyLinkedIn: number;
+    companyLocation: number;
+    feedbackComment: number;
+  };
   valueAsNumber?: boolean;
   isRequired: boolean;
+  setTrustScore: Dispatch<
+    SetStateAction<{
+      feedbackType: number;
+      companyLogo: number;
+      companyLinkedIn: number;
+      companyLocation: number;
+      feedbackComment: number;
+    }>
+  >;
 };
 
 export type validFeedbackType =
@@ -86,34 +103,39 @@ export const jobProgressTypes: validJobProgressType[] = [
   "In-progress",
 ];
 
+// nb: svg files
 //   | "VeryPoor"
 //   | "Poor"
 //   | "Average"
 //   | "Good"
 //   | "Excellent";
 
-// nb: svg files
-export type validExperienceRateType =
-  | "Poor"
-  | "Good"
-  | "Average"
-  | "VeryPoor"
-  | "Excellent";
-export const experienceRateTypes: validExperienceRateType[] = [
-  "VeryPoor",
-  "Poor",
-  "Average",
-  "Good",
-  "Excellent",
-];
+export type validExperienceRateType = 1 | 2 | 3 | 4 | 5;
+export const experienceRateTypes: validExperienceRateType[] = [1, 2, 3, 4, 5];
 
 export type FormSelectFieldProps<
-  T extends { type?: string; description?: string } | string,
+  T extends { type?: string; description?: string } | string | number,
 > = {
   label: string;
   currentStep: number;
   name: ValidSelectFieldName;
+  trustScore: {
+    feedbackType: number;
+    companyLogo: number;
+    companyLinkedIn: number;
+    companyLocation: number;
+    feedbackComment: number;
+  };
   setValue: UseFormSetValue<FormData>;
+  setTrustScore: Dispatch<
+    SetStateAction<{
+      feedbackType: number;
+      companyLogo: number;
+      companyLinkedIn: number;
+      companyLocation: number;
+      feedbackComment: number;
+    }>
+  >;
   types: T[]; // The options, passed as an array of strings
   register: UseFormRegister<FormData>;
   isRequired: boolean;

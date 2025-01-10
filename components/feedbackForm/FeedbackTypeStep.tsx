@@ -1,4 +1,5 @@
 import { FormSelectFieldItem, feedbackTypes, FormData } from "@/lib/types";
+import { Dispatch, SetStateAction } from "react";
 import { FormSelectOptionField } from "./FormField";
 import {
   UseFormRegister,
@@ -11,6 +12,22 @@ export type FeedbackTypeStepProps = {
   register: UseFormRegister<FormData>;
   errors: FieldErrors<FormData>;
   setValue: UseFormSetValue<FormData>;
+  setTrustScore: Dispatch<
+    SetStateAction<{
+      feedbackType: number;
+      companyLogo: number;
+      companyLinkedIn: number;
+      companyLocation: number;
+      feedbackComment: number;
+    }>
+  >;
+  trustScore: {
+    feedbackType: number;
+    companyLogo: number;
+    companyLinkedIn: number;
+    companyLocation: number;
+    feedbackComment: number;
+  };
   watch: UseFormWatch<FormData>;
 };
 
@@ -19,18 +36,22 @@ const FeedbackTypeStep: React.FC<FeedbackTypeStepProps> = ({
   register,
   watch,
   setValue,
+  setTrustScore,
+  trustScore,
 }) => {
   const feedbackType: FormSelectFieldItem = {
     name: "feedbackType",
     step: 1,
     label: "Feedback type",
-    error: errors.feedbackType?.name,
+    error: errors.feedbackType?.description,
     isRequired: true,
     types: feedbackTypes,
   };
 
   return (
     <FormSelectOptionField
+      trustScore={trustScore}
+      setTrustScore={setTrustScore}
       name={feedbackType.name}
       label={feedbackType.label}
       isRequired={feedbackType.isRequired}

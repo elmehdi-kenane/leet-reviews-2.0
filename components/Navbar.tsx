@@ -130,7 +130,7 @@ const Navbar = () => {
       className={`${isHidden === true ? "hidden" : ""} bg-neutral fixed flex flex-wrap justify-center w-full z-[150]`}
     >
       <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max mt-3">
-        <Link href={"/"} className="mr-11 max-md:mr-auto">
+        <Link href={"/home"} className="mr-11 max-md:mr-auto">
           <Image
             className="min-w-[9px] w-[50px] h-[50px]"
             src={logoIcon}

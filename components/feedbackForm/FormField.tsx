@@ -12,18 +12,61 @@ import PublicIcon from "@/public/PublicIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import Image from "next/image";
 import Tooltip from "@mui/material/Tooltip";
-import toast, { Toaster } from "react-hot-toast";
 
 export const FormInputField: React.FC<FormInputFieldProps> = ({
   type,
   placeholder,
   name,
   register,
-  error,
   valueAsNumber,
+  trustScore,
   isRequired,
+  setTrustScore,
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
+  const [input, setInput] = useState("");
+  const handleInputChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
+    type: string,
+  ) => {
+    setInput(e.target?.value);
+    if (
+      trustScore &&
+      (e.target?.value !== "" || type === "file") &&
+      !isRequired &&
+      name in trustScore
+    ) {
+      setTrustScore((prevState) => {
+        const newState = {
+          ...prevState,
+          [name]: 2,
+        };
+        console.log("newState", newState);
+
+        return newState;
+      });
+    }
+    if (
+      trustScore &&
+      e.target?.value === "" &&
+      !isRequired &&
+      name in trustScore
+    ) {
+      setTrustScore((prevState) => {
+        const newState = {
+          ...prevState,
+          [name]: 0,
+        };
+        console.log("newState", newState);
+
+        return newState;
+      });
+    }
+
+    type === "file" && handleFileChange;
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -36,12 +79,8 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     }
   };
 
-  const notify = () => {
-    console.log("notify call in inputField");
-    return toast("Here is your toast.");
-  };
-
   const inputId = `${name}-input`;
+  console.log("name", name);
   return (
     <div className="flex flex-col w-[70%]">
       <label htmlFor={inputId} className="font-semibold">
@@ -53,17 +92,28 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
           <textarea
             id={inputId}
             placeholder={placeholder}
-            {...register(name, { required: isRequired, valueAsNumber })}
+            {...register(name, {
+              required: isRequired === true ? placeholder : false,
+              valueAsNumber,
+            })}
+            value={input}
+            onChange={(e) => handleInputChange(e, type)}
             className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] ${type === "file" && "border-dashed"} focus:outline-none focus:border-primary hover:outline-none hover:border-primary max-h-[200px] min-h-[55px]`}
           />
         ) : (
           <input
             id={inputId}
+            value={input}
             type={type}
             placeholder={placeholder}
-            {...register(name, { required: isRequired, valueAsNumber })}
+            {...register(name, {
+              required: isRequired === true ? placeholder : false,
+              valueAsNumber,
+            })}
             className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] ${type === "file" && "border-dashed"} focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
-            onChange={type === "file" ? handleFileChange : undefined}
+            onChange={(e) => {
+              handleInputChange(e, type);
+            }}
           />
         )}
         {type === "file" && (
@@ -82,14 +132,10 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
           </div>
         )}
       </div>
-      {/* {error && error.type === "required" && <span>This is required</span>} */}
-      {error && error.type === "required" && notify()}
-      <Toaster />
     </div>
   );
 };
 
-// Define the reusable select component with generics
 export const FormSelectOptionField = <
   T extends
     | validWorkingType
@@ -102,35 +148,60 @@ export const FormSelectOptionField = <
   label,
   register,
   setValue,
+  setTrustScore,
   types,
   isRequired,
   currentStep,
-  error,
   watch,
 }: FormSelectFieldProps<T>) => {
   const result = watch(name);
-  const [selected, setSelected] = useState<string>(
-    typeof result === "object" ? result.name : result,
-  );
+  console.log("name", name);
+  const [selected, setSelected] = useState<
+    string | number | { name: string; description: string }
+  >(typeof result === "object" ? result.name : result);
   const selectId = `${name}-select`;
-
   const handleSelect = (value: T) => {
-    if (typeof value === "string") {
+    if (
+      name === "feedbackType" &&
+      typeof value === "object" &&
+      value.name === "Publicly"
+    ) {
+      setTrustScore((prevState) => {
+        const newState = {
+          ...prevState,
+          [name]: 2,
+        };
+        return newState;
+      });
+    }
+    if (
+      name === "feedbackType" &&
+      typeof value === "object" &&
+      value.name === "Anonymously"
+    ) {
+      setTrustScore((prevState) => {
+        const newState = {
+          ...prevState,
+          [name]: 0,
+        };
+        return newState;
+      });
+    }
+    if (typeof value === "string" || typeof value === "number") {
       setValue(name, value);
-      console.log("string value", value);
       setSelected(value);
     } else if (typeof value === "object" && value.name) {
       setValue(name, value);
       setSelected(value.name);
     }
   };
-  //   console.log("error", error);
-  //   console.log("error.type", error?.type);
-
-  //   const notify = () => {
-  //     console.log("notify call selectOptions");
-  //     return toast("Here is your toast.");
-  //   };
+  const experienceRateType = [
+    "VeryPoor",
+    "Poor",
+    "Average",
+    "Good",
+    "Excellent",
+  ];
   return (
     <div className={`${currentStep === 1 ? "w-full" : "w-[70%]"}`}>
       {currentStep !== 1 && (
@@ -145,7 +216,9 @@ export const FormSelectOptionField = <
         <input
           id={selectId}
           type="hidden"
-          {...register(name, { required: isRequired })}
+          {...register(name, {
+            required: isRequired === true ? label : false,
+          })}
         />
         {types.map((type, index) => {
           return (
@@ -181,10 +254,10 @@ export const FormSelectOptionField = <
                   <Image
                     className="min-w-[30px]"
                     src={
-                      typeof type === "string"
+                      typeof type === "string" || "number"
                         ? selected === type
-                          ? `${type}Light.svg`
-                          : `${type}.svg`
+                          ? `${experienceRateType[index]}Light.svg`
+                          : `${experienceRateType[index]}.svg`
                         : ""
                     }
                     height={30}
@@ -192,8 +265,8 @@ export const FormSelectOptionField = <
                     alt={
                       typeof type === "string"
                         ? selected === type
-                          ? `${type}Light.svg`
-                          : `${type}.svg`
+                          ? `${experienceRateType[index]}Light.svg`
+                          : `${experienceRateType[index]}.svg`
                         : ""
                     }
                   ></Image>
@@ -222,11 +295,6 @@ export const FormSelectOptionField = <
           );
         })}
       </div>
-      {/* {error && error.type === "required" && <span>This is required</span>} */}
-      <div className="hidden">
-        {error && error.type === "required" && toast("Here is your toast.")}
-      </div>
-      <Toaster />
     </div>
   );
 };

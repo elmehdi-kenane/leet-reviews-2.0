@@ -7,6 +7,7 @@ import {
   jobProgressTypes,
 } from "@/lib/types";
 import { FormInputField, FormSelectOptionField } from "./FormField";
+import { Dispatch, SetStateAction } from "react";
 import {
   UseFormRegister,
   UseFormSetValue,
@@ -18,6 +19,22 @@ export type JobInfosStepProps = {
   register: UseFormRegister<FormData>;
   errors: FieldErrors<FormData>;
   setValue: UseFormSetValue<FormData>;
+  setTrustScore: Dispatch<
+    SetStateAction<{
+      feedbackType: number;
+      companyLogo: number;
+      companyLinkedIn: number;
+      companyLocation: number;
+      feedbackComment: number;
+    }>
+  >;
+  trustScore: {
+    feedbackType: number;
+    companyLogo: number;
+    companyLinkedIn: number;
+    companyLocation: number;
+    feedbackComment: number;
+  };
   watch: UseFormWatch<FormData>;
 };
 
@@ -25,6 +42,8 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
   errors,
   register,
   setValue,
+  setTrustScore,
+  trustScore,
   watch,
 }) => {
   const jobStatusField: FormInputFieldItem = {
@@ -63,6 +82,8 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
   return (
     <>
       <FormInputField
+        setTrustScore={setTrustScore}
+        trustScore={trustScore}
         type={jobStatusField.type}
         placeholder={jobStatusField.placeholder}
         name={jobStatusField.name}
@@ -73,6 +94,8 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
       {jobInfosFields.map((item, index) => {
         return (
           <FormSelectOptionField
+            trustScore={trustScore}
+            setTrustScore={setTrustScore}
             key={index}
             name={item.name}
             label={item.label}

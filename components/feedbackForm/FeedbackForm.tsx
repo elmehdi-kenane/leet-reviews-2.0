@@ -13,8 +13,9 @@ import Image from "next/image";
 import closeIcon from "@/public/closeIcon.svg";
 import PublicIcon from "@/public/PublicIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
+import toast from "react-hot-toast";
 
-const Form = ({
+const FeedbackForm = ({
   setIsFeedbackFormOpen,
 }: {
   setIsFeedbackFormOpen: (value: boolean) => void;
@@ -33,10 +34,9 @@ const Form = ({
   //     setValue("workingType", value);
   //     setSelected(value);
   //   };
-
   const onSubmit = async (data: FormData) => {
-    console.log("currentStep", currentStep);
-    console.log("SUCCESS", data);
+    const formData = { trustScore: 2, ...data };
+    console.log("SUCCESS", formData);
   };
 
   const experienceRate: FormSelectFieldItem = {
@@ -51,6 +51,15 @@ const Form = ({
   const formRef = useRef<HTMLFormElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [isCloseForm, setIsCloseForm] = useState(false);
+  //   const [isProcessing, setIsProcessing] = useState(false);
+  const [trustScore, setTrustScore] = useState({
+    feedbackType: 0,
+    companyLogo: 0,
+    companyLinkedIn: 0,
+    companyLocation: 0,
+    feedbackComment: 0,
+  });
+  //   feedtype 2 logo 2 linkedin 2 location 2 feed 2
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -63,6 +72,30 @@ const Form = ({
       window.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  const handleStepValidation = async () => {
+    const isValid = await trigger();
+    if (isValid) {
+      console.log("step is valid");
+      if (currentStep === 4) console.log("send form");
+      else setCurrentStep((prevStep) => prevStep + 1);
+    } else {
+      console.log("step isn't valid");
+      if (errors) {
+        console.log("errors", errors);
+
+        const errorKeys = Object.keys(errors) as (keyof FormData)[]; // Explicitly cast keys to keyof FormData
+        console.log("errorKeys", errorKeys);
+        const firstField = errorKeys[0];
+        console.log("firstField", firstField);
+        let errorMessage = "Feedback type";
+        errorMessage = errors[firstField]?.message || "Feedback type";
+        console.log("errorMessage", errorMessage);
+        console.log("errors[firstField]", errors[firstField]);
+        toast.dismiss();
+        toast.error(`Invalid ${errorMessage}`);
+      }
+    }
+  };
   const firstStep = 1;
   const lastStep = 4;
   return (
@@ -95,6 +128,7 @@ const Form = ({
         {currentStep !== 1 && (
           <FeedbackFormHeader
             currentStep={currentStep}
+            trustScore={trustScore}
             watch={watch}
           ></FeedbackFormHeader>
         )}
@@ -105,6 +139,8 @@ const Form = ({
         )}
         {currentStep === 1 && (
           <FeedbackTypeStep
+            setTrustScore={setTrustScore}
+            trustScore={trustScore}
             register={register}
             errors={errors}
             setValue={setValue}
@@ -114,6 +150,8 @@ const Form = ({
         {currentStep === 2 && (
           <div className="flex flex-col w-full min-h-[390px] items-center gap-4">
             <CompanyInfosStep
+              setTrustScore={setTrustScore}
+              trustScore={trustScore}
               register={register}
               errors={errors}
               watch={watch}
@@ -123,6 +161,8 @@ const Form = ({
         {currentStep === 3 && (
           <div className="flex flex-col w-full min-h-[390px] items-center gap-4">
             <JobInfosStep
+              setTrustScore={setTrustScore}
+              trustScore={trustScore}
               register={register}
               errors={errors}
               setValue={setValue}
@@ -133,6 +173,8 @@ const Form = ({
         {currentStep === 4 && (
           <div className="flex flex-col w-full min-h-[390px] items-center gap-4">
             <FormSelectOptionField
+              setTrustScore={setTrustScore}
+              trustScore={trustScore}
               watch={watch}
               name={experienceRate.name}
               label={experienceRate.label}
@@ -144,6 +186,8 @@ const Form = ({
               currentStep={experienceRate.step}
             ></FormSelectOptionField>
             <FormInputField
+              setTrustScore={setTrustScore}
+              trustScore={trustScore}
               type="text"
               placeholder="Feedback comment"
               name="feedbackComment"
@@ -181,13 +225,7 @@ const Form = ({
             <button
               type="button"
               className={`p-3 text-white font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%]" : "max-sm:w-[48%]"} bg-primary border-2 border-primary rounded-md w-[130px] h-11 flex justify-center items-center`}
-              onClick={async () => {
-                const isValid = await trigger();
-                if (isValid) {
-                  console.log("step is valid");
-                  setCurrentStep((prevStep) => prevStep + 1);
-                } else console.log("step isn't valid");
-              }}
+              onClick={handleStepValidation}
             >
               {currentStep === 1 ? "Create a Public Feedback" : "NEXT"}
             </button>
@@ -196,13 +234,7 @@ const Form = ({
             <button
               type="submit"
               className={`bg-primary p-3 text-white font-bold w-[130px] h-11 flex justify-center items-center rounded-md max-sm:min-w-[49%]`}
-              onClick={() => {
-                // console.log("publish button clicked");
-                //   console.log("publish clicked");
-                //   setCurrentStep((prev) => {
-                //     return prev !== lastStep ? prev + 1 : prev;
-                //   });
-              }}
+              onClick={handleStepValidation}
             >
               PUBLISH
             </button>
@@ -245,17 +277,31 @@ const PopUpFormClose = ({
   );
 };
 
-export default Form;
-
 const FeedbackFormHeader = ({
   watch,
+  trustScore,
   currentStep,
 }: {
   watch: UseFormWatch<FormData>;
   currentStep: number;
+  trustScore: {
+    feedbackType: number;
+    companyLogo: number;
+    companyLinkedIn: number;
+    companyLocation: number;
+    feedbackComment: number;
+  };
 }) => {
+  const trustSoreRadius = 15;
+  const fullCircle = 2 * Math.PI * trustSoreRadius;
+  const totalTrustScore = Object.values(trustScore).reduce(
+    (total, score) => total + score,
+    0,
+  );
+  console.log("totalTrustScore", totalTrustScore);
+
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full flex flex-col items-center select-none">
       <div className="h-[52px] mb-3 flex justify-between font-SpaceGrotesk w-[80%]">
         {watch("feedbackType").name === "Publicly" && (
           <div className="bg-secondary h-full w-max font-semibold flex items-center gap-2 p-3 rounded-xl text-neutral">
@@ -286,7 +332,30 @@ const FeedbackFormHeader = ({
           </div>
         )}
         <div className="bg-secondary h-full w-max font-semibold flex items-center gap-2 p-3 rounded-xl text-neutral">
-          <p>Trust score</p>
+          <p>Trust score {totalTrustScore}</p>
+          <svg width="35" height="35" viewBox="0 0 35 35">
+            <circle
+              cx="17.5"
+              cy="17.5"
+              r={trustSoreRadius}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeDasharray={`${fullCircle}`}
+              strokeDashoffset={`calc(${fullCircle} - (${fullCircle} * ${totalTrustScore}/10))`}
+              transform="rotate(-90 17.5 17.5)"
+            />
+            <text
+              x="50%"
+              y="50%"
+              textAnchor="middle"
+              dy="0.3em"
+              fontSize="15"
+              fill="currentColor"
+            >
+              {totalTrustScore}
+            </text>
+          </svg>
         </div>
       </div>
       <div className="flex items-center justify-between max-sm:justify-center gap-3 w-[80%]">
@@ -336,3 +405,5 @@ const FeedbackFormHeader = ({
     </div>
   );
 };
+
+export default FeedbackForm;
