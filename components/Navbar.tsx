@@ -78,6 +78,7 @@ const Navbar = () => {
       id: 3,
       text: "Logout",
       icon: "logout.svg",
+      path: "/auth/signin",
       onClick: handleLogout, // Call logout function
     },
   ];
@@ -126,7 +127,7 @@ const Navbar = () => {
 
   return (
     <div
-      className={`${isHidden === true && "hidden"} bg-neutral flex flex-wrap justify-center w-full`}
+      className={`${isHidden === true ? "hidden" : ""} bg-neutral fixed flex flex-wrap justify-center w-full z-[150]`}
     >
       <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max mt-3">
         <Link href={"/"} className="mr-11 max-md:mr-auto">
@@ -242,12 +243,12 @@ const Navbar = () => {
             ></Image>
           </button>
           {isDropDownOpen && (
-            <div className="border border-neutral bg-secondary w-max h-max p-1 rounded-xl absolute mt-[60px]">
+            <div className="border border-neutral bg-secondary w-max h-max p-1 rounded-xl absolute mt-[60px] z-[110]">
               <div className="flex flex-col justify-start bg-secondary w-[120px] min-w-max rounded-xl gap-1 py-2 px-2">
                 {dropDownButtons.map((item) => {
                   return (
                     <Link
-                      href={item.path ? item.path : "#"}
+                      href={item.path}
                       className="w-full flex items-center justify-center"
                       key={item.id}
                     >
@@ -325,7 +326,7 @@ const Navbar = () => {
         </button>
       </div>
       {isFeedbackFormOpen && (
-        <div className="absolute w-full h-full bg-white/30 backdrop-blur-sm flex justify-center">
+        <div className="absolute w-full h-screen bg-white/30 backdrop-blur-sm flex justify-center overflow-auto py-5">
           <FeedbackForm
             setIsFeedbackFormOpen={setIsFeedbackFormOpen}
           ></FeedbackForm>

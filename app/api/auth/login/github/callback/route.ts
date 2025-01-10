@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       return new Response(null, {
         status: 302,
         headers: {
-          Location: "/",
+          Location: "/home",
         },
       });
     }
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "/",
+        Location: "/home",
       },
     });
   } catch (e) {

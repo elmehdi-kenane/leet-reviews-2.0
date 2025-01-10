@@ -1,10 +1,6 @@
 // import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-// import { validateRequest } from "@/lib/auth";
-// import { redirect } from "next/navigation";
-import { UserProvider } from "@/context/UserContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,21 +23,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  //   const { user } = await validateRequest();
-  //   if (!user) {
-  //     console.log("redirect to sign in page");
-  //     return redirect("/auth/signin");
-  //   }
-
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral text-secondary`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral text-secondary w-full h-screen flex flex-col`}
       >
-        <UserProvider>
-          <Navbar />
-          {children}
-        </UserProvider>
+        {children}
       </body>
     </html>
   );
