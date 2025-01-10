@@ -21,6 +21,21 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  scrollbar-color: #141e46 #fff5e0;
+  scrollbar-width: thin;
+}
+
+html::-webkit-scrollbar {
+  width: 7px;
+  margin: 0 100px;
+}
+html::-webkit-scrollbar-track {
+  background: #fff5e0;
+  margin: 100px;
+}
+html::-webkit-scrollbar-thumb {
+  background: #141e46;
+  border-radius: 15px;
 }
 
 @layer utilities {

@@ -14,6 +14,7 @@ const config: Config = {
         secondary: "#141E46",
         accent: "#8DECB4",
         neutral: "#FFF5E0",
+        gray: "#D9D9D9",
       },
       fontFamily: {
         Inter: ["Inter", "sans-serif"],

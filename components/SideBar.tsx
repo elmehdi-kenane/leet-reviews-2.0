@@ -41,23 +41,30 @@ const SideBar = () => {
   ];
   const [selected, setSelected] = useState(Buttons[0].text);
   return (
-    <div className="bg-neutral p-1 mr-4 mb-5 flex flex-col rounded-xl rounded-l-none border-l-0 border-2 border-secondary">
+    <div className="max-lg:hidden flex flex-col items-center gap-3 fixed z-[100] w-[60px] py-2 mt-[100px] bg-neutral rounded-xl rounded-l-none border border-quaternary border-l-0">
       {Buttons.map((item, index) => {
         return (
           <Link
-            href={item.link}
             key={index}
-            className="flex flex-col justify-center items-center rounded-xl h-[76px] gap-2 w-14"
-            onClick={() => setSelected(item.text)}
+            href={item.link}
+            className="w-full flex items-center justify-center"
           >
-            <Image
-              src={selected === item.text ? item.iconFilled : item.icon}
-              alt={selected === item.text ? item.iconFilled : item.icon}
-              width={28}
-              height={28}
-              className="mr-1 w-[28px] h-[28px]"
-            ></Image>
-            {/* <p className="text-[12px] font-semibold">{item.text}</p> */}
+            <button
+              className={`flex items-center rounded-xl gap-1 border-2 border-transparent hover:border-secondary ${
+                selected === item.text && "bg-secondary"
+              } w-[80%] h-[48px] p-2`}
+              onClick={() => {
+                setSelected(item.text);
+              }}
+            >
+              <Image
+                src={selected === item.text ? item.iconFilled : item.icon}
+                alt={item.text}
+                width={30}
+                height={30}
+                className="mx-auto w-full h-full"
+              ></Image>
+            </button>
           </Link>
         );
       })}

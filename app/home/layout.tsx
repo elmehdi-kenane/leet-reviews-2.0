@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "../globals.css";
 import Navbar from "@/components/Navbar";
 import SideBar from "@/components/SideBar";
+import BottomBar from "@/components/BottomBar";
 // import { validateRequest } from "@/lib/auth";
 // import { redirect } from "next/navigation";
 import { UserProvider } from "@/context/UserContext";
@@ -43,6 +44,7 @@ export default async function RootLayout({
           <Navbar />
           <div className="flex">
             <SideBar />
+            <BottomBar />
             {children}
           </div>
         </UserProvider>

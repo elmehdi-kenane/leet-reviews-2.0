@@ -1,32 +1,45 @@
 import Link from "next/link";
 import Image from "next/image";
 import CustomizedTooltip from "./CustomizedTooltip";
-import heart from "@/public/heart.svg";
+import linkedInIcon from "@/public/LInkedInIcon.svg";
+import DefaultCompanyLogo from "@/public/DefaultCompanyLogo.svg";
+import fun_face from "@/public/fun_face.svg";
+import CompanyCityIcon from "@/public/CompanyCityIcon.svg";
+import ContractTypeIcon from "@/public/ContractTypeIcon.svg";
+import WorkLocationIcon from "@/public/WorkLocationIcon.svg";
+import ProgressCheckIcon from "@/public/ProgressCheckIcon.svg";
+import { useContext } from "react";
 import { useState } from "react";
+import { UserContext } from "@/context/UserContext";
 
 export const FeedbackCard = () => {
+  const userInfo = useContext(UserContext);
   const feedbackDetails = {
-    experienceRating: "good",
-    ExperienceRate: heart,
-    CompanyLogo: heart,
-    CompanyName: "good",
-    LinkedInOfCompany: "good",
-    JobStatus: "good",
-    feedbackSubtitle: "good",
-    feedbackAuthorAvatar: heart,
-    feedbackAuthorUsername: "good",
-    creationDate: "good",
-    feedbackAuthorIntraLogin: "good",
-    employmentDetails: [{ icon: heart, text: "good" }],
+    experienceRating: "experienceRating",
+    ExperienceRate: fun_face,
+    FeedbackId: "1", // will be used to redirect the user to the feedback page
+    CompanyLogo: DefaultCompanyLogo,
+    CompanyName: "um6p",
+    LinkedInOfCompany: "linkedInUrl",
+    JobStatus: "software engineer",
+    feedbackSubtitle: "feedback subtitle",
+    feedbackAuthorAvatar: userInfo?.userInfo?.avatar, // will be replaced by the actual feedback author avatar
+    feedbackAuthorUsername: "feedbackAuthorUsername",
+    creationDate: "dateTime",
+    feedbackAuthorIntraLogin: "feedbackAuthorIntraLogin",
+    employmentDetails: [
+      { icon: WorkLocationIcon, text: "Location" },
+      { icon: ContractTypeIcon, text: "Contract" },
+      { icon: CompanyCityIcon, text: "City" },
+      { icon: ProgressCheckIcon, text: "Progress" },
+    ],
   };
   const [isHovered, setIsHovered] = useState(false);
-  const circleRadius = 5;
+  const circleRadius = 15;
   return (
-    <Link
-      href={`/home`}
-      className={`flex justify-between flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] bg-white mt-10 w-[100%] max-w-[900px] ${
-        "" === "" ? "h-[330px" : "h-[370px"
-      } max-md:h-max shadow-lg hover:shadow-2xl font-inter text-[#00224D] gap-[10px]`}
+    <div
+      //   href={`/home`}
+      className={`flex justify-between flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] bg-white mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg hover:shadow-2xl font-inter text-[#00224D] gap-[10px] transition-shadow duration-300`}
     >
       <div className="flex justify-between gap-[10px] max-md:flex-col">
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
@@ -51,8 +64,8 @@ export const FeedbackCard = () => {
                 <Image
                   src={feedbackDetails.ExperienceRate}
                   alt={feedbackDetails.ExperienceRate}
-                  width={circleRadius * 2 - 10}
-                  height={circleRadius * 2 - 10}
+                  width={20}
+                  height={20}
                   className="ml-[5px] mb-[-25px] relative z-[9]"
                 />
                 <svg
@@ -82,7 +95,7 @@ export const FeedbackCard = () => {
                     e.stopPropagation();
                   }}
                 >
-                  <Image src={heart} alt="" width={25} height={25} />
+                  <Image src={linkedInIcon} alt="" width={25} height={25} />
                 </a>
               )}
             </div>
@@ -103,14 +116,10 @@ export const FeedbackCard = () => {
                     src={employmentDetail.icon}
                     alt={employmentDetail.icon}
                     width={`${
-                      employmentDetail.icon === "/ContractTypeIcon.svg"
-                        ? 15
-                        : 20
+                      employmentDetail.icon === ContractTypeIcon ? 17 : 20
                     }`}
                     height={`${
-                      employmentDetail.icon === "/ContractTypeIcon.svg"
-                        ? 15
-                        : 20
+                      employmentDetail.icon === ContractTypeIcon ? 17 : 20
                     }`}
                   />
                 </div>
@@ -118,8 +127,8 @@ export const FeedbackCard = () => {
               </div>
             );
           })}
-          {feedbackDetails.feedbackSubtitle !== "" && (
-            <div className="w-full h-max flex justify-end relative z-[1]">
+          {feedbackDetails.feedbackAuthorIntraLogin !== "" && (
+            <div className="w-full h-max flex justify-end z-[1]">
               <a
                 href={`https://profile.intra.42.fr/users/${feedbackDetails.feedbackAuthorIntraLogin}`}
                 target="_blank"
@@ -140,14 +149,14 @@ export const FeedbackCard = () => {
         </div>
       </div>
       {feedbackDetails.feedbackSubtitle !== "" ? (
-        <div className="flex justify-between items-start flex-col mt-[-35px]">
+        <div className="flex justify-between items-start flex-col mt-[-30px]">
           <div className="flex items-center gap-2">
             <Image
-              src={feedbackDetails.feedbackAuthorAvatar}
-              alt={feedbackDetails.feedbackAuthorAvatar}
-              width={50}
-              height={50}
-              className="rounded-full relative z-[9] border-2 border-[#00224D] mb-1"
+              src={feedbackDetails.feedbackAuthorAvatar || ""}
+              alt={feedbackDetails.feedbackAuthorAvatar || ""}
+              width={40}
+              height={40}
+              className="rounded-full max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D] mb-1"
             />
             <p className="mb-[15px] font-semibold">
               {feedbackDetails.feedbackAuthorUsername}
@@ -163,11 +172,11 @@ export const FeedbackCard = () => {
         <div className="flex border-2 border-[#00224D] rounded-2xl justify-between items-center p-2 gap-[5px]">
           <div className="flex items-center gap-2">
             <Image
-              src={feedbackDetails.feedbackAuthorAvatar}
-              alt={feedbackDetails.feedbackAuthorAvatar}
+              src={feedbackDetails.feedbackAuthorAvatar || ""}
+              alt={feedbackDetails.feedbackAuthorAvatar || ""}
               width={50}
               height={50}
-              className="rounded-full relative z-[9] border-2 border-[#00224D]"
+              className="rounded-full max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D]"
             />
             <p className="font-semibold">
               {feedbackDetails.feedbackAuthorUsername}
@@ -200,7 +209,7 @@ export const FeedbackCard = () => {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           href={`/Engagement?commentAreaSelected=${true}`}
-          className="text-[#FF204E] flex item hover:bg-[#FF204E] hover:text-white s-center gap-[3px] border-[2px] border-[#FF204E] rounded-xl p-2 h-max"
+          className="text-[#41B06E] flex item hover:bg-[#41B06E] hover:text-white s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
         >
           <Image
             src={`${isHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}
@@ -211,6 +220,6 @@ export const FeedbackCard = () => {
           <p className="max-sm:hidden">Comment</p>
         </Link>
       </div>
-    </Link>
+    </div>
   );
 };
