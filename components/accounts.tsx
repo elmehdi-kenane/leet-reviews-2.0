@@ -16,13 +16,8 @@ export const DisplayAccounts = () => {
           throw new Error("Failed to fetch accounts");
         }
         const data = await response.json();
-        console.log(data);
         setAuthAccounts(data.authAccounts);
         setConnectedAccounts(data.connectedAccounts);
-        console.log(
-          "set data.connectedAccounts[0].access_token",
-          data.connectedAccounts[0].access_token,
-        );
       } catch (err: unknown) {
         if (err instanceof Error) {
           console.log(err.message);
