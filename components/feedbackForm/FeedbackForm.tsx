@@ -299,7 +299,9 @@ const FeedbackFormHeader = ({
     0,
   );
   console.log("totalTrustScore", totalTrustScore);
-
+  console.log("fullCircle", fullCircle);
+  console.log("value circle", fullCircle - (fullCircle * totalTrustScore) / 10);
+  const svgSize = 35;
   return (
     <div className="w-full flex flex-col items-center select-none">
       <div className="h-[52px] mb-3 flex justify-between font-SpaceGrotesk w-[80%]">
@@ -307,10 +309,10 @@ const FeedbackFormHeader = ({
           <div className="bg-secondary h-full w-max font-semibold flex items-center gap-2 p-3 rounded-xl text-neutral">
             <div className="rounded-full min-w-[35px] min-h-[35px] bg-neutral flex justify-center items-center">
               <Image
-                className="min-w-[30px]"
+                className="min-w-[25px]"
                 src={PublicIcon}
-                height={30}
-                width={30}
+                height={25}
+                width={25}
                 alt={PublicIcon}
               ></Image>
             </div>
@@ -321,10 +323,10 @@ const FeedbackFormHeader = ({
           <div className="bg-secondary h-full w-max font-semibold flex items-center gap-2 p-3 rounded-xl text-neutral">
             <div className="rounded-full min-w-[35px] min-h-[35px] bg-neutral flex justify-center items-center">
               <Image
-                className="min-w-[30px]"
+                className="min-w-[25px]"
                 src={AnonymousIcon}
-                height={30}
-                width={30}
+                height={25}
+                width={25}
                 alt={AnonymousIcon}
               ></Image>
             </div>
@@ -332,18 +334,28 @@ const FeedbackFormHeader = ({
           </div>
         )}
         <div className="bg-secondary h-full w-max font-semibold flex items-center gap-2 p-3 rounded-xl text-neutral">
-          <p>Trust score {totalTrustScore}</p>
-          <svg width="35" height="35" viewBox="0 0 35 35">
+          <p>Trust score</p>
+          <svg
+            width={svgSize}
+            height={svgSize}
+            viewBox={`0 0 ${svgSize} ${svgSize}`}
+            className={`${totalTrustScore <= 4 ? "bg-red-400" : "bg-green-500"} rounded-full`}
+          >
             <circle
-              cx="17.5"
-              cy="17.5"
-              r={trustSoreRadius}
-              fill="none"
+              cx={svgSize / 2}
+              cy={svgSize / 2 + 0.5}
+              r={trustSoreRadius + 0.7}
               stroke="currentColor"
               strokeWidth="3"
+              fill="none"
               strokeDasharray={`${fullCircle}`}
-              strokeDashoffset={`calc(${fullCircle} - (${fullCircle} * ${totalTrustScore}/10))`}
-              transform="rotate(-90 17.5 17.5)"
+              //   strokeDashoffset={`calc(${fullCircle} - (${fullCircle} * ${totalTrustScore}/10))`}
+              style={{
+                transition: "stroke-dashoffset 1s ease-in-out",
+                strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
+              }}
+              transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
+              strokeLinecap="round"
             />
             <text
               x="50%"

@@ -43,7 +43,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
           ...prevState,
           [name]: 2,
         };
-        console.log("newState", newState);
 
         return newState;
       });
@@ -59,7 +58,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
           ...prevState,
           [name]: 0,
         };
-        console.log("newState", newState);
 
         return newState;
       });
@@ -80,7 +78,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   };
 
   const inputId = `${name}-input`;
-  console.log("name", name);
   return (
     <div className="flex flex-col w-[70%]">
       <label htmlFor={inputId} className="font-semibold">
@@ -155,7 +152,6 @@ export const FormSelectOptionField = <
   watch,
 }: FormSelectFieldProps<T>) => {
   const result = watch(name);
-  console.log("name", name);
   const [selected, setSelected] = useState<
     string | number | { name: string; description: string }
   >(typeof result === "object" ? result.name : result);
