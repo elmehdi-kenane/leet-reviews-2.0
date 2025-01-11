@@ -218,13 +218,6 @@ const Navbar = () => {
           onClick={() => setIsFeedbackFormOpen(true)}
         >
           <p className="max-md:text-sm">Create feedback</p>
-          {/* <Image
-              src={"/plus.svg"}
-              alt="plus.svg"
-              width={35}
-              height={35}
-              className="md:hidden"
-            ></Image> */}
         </button>
         <div className="flex justify-end" ref={DropDownRef}>
           <button

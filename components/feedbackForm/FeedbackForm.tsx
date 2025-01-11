@@ -101,7 +101,7 @@ const FeedbackForm = ({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="relative w-[90%] max-w-[700px] h-[700px] max-sm:h-[950px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-2xl"
+      className="relative open-feedback-form w-[90%] max-w-[700px] h-[700px] max-sm:h-[950px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-2xl"
       ref={formRef}
     >
       {isCloseForm && (

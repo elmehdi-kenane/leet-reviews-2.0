@@ -139,3 +139,16 @@ html::-webkit-scrollbar-thumb {
   animation-name: popUpAnimate;
   animation-duration: 0.3s;
 }
+
+.open-feedback-form {
+  animation: opening 0.4s ease-out forwards;
+}
+
+@keyframes opening {
+  0% {
+    scale: 0;
+  }
+  100% {
+    scale: 1;
+  }
+}

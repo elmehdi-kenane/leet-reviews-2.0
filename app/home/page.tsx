@@ -24,6 +24,12 @@ export default function Home() {
       <DisplayAccounts></DisplayAccounts> */}
       <div className="w-full flex flex-col items-center my-[100px]">
         <FeedbackCard></FeedbackCard>
+        <FeedbackCard></FeedbackCard>
+        <FeedbackCard></FeedbackCard>
+        <FeedbackCard></FeedbackCard>
+        <FeedbackCard></FeedbackCard>
+        <FeedbackCard></FeedbackCard>
+        <FeedbackCard></FeedbackCard>
       </div>
       <Toaster
         toastOptions={{
