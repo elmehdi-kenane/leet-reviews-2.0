@@ -141,7 +141,7 @@ html::-webkit-scrollbar-thumb {
 }
 
 .open-feedback-form {
-  animation: opening 0.4s ease-out forwards;
+  animation: opening 0.3s ease-out forwards;
 }
 
 @keyframes opening {
@@ -150,5 +150,18 @@ html::-webkit-scrollbar-thumb {
   }
   100% {
     scale: 1;
+  }
+}
+
+.close-feedback-form {
+  animation: closing 0.3s ease-in forwards;
+}
+
+@keyframes closing {
+  0% {
+    scale: 1;
+  }
+  100% {
+    scale: 0;
   }
 }

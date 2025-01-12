@@ -17,8 +17,12 @@ import toast from "react-hot-toast";
 
 const FeedbackForm = ({
   setIsFeedbackFormOpen,
+  setIsClosingFeedbackForm,
+  buttonCreateFeedbackPosition,
 }: {
   setIsFeedbackFormOpen: (value: boolean) => void;
+  setIsClosingFeedbackForm: (value: boolean) => void;
+  buttonCreateFeedbackPosition: { top: number; left: number };
 }) => {
   const {
     register,
@@ -50,7 +54,7 @@ const FeedbackForm = ({
 
   const formRef = useRef<HTMLFormElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const [isCloseForm, setIsCloseForm] = useState(false);
+  const [isPopUpFeedbackFormOpen, setIsPopUpFeedbackFormOpen] = useState(false);
   //   const [isProcessing, setIsProcessing] = useState(false);
   const [trustScore, setTrustScore] = useState({
     feedbackType: 0,
@@ -64,7 +68,7 @@ const FeedbackForm = ({
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (formRef.current && !formRef.current.contains(e.target as Node)) {
-        setIsCloseForm(true);
+        setIsPopUpFeedbackFormOpen(true);
       }
     };
     window.addEventListener("mousedown", handleClickOutside);
@@ -101,18 +105,22 @@ const FeedbackForm = ({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="relative open-feedback-form w-[90%] max-w-[700px] h-[700px] max-sm:h-[950px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-2xl"
+      style={{
+        transformOrigin: `${buttonCreateFeedbackPosition.left}px ${buttonCreateFeedbackPosition.top}px`,
+      }}
+      className={`relative w-[90%] max-w-[700px] h-[700px] max-sm:h-[950px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-2xl`}
       ref={formRef}
     >
-      {isCloseForm && (
+      {isPopUpFeedbackFormOpen && (
         <PopUpFormClose
-          setIsCloseForm={setIsCloseForm}
+          setIsPopUpFeedbackFormOpen={setIsPopUpFeedbackFormOpen}
+          setIsClosingFeedbackForm={setIsClosingFeedbackForm}
           setIsFeedbackFormOpen={setIsFeedbackFormOpen}
         ></PopUpFormClose>
       )}
       <div
         className="min-w-[18px] w-[18px] min-h-[18px] h-[18px] border-2 border-secondary rounded-full flex justify-center items-center ml-auto mt-7 mr-7 opacity-50"
-        onClick={() => setIsCloseForm(true)}
+        onClick={() => setIsPopUpFeedbackFormOpen(true)}
       >
         <Image
           className="min-w-[9px]"
@@ -247,10 +255,12 @@ const FeedbackForm = ({
 
 const PopUpFormClose = ({
   setIsFeedbackFormOpen,
-  setIsCloseForm,
+  setIsPopUpFeedbackFormOpen,
+  setIsClosingFeedbackForm,
 }: {
   setIsFeedbackFormOpen: (value: boolean) => void;
-  setIsCloseForm: (value: boolean) => void;
+  setIsPopUpFeedbackFormOpen: (value: boolean) => void;
+  setIsClosingFeedbackForm: (value: boolean) => void;
 }) => {
   return (
     <div className="flex justify-center items-center absolute w-full h-full bg-white/30 backdrop-blur-sm rounded-[45px] mt-[2px]">
@@ -261,13 +271,20 @@ const PopUpFormClose = ({
         <div className="flex w-full justify-between">
           <button
             className="w-[48%] font-SpaceGrotesk rounded-lg p-2 border border-white text-white bg-transparent"
-            onClick={() => setIsCloseForm(false)}
+            onClick={() => setIsPopUpFeedbackFormOpen(false)}
           >
             Cancel
           </button>
           <button
             className="w-[48%] font-SpaceGrotesk rounded-lg p-2 border border-primary text-white bg-primary"
-            onClick={() => setIsFeedbackFormOpen(false)}
+            onClick={() => {
+              setIsClosingFeedbackForm(true);
+              setIsPopUpFeedbackFormOpen(false);
+              setTimeout(() => {
+                setIsClosingFeedbackForm(false);
+                setIsFeedbackFormOpen(false);
+              }, 300);
+            }}
           >
             Close Form
           </button>

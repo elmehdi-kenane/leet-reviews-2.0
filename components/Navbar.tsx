@@ -21,7 +21,10 @@ const Navbar = () => {
   const inputDesktopRef = useRef<HTMLInputElement>(null);
   const inputMobileRef = useRef<HTMLInputElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
-  //   const [companyData, setCompanyData] = useState<any | null>(null);
+  const [buttonCreateFeedbackPosition, setButtonCreateFeedbackPosition] =
+    useState({ top: 0, left: 0 });
+  const buttonCreateFeedbackRef = useRef<HTMLButtonElement>(null);
+  const [isClosingFeedbackForm, setIsClosingFeedbackForm] = useState(false);
 
   const pathname = usePathname();
   const hiddenRoutes = ["/auth/signin", "/auth/signup"];
@@ -59,6 +62,21 @@ const Navbar = () => {
     } catch (error) {
       console.error("Error logging out:", error);
     }
+  };
+
+  const handleOpenFeedbackForm = () => {
+    console.log("click button handleOpenFeedbackForm");
+
+    if (buttonCreateFeedbackRef.current) {
+      const rect = buttonCreateFeedbackRef.current.getBoundingClientRect();
+      console.log("rect", rect);
+
+      setButtonCreateFeedbackPosition({
+        top: rect.top,
+        left: rect.left - 100,
+      });
+    }
+    setIsFeedbackFormOpen(true);
   };
 
   const dropDownButtons = [
@@ -129,7 +147,7 @@ const Navbar = () => {
     <div
       className={`${isHidden === true ? "hidden" : ""} bg-neutral fixed flex flex-wrap justify-center w-full z-[150]`}
     >
-      <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max mt-3">
+      <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max my-3">
         <Link href={"/home"} className="mr-11 max-md:mr-auto">
           <Image
             className="min-w-[9px] w-[50px] h-[50px]"
@@ -214,10 +232,11 @@ const Navbar = () => {
           ></Image>
         </button>
         <button
-          className="font-SpaceGrotesk h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold text-neutral"
-          onClick={() => setIsFeedbackFormOpen(true)}
+          className="font-SpaceGrotesk max-md:text-sm h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold text-neutral"
+          ref={buttonCreateFeedbackRef}
+          onClick={handleOpenFeedbackForm}
         >
-          <p className="max-md:text-sm">Create feedback</p>
+          Create feedback
         </button>
         <div className="flex justify-end" ref={DropDownRef}>
           <button
@@ -319,10 +338,19 @@ const Navbar = () => {
         </button>
       </div>
       {isFeedbackFormOpen && (
-        <div className="absolute w-full h-screen bg-white/30 backdrop-blur-sm flex justify-center overflow-auto py-5">
-          <FeedbackForm
-            setIsFeedbackFormOpen={setIsFeedbackFormOpen}
-          ></FeedbackForm>
+        <div className="absolute w-full h-screen bg-white/30 backdrop-blur-sm flex justify-center py-5">
+          <div
+            className={`absolute ${isClosingFeedbackForm === true ? "close-feedback-form" : ""} open-feedback-form w-[90%] max-w-[700px] h-full my-auto rounded-[45px] flex flex-col items-center`}
+            style={{
+              transformOrigin: `${buttonCreateFeedbackPosition.left}px ${buttonCreateFeedbackPosition.top}px`,
+            }}
+          >
+            <FeedbackForm
+              buttonCreateFeedbackPosition={buttonCreateFeedbackPosition}
+              setIsFeedbackFormOpen={setIsFeedbackFormOpen}
+              setIsClosingFeedbackForm={setIsClosingFeedbackForm}
+            ></FeedbackForm>
+          </div>
         </div>
       )}
     </div>
