@@ -196,6 +196,7 @@ const FeedbackForm = ({
             <FormInputField
               setTrustScore={setTrustScore}
               trustScore={trustScore}
+              watch={watch}
               type="text"
               placeholder="Feedback comment"
               name="feedbackComment"
@@ -232,7 +233,7 @@ const FeedbackForm = ({
           {currentStep <= lastStep - 1 && (
             <button
               type="button"
-              className={`p-3 text-white font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%]" : "max-sm:w-[48%]"} bg-primary border-2 border-primary rounded-md w-[130px] h-11 flex justify-center items-center`}
+              className={`p-3 text-white font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%] mb-[20px]" : "max-sm:w-[48%]"} bg-primary border-2 border-primary rounded-md w-[130px] h-11 flex justify-center items-center`}
               onClick={handleStepValidation}
             >
               {currentStep === 1 ? "Create a Public Feedback" : "NEXT"}
@@ -315,9 +316,6 @@ const FeedbackFormHeader = ({
     (total, score) => total + score,
     0,
   );
-  console.log("totalTrustScore", totalTrustScore);
-  console.log("fullCircle", fullCircle);
-  console.log("value circle", fullCircle - (fullCircle * totalTrustScore) / 10);
   const svgSize = 35;
   return (
     <div className="w-full flex flex-col items-center select-none">
@@ -366,7 +364,6 @@ const FeedbackFormHeader = ({
               strokeWidth="3"
               fill="none"
               strokeDasharray={`${fullCircle}`}
-              //   strokeDashoffset={`calc(${fullCircle} - (${fullCircle} * ${totalTrustScore}/10))`}
               style={{
                 transition: "stroke-dashoffset 1s ease-in-out",
                 strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,

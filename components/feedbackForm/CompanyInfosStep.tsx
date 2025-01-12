@@ -30,7 +30,7 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
   register,
   trustScore,
   setTrustScore,
-  //   watch,
+  watch,
 }) => {
   const CompanyInfoFields: FormInputFieldItem[] = [
     {
@@ -76,6 +76,7 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
             name={item.name}
             register={register}
             error={item.error}
+            watch={watch}
           />
         );
       })}

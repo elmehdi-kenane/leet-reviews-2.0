@@ -65,11 +65,8 @@ const Navbar = () => {
   };
 
   const handleOpenFeedbackForm = () => {
-    console.log("click button handleOpenFeedbackForm");
-
     if (buttonCreateFeedbackRef.current) {
       const rect = buttonCreateFeedbackRef.current.getBoundingClientRect();
-      console.log("rect", rect);
 
       setButtonCreateFeedbackPosition({
         top: rect.top,

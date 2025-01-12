@@ -12,19 +12,38 @@ import PublicIcon from "@/public/PublicIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import Image from "next/image";
 import Tooltip from "@mui/material/Tooltip";
+import { FilePath } from "tailwindcss/types/config";
 
 export const FormInputField: React.FC<FormInputFieldProps> = ({
   type,
   placeholder,
   name,
   register,
+  watch,
   valueAsNumber,
   trustScore,
   isRequired,
   setTrustScore,
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
-  const [input, setInput] = useState("");
+  let result;
+  if (type === "file") result = watch(name) as unknown as FileList;
+  else result = watch(name);
+
+  if (type !== "file") console.log(`watch input name ${name} : '${result}'`);
+  else if (
+    result !== undefined &&
+    type === "file" &&
+    result instanceof FileList
+  ) {
+    const file = result[0];
+
+    console.log("Selected file:", file); // File name
+    // console.log("Selected file:", file.name); // File name
+    // console.log("File size:", file.size); // File size
+    // console.log("File type:", file.type); // File type
+  }
+  const [input, setInput] = useState(result === undefined ? "" : result);
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -32,6 +51,10 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     type: string,
   ) => {
     setInput(e.target?.value);
+    const result = watch(name);
+    console.log(
+      `updated ${e.target?.value} watch input name ${name} : '${result}'`,
+    );
     if (
       trustScore &&
       (e.target?.value !== "" || type === "file") &&
@@ -62,7 +85,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
         return newState;
       });
     }
-
     type === "file" && handleFileChange;
   };
 
@@ -90,12 +112,23 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
             id={inputId}
             placeholder={placeholder}
             {...register(name, {
-              required: isRequired === true ? placeholder : false,
+              required: isRequired ? placeholder : false,
               valueAsNumber,
             })}
             value={input}
             onChange={(e) => handleInputChange(e, type)}
-            className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] ${type === "file" && "border-dashed"} focus:outline-none focus:border-primary hover:outline-none hover:border-primary max-h-[200px] min-h-[55px]`}
+            className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] focus:outline-none focus:border-primary hover:outline-none hover:border-primary max-h-[200px] min-h-[55px]`}
+          />
+        ) : type === "file" ? (
+          <input
+            id={inputId}
+            type="file"
+            placeholder={placeholder}
+            {...register(name, {
+              required: isRequired ? placeholder : false,
+            })}
+            className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] border-dashed focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
+            onChange={(e) => handleInputChange(e, type)}
           />
         ) : (
           <input
@@ -104,13 +137,11 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
             type={type}
             placeholder={placeholder}
             {...register(name, {
-              required: isRequired === true ? placeholder : false,
+              required: isRequired ? placeholder : false,
               valueAsNumber,
             })}
-            className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] ${type === "file" && "border-dashed"} focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
-            onChange={(e) => {
-              handleInputChange(e, type);
-            }}
+            className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
+            onChange={(e) => handleInputChange(e, type)}
           />
         )}
         {type === "file" && (
@@ -152,6 +183,7 @@ export const FormSelectOptionField = <
   watch,
 }: FormSelectFieldProps<T>) => {
   const result = watch(name);
+  //   console.log(`watch select name ${name} : '${result}'`);
   const [selected, setSelected] = useState<
     string | number | { name: string; description: string }
   >(typeof result === "object" ? result.name : result);

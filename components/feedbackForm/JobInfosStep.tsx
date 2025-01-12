@@ -83,6 +83,7 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
     <>
       <FormInputField
         setTrustScore={setTrustScore}
+        watch={watch}
         trustScore={trustScore}
         type={jobStatusField.type}
         placeholder={jobStatusField.placeholder}
