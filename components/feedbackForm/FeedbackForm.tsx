@@ -108,7 +108,7 @@ const FeedbackForm = ({
       style={{
         transformOrigin: `${buttonCreateFeedbackPosition.left}px ${buttonCreateFeedbackPosition.top}px`,
       }}
-      className={`relative w-[90%] max-w-[700px] h-[700px] max-sm:h-[950px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-2xl`}
+      className={` relative w-[98%] max-w-[700px] h-[700px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}
     >
       {isPopUpFeedbackFormOpen && (
@@ -206,7 +206,7 @@ const FeedbackForm = ({
           </div>
         )}
         <div
-          className={`flex items-center justify-center flex-wrap gap-2 ${currentStep === 1 ? "w-full" : "max-sm:justify-between w-[80%] max-sm:mt-auto max-sm:mb-[20px]"}`}
+          className={`flex items-center justify-center flex-wrap gap-2 ${currentStep === 1 ? "w-full" : "max-sm:justify-between w-[80%] max-sm:mt-auto mb-[20px]"}`}
         >
           {currentStep !== 1 && (
             <>

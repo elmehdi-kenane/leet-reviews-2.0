@@ -338,9 +338,9 @@ const Navbar = () => {
         </button>
       </div>
       {isFeedbackFormOpen && (
-        <div className="absolute w-full h-screen bg-white/30 backdrop-blur-sm flex justify-center py-5">
+        <div className="absolute w-full h-screen flex bg-white/30 backdrop-blur-sm justify-center py-5">
           <div
-            className={`absolute ${isClosingFeedbackForm === true ? "close-feedback-form" : ""} open-feedback-form w-[90%] max-w-[700px] h-full my-auto rounded-[45px] flex flex-col items-center`}
+            className={`absolute ${isClosingFeedbackForm === true ? "close-feedback-form" : ""} open-feedback-form w-[100%] max-w-[700px] h-full my-auto flex flex-col items-center pt-5 pb-10 overflow-auto`}
             style={{
               transformOrigin: `${buttonCreateFeedbackPosition.left}px ${buttonCreateFeedbackPosition.top}px`,
             }}
