@@ -12,7 +12,6 @@ import PublicIcon from "@/public/PublicIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import Image from "next/image";
 import Tooltip from "@mui/material/Tooltip";
-import { FilePath } from "tailwindcss/types/config";
 
 export const FormInputField: React.FC<FormInputFieldProps> = ({
   type,
@@ -25,8 +24,8 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   isRequired,
   setTrustScore,
 }) => {
-  const [preview, setPreview] = useState<string | null>(null);
   let result;
+  let previewFileURL = null;
   if (type === "file") result = watch(name) as unknown as FileList;
   else result = watch(name);
 
@@ -37,19 +36,28 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     result instanceof FileList
   ) {
     const file = result[0];
-
+    if (file instanceof File) previewFileURL = URL.createObjectURL(file);
     console.log("Selected file:", file); // File name
     // console.log("Selected file:", file.name); // File name
     // console.log("File size:", file.size); // File size
     // console.log("File type:", file.type); // File type
   }
-  const [input, setInput] = useState(result === undefined ? "" : result);
+  const [preview, setPreview] = useState<string | null>(previewFileURL);
+  const [input, setInput] = useState<string | File>(
+    result === undefined
+      ? ""
+      : type === "file" && result instanceof FileList
+        ? result[0]
+        : (result as string),
+  );
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>,
     type: string,
   ) => {
+    console.log("setInput(e.target?.value)", e.target?.value);
+
     setInput(e.target?.value);
     const result = watch(name);
     console.log(
@@ -85,13 +93,14 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
         return newState;
       });
     }
-    type === "file" && handleFileChange;
+    type === "file" &&
+      handleFileChange(e as React.ChangeEvent<HTMLInputElement>);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Generate a preview URL for images
+      console.log("Generate a preview URL for images");
       const fileURL = URL.createObjectURL(file);
       setPreview(fileURL);
     } else {
@@ -115,14 +124,14 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
               required: isRequired ? placeholder : false,
               valueAsNumber,
             })}
-            value={input}
+            value={input as string}
             onChange={(e) => handleInputChange(e, type)}
             className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] focus:outline-none focus:border-primary hover:outline-none hover:border-primary max-h-[200px] min-h-[55px]`}
           />
         ) : type === "file" ? (
           <input
             id={inputId}
-            type="file"
+            type={type}
             placeholder={placeholder}
             {...register(name, {
               required: isRequired ? placeholder : false,
@@ -133,7 +142,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
         ) : (
           <input
             id={inputId}
-            value={input}
+            value={input as string}
             type={type}
             placeholder={placeholder}
             {...register(name, {
