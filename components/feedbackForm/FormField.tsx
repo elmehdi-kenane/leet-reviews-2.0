@@ -16,6 +16,7 @@ import Tooltip from "@mui/material/Tooltip";
 export const FormInputField: React.FC<FormInputFieldProps> = ({
   type,
   placeholder,
+  label,
   name,
   register,
   watch,
@@ -112,7 +113,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   return (
     <div className="flex flex-col w-[70%]">
       <label htmlFor={inputId} className="font-semibold">
-        {placeholder}
+        {label}
         {isRequired && <span className="text-red-600">*</span>}
       </label>
       <div className="flex w-full">
@@ -140,18 +141,32 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
             onChange={(e) => handleInputChange(e, type)}
           />
         ) : (
-          <input
-            id={inputId}
-            value={input as string}
-            type={type}
-            placeholder={placeholder}
-            {...register(name, {
-              required: isRequired ? placeholder : false,
-              valueAsNumber,
-            })}
-            className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
-            onChange={(e) => handleInputChange(e, type)}
-          />
+          <div className="w-full flex flex-col">
+            <input
+              id={inputId}
+              value={input as string}
+              type={type}
+              placeholder={placeholder}
+              {...register(name, {
+                required: isRequired ? placeholder : false,
+                ...(name === "companyLinkedIn" && {
+                  pattern: {
+                    value: /^https?:\/\/(www\.)?linkedin\.com\/.+$/,
+                    message:
+                      "Please enter a valid LinkedIn URL (e.g., https://www.linkedin.com/...).",
+                  },
+                }),
+              })}
+              className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
+              onChange={(e) => handleInputChange(e, type)}
+            />
+            {name === "companyLocation" && (
+              <div className="w-[100%] h-[70px] bg-[red] mx-auto flex flex-col">
+                <button className="w-full bg-[green]">casa</button>
+                <button className="w-full bg-[green]">rabat</button>
+              </div>
+            )}
+          </div>
         )}
         {type === "file" && (
           <div className="ml-2 h-[55px] w-[55px] min-h-[55px] min-w-[55px] rounded-2xl border-2 border-secondary flex justify-center items-center">
@@ -309,7 +324,7 @@ export const FormSelectOptionField = <
                   ></Image>
                 ) : (
                   <p
-                    className={`${currentStep === 1 ? "font-semibold text-start" : ""} font-medium ${currentStep !== 1 && selected === (typeof type === "object" ? type.name : type) && "text-neutral"}`}
+                    className={`${currentStep === 1 ? "font-semibold text-start" : ""} font-semibold ${currentStep !== 1 && selected === (typeof type === "object" ? type.name : type) && "text-neutral"}`}
                   >
                     {typeof type === "object" ? type.name : type}
                   </p>

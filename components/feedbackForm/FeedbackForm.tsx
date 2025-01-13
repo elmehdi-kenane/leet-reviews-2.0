@@ -12,8 +12,10 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import closeIcon from "@/public/closeIcon.svg";
 import PublicIcon from "@/public/PublicIcon.svg";
+import CheckMarkIcon from "@/public/checkMarkIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const FeedbackForm = ({
   setIsFeedbackFormOpen,
@@ -81,7 +83,7 @@ const FeedbackForm = ({
     if (isValid) {
       console.log("step is valid");
       if (currentStep === 4) console.log("send form");
-      else setCurrentStep((prevStep) => prevStep + 1);
+      setCurrentStep((prevStep) => prevStep + 1);
     } else {
       console.log("step isn't valid");
       if (errors) {
@@ -108,18 +110,19 @@ const FeedbackForm = ({
       style={{
         transformOrigin: `${buttonCreateFeedbackPosition.left}px ${buttonCreateFeedbackPosition.top}px`,
       }}
-      className={` relative w-[98%] max-w-[700px] h-[700px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
+      className={` relative w-[98%] max-w-[700px] h-[740px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}
     >
       {isPopUpFeedbackFormOpen && (
         <PopUpFormClose
+          currentStep={currentStep}
           setIsPopUpFeedbackFormOpen={setIsPopUpFeedbackFormOpen}
           setIsClosingFeedbackForm={setIsClosingFeedbackForm}
           setIsFeedbackFormOpen={setIsFeedbackFormOpen}
         ></PopUpFormClose>
       )}
       <div
-        className="min-w-[18px] w-[18px] min-h-[18px] h-[18px] border-2 border-secondary rounded-full flex justify-center items-center ml-auto mt-7 mr-7 opacity-50"
+        className={`${currentStep >= 5 ? "hidden" : ""} min-w-[18px] w-[18px] min-h-[18px] h-[18px] border-2 border-secondary rounded-full flex justify-center items-center ml-auto mt-7 mr-7 opacity-50`}
         onClick={() => setIsPopUpFeedbackFormOpen(true)}
       >
         <Image
@@ -133,7 +136,7 @@ const FeedbackForm = ({
       <div
         className={`flex flex-col w-full h-full items-center ${currentStep === 1 ? "gap-24 justify-center" : "gap-10"}`}
       >
-        {currentStep !== 1 && (
+        {currentStep !== 1 && currentStep < 5 && (
           <FeedbackFormHeader
             currentStep={currentStep}
             trustScore={trustScore}
@@ -199,6 +202,7 @@ const FeedbackForm = ({
               watch={watch}
               type="text"
               placeholder="Feedback comment"
+              label="Feedback comment"
               name="feedbackComment"
               isRequired={false}
               register={register}
@@ -206,63 +210,95 @@ const FeedbackForm = ({
             />
           </div>
         )}
-        <div
-          className={`flex items-center justify-center flex-wrap gap-2 ${currentStep === 1 ? "w-full" : "max-sm:justify-between w-[80%] max-sm:mt-auto mb-[20px]"}`}
-        >
-          {currentStep !== 1 && (
-            <>
-              <button
-                type="button"
-                className={`text-gray-400 border-2 border-gray-400 p-3 font-bold font-SpaceGrotesk rounded-md w-[130px] max-sm:min-w-full h-11 flex justify-center items-center`}
-              >
-                RESET
-              </button>
-              <button
-                type="button"
-                className={`p-3 font-bold font-SpaceGrotesk rounded-md w-[130px] bg-transparent text-primary border-2 border-primary max-sm:w-[48%] sm:ml-auto h-11 flex justify-center items-center`}
-                onClick={() =>
-                  setCurrentStep((prev) => {
-                    return prev !== firstStep ? prev - 1 : prev;
-                  })
-                }
-              >
-                BACK
-              </button>
-            </>
-          )}
-          {currentStep <= lastStep - 1 && (
-            <button
-              type="button"
-              className={`p-3 text-white font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%] mb-[20px]" : "max-sm:w-[48%]"} bg-primary border-2 border-primary rounded-md w-[130px] h-11 flex justify-center items-center`}
+        {currentStep >= 5 ? (
+          <div className="flex flex-col w-[50%] min-h-[390px] h-full items-center justify-center">
+            <h1 className="font-SpaceGrotesk font-semibold text-[30px] mt-[-50px] mb-[30px] max-md:text-[20px] text-center">
+              🎉 Thank you for sharing your feedback!
+            </h1>
+            <Link
+              href={"/home"}
+              className={`p-3 text-secondary font-bold font-SpaceGrotesk w-[80%] border-2 border-secondary rounded-md mb-[10px] h-11 flex justify-center items-center`}
               onClick={handleStepValidation}
             >
-              {currentStep === 1 ? "Create a Public Feedback" : "NEXT"}
-            </button>
-          )}
-          {currentStep === lastStep && (
-            <button
-              type="submit"
-              className={`bg-primary p-3 text-white font-bold w-[130px] h-11 flex justify-center items-center rounded-md max-sm:min-w-[49%]`}
+              Back to home
+            </Link>
+            <Link
+              href={"/feedback?id=feedbackId"}
+              className={`p-3 text-neutral font-bold font-SpaceGrotesk w-[80%] bg-secondary border-2 border-secondary rounded-md h-11 flex justify-center items-center`}
               onClick={handleStepValidation}
             >
-              PUBLISH
-            </button>
-          )}
-        </div>
+              View feedback
+            </Link>
+          </div>
+        ) : (
+          <div
+            className={`flex items-center justify-center flex-wrap gap-2 ${currentStep === 1 ? "w-full" : "max-sm:justify-between w-[80%] mt-auto mb-[20px]"}`}
+          >
+            {currentStep !== 1 && (
+              <>
+                <button
+                  type="button"
+                  className={`text-gray-400 border-2 border-gray-400 p-3 font-bold font-SpaceGrotesk rounded-md w-[130px] max-sm:min-w-full h-11 flex justify-center items-center`}
+                >
+                  RESET
+                </button>
+                <button
+                  type="button"
+                  className={`p-3 font-bold font-SpaceGrotesk rounded-md w-[130px] bg-transparent text-primary border-2 border-primary max-sm:w-[48%] sm:ml-auto h-11 flex justify-center items-center`}
+                  onClick={() =>
+                    setCurrentStep((prev) => {
+                      return prev !== firstStep ? prev - 1 : prev;
+                    })
+                  }
+                >
+                  BACK
+                </button>
+              </>
+            )}
+            {currentStep <= lastStep - 1 && (
+              <button
+                type="button"
+                className={`p-3 text-white font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%] mb-[20px]" : "max-sm:w-[48%]"} bg-primary border-2 border-primary rounded-md w-[130px] h-11 flex justify-center items-center`}
+                onClick={handleStepValidation}
+              >
+                {currentStep === 1 ? "Create a Public Feedback" : "NEXT"}
+              </button>
+            )}
+            {currentStep === lastStep && (
+              <button
+                type="submit"
+                className={`bg-primary p-3 text-white font-bold w-[130px] h-11 flex justify-center items-center rounded-md max-sm:min-w-[49%]`}
+                onClick={handleStepValidation}
+              >
+                PUBLISH
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </form>
   );
 };
 
 const PopUpFormClose = ({
+  currentStep,
   setIsFeedbackFormOpen,
   setIsPopUpFeedbackFormOpen,
   setIsClosingFeedbackForm,
 }: {
+  currentStep: number;
   setIsFeedbackFormOpen: (value: boolean) => void;
   setIsPopUpFeedbackFormOpen: (value: boolean) => void;
   setIsClosingFeedbackForm: (value: boolean) => void;
 }) => {
+  if (currentStep >= 5) {
+    setIsClosingFeedbackForm(true);
+    setIsPopUpFeedbackFormOpen(false);
+    setTimeout(() => {
+      setIsClosingFeedbackForm(false);
+      setIsFeedbackFormOpen(false);
+    }, 300);
+  }
   return (
     <div className="flex justify-center items-center absolute w-full h-full bg-white/30 backdrop-blur-sm rounded-[45px] mt-[2px]">
       <div className="flex justify-center items-center flex-col bg-secondary p-5 rounded-xl drop-shadow-xl PopUpFormClose">
@@ -312,10 +348,15 @@ const FeedbackFormHeader = ({
 }) => {
   const trustSoreRadius = 15;
   const fullCircle = 2 * Math.PI * trustSoreRadius;
+  console.log();
+
   const totalTrustScore = Object.values(trustScore).reduce(
     (total, score) => total + score,
     0,
   );
+  const full = fullCircle - (fullCircle * totalTrustScore) / 10;
+  if (totalTrustScore === 10) console.log("full", full);
+
   const svgSize = 35;
   return (
     <div className="w-full flex flex-col items-center select-none">
@@ -350,38 +391,56 @@ const FeedbackFormHeader = ({
         )}
         <div className="bg-secondary h-full w-max font-semibold flex items-center gap-2 p-3 rounded-xl text-neutral">
           <p>Trust score</p>
-          <svg
-            width={svgSize}
-            height={svgSize}
-            viewBox={`0 0 ${svgSize} ${svgSize}`}
-            className={`${totalTrustScore <= 4 ? "bg-red-400" : "bg-green-500"} rounded-full`}
-          >
-            <circle
-              cx={svgSize / 2}
-              cy={svgSize / 2 + 0.5}
-              r={trustSoreRadius + 0.7}
-              stroke="currentColor"
-              strokeWidth="3"
-              fill="none"
-              strokeDasharray={`${fullCircle}`}
-              style={{
-                transition: "stroke-dashoffset 1s ease-in-out",
-                strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
-              }}
-              transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
-              strokeLinecap="round"
-            />
-            <text
-              x="50%"
-              y="50%"
-              textAnchor="middle"
-              dy="0.3em"
-              fontSize="15"
-              fill="currentColor"
+          {totalTrustScore !== 10 && (
+            <svg
+              width={svgSize}
+              height={svgSize}
+              viewBox={`0 0 ${svgSize} ${svgSize}`}
+              className={`${totalTrustScore <= 4 ? "bg-red-400" : "bg-green-500"} rounded-full flex justify-center items-center`}
             >
-              {totalTrustScore}
-            </text>
-          </svg>
+              <circle
+                cx={svgSize / 2}
+                cy={svgSize / 2 + 0.5}
+                r={trustSoreRadius + 0.7}
+                stroke="currentColor"
+                strokeWidth="3"
+                fill="none"
+                strokeDasharray={`${fullCircle + 0.1}`}
+                style={{
+                  transition: "stroke-dashoffset 1s ease-in-out",
+                  strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
+                }}
+                transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
+                strokeLinecap="round"
+              />
+              <text
+                x="50%"
+                y="50%"
+                textAnchor="middle"
+                dy="0.3em"
+                fontSize="15"
+                fill="currentColor"
+              >
+                {totalTrustScore}
+              </text>
+            </svg>
+          )}
+          {totalTrustScore === 10 && (
+            <div
+              className="w-[35px] h-[35px] flex justify-center items-center border-[3px] border-neutral rounded-full"
+              style={{
+                animation: "scaleUp 0.3s ease-out",
+              }}
+            >
+              <Image
+                className="min-w-[25px] relative top-0 left-0 z-[200]"
+                src={CheckMarkIcon}
+                height={25}
+                width={25}
+                alt={CheckMarkIcon}
+              ></Image>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex items-center justify-between max-sm:justify-center gap-3 w-[80%]">

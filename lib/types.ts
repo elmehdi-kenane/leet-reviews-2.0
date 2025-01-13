@@ -41,6 +41,7 @@ export type FormData = {
 export type FormInputFieldProps = {
   type: string;
   placeholder: string;
+  label: string;
   watch: UseFormWatch<FormData>;
   name: ValidInputFieldName;
   register: UseFormRegister<FormData>;
@@ -179,5 +180,6 @@ export type FormInputFieldItem = {
   isRequired: boolean;
   name: ValidInputFieldName;
   placeholder: string;
+  label: string;
   error: FieldError | undefined;
 };

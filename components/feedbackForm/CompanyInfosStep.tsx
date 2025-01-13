@@ -36,6 +36,7 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
     {
       type: "text",
       placeholder: "Company name",
+      label: "Company name",
       name: "companyName",
       isRequired: true,
       error: errors.companyName,
@@ -43,13 +44,15 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
     {
       type: "file",
       placeholder: "Company logo",
+      label: "Company logo",
       name: "companyLogo",
       isRequired: false,
       error: errors.companyLogo,
     },
     {
       type: "text",
-      placeholder: "Company linkedIn",
+      label: "Company linkedIn",
+      placeholder: "https://www.linkedin.com/company/example",
       name: "companyLinkedIn",
       isRequired: false,
       error: errors.companyLinkedIn,
@@ -57,6 +60,7 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
     {
       type: "text",
       placeholder: "Company location",
+      label: "Company location",
       name: "companyLocation",
       isRequired: false,
       error: errors.companyLocation,
@@ -73,6 +77,7 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
             type={item.type}
             isRequired={item.isRequired}
             placeholder={item.placeholder}
+            label={item.label}
             name={item.name}
             register={register}
             error={item.error}

@@ -50,6 +50,7 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
     type: "text",
     name: "jobStatus",
     placeholder: "Job status",
+    label: "Job status",
     isRequired: true,
     error: errors.jobStatus,
   };
@@ -83,6 +84,7 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
     <>
       <FormInputField
         setTrustScore={setTrustScore}
+        label={jobStatusField.label}
         watch={watch}
         trustScore={trustScore}
         type={jobStatusField.type}
