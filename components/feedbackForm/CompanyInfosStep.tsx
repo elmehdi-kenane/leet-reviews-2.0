@@ -1,9 +1,15 @@
 import { FormInputFieldItem, FormData } from "@/lib/types";
 import { Dispatch, SetStateAction } from "react";
 import { FormInputField } from "./FormField";
-import { UseFormRegister, FieldErrors, UseFormWatch } from "react-hook-form";
+import {
+  UseFormRegister,
+  FieldErrors,
+  UseFormWatch,
+  UseFormSetValue,
+} from "react-hook-form";
 
 export type CompanyInfosStepProps = {
+  setValue: UseFormSetValue<FormData>;
   register: UseFormRegister<FormData>;
   errors: FieldErrors<FormData>;
   watch: UseFormWatch<FormData>;
@@ -28,6 +34,7 @@ export type CompanyInfosStepProps = {
 const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
   errors,
   register,
+  setValue,
   trustScore,
   setTrustScore,
   watch,
@@ -59,7 +66,7 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
     },
     {
       type: "text",
-      placeholder: "Company location",
+      placeholder: "Company location (at least 2 letters)",
       label: "Company location",
       name: "companyLocation",
       isRequired: false,
@@ -72,6 +79,7 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
         return (
           <FormInputField
             setTrustScore={setTrustScore}
+            setValue={setValue}
             trustScore={trustScore}
             key={index}
             type={item.type}

@@ -86,6 +86,7 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
         setTrustScore={setTrustScore}
         label={jobStatusField.label}
         watch={watch}
+        setValue={setValue}
         trustScore={trustScore}
         type={jobStatusField.type}
         placeholder={jobStatusField.placeholder}

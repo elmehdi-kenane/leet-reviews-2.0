@@ -19,6 +19,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   label,
   inputName,
   register,
+  setValue,
   watch,
   trustScore,
   isRequired,
@@ -26,21 +27,20 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
 }) => {
   let result;
   let previewFileURL = null;
-  console.log("test ==========================");
 
   if (type === "file") result = watch(inputName) as unknown as FileList;
   else result = watch(inputName);
 
-  if (type !== "file")
-    console.log(`watch input inputName ${inputName} : '${result}'`);
-  else if (
+  if (type !== "file") {
+    // console.log(`watch input inputName ${inputName} : '${result}'`);
+  } else if (
     result !== undefined &&
     type === "file" &&
     result instanceof FileList
   ) {
     const file = result[0];
     if (file instanceof File) previewFileURL = URL.createObjectURL(file);
-    console.log("Selected file:", file); // File inputName
+    // console.log("Selected file:", file); // File inputName
     // console.log("Selected file:", file.inputName); // File inputName
     // console.log("File size:", file.size); // File size
     // console.log("File type:", file.type); // File type
@@ -57,6 +57,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   });
   const [preview, setPreview] = useState<string | null>(previewFileURL);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [locationResults, setLocationResults] = useState([]);
   const [input, setInput] = useState<string | File>(
     result === undefined
@@ -73,7 +74,8 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   ) => {
     onChange(e);
     setInput(e.target?.value);
-    // const result = watch(inputName);
+    console.log("handleInputChange call");
+
     if (
       trustScore &&
       (e.target?.value !== "" || type === "file") &&
@@ -106,22 +108,23 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     }
     type === "file" &&
       handleFileChange(e as React.ChangeEvent<HTMLInputElement>);
+    setLocationResults([]);
     const fetchLocations = async () => {
       const OpenCageEndpoint = "https://api.opencagedata.com/geocode/v1/json";
       const ResponsePromise = await fetch(
-        `${OpenCageEndpoint}?q=${e.target?.value}=${process.env.NEXT_PUBLIC_OPENCAGE_API_KEY}`,
+        `${OpenCageEndpoint}?q=${e.target?.value}&key=${process.env.NEXT_PUBLIC_OPEN_CAGE_API_KEY}`,
       );
       const ResponseJson = await ResponsePromise.json();
       console.log("responseJson", ResponseJson.results);
       setLocationResults(ResponseJson.results);
     };
-    if (inputName === "companyLocation") fetchLocations();
+    if (inputName === "companyLocation" && e.target?.value.length > 1)
+      fetchLocations();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      console.log("Generate a preview URL for images");
       const fileURL = URL.createObjectURL(file);
       setPreview(fileURL);
     } else {
@@ -188,18 +191,32 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
             {isInputFocused === true && inputName === "companyLocation" && (
               // {inputName === "companyLocation" && (
               <div className="w-[100%] relative h-[75px] mt-1 mx-auto flex flex-col justify-between">
-                {typeof input === "string" && input !== "" ? (
-                  <div className="w-full h-full font-semibold rounded-2xl border-2 border-secondary flex flex-col gap-1 items-center p-1">
-                    {locationResults.map((item, index) => {
-                      return (
-                        <button
-                          key={index}
-                          className="w-full h-[48%] rounded-lg italic border border-secondary text-secondary"
-                        >
-                          {/* {item.formatted} */}
-                        </button>
-                      );
-                    })}
+                {typeof input === "string" && input.length > 1 ? (
+                  <div className="w-full h-full overflow-auto scroll-bar-width font-medium rounded-2xl border-2 border-secondary flex flex-col gap-1 items-center p-1">
+                    {locationResults.length === 0 ? (
+                      <p className="font-semibold italic h-full rounded-xl text-center flex justify-center items-center">
+                        Search term not found
+                      </p>
+                    ) : (
+                      locationResults.map(
+                        (item: { formatted: string }, index: number) => {
+                          return (
+                            <button
+                              key={index}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setSelectedLocation(item.formatted);
+                                setInput(item.formatted);
+                                setValue(name, item.formatted);
+                              }}
+                              className={`w-full h-[48%] rounded-lg italic border border-secondary hover:bg-secondary hover:text-neutral ${selectedLocation === item.formatted ? "bg-secondary text-neutral" : "text-secondary"}`}
+                            >
+                              {item.formatted}
+                            </button>
+                          );
+                        },
+                      )
+                    )}
                   </div>
                 ) : (
                   <p className="font-semibold italic h-full rounded-xl text-center border-2 border-secondary flex justify-center items-center">

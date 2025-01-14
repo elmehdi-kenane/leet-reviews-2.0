@@ -41,7 +41,10 @@ const FeedbackForm = ({
   //     setSelected(value);
   //   };
   const onSubmit = async (data: FormData) => {
-    const formData = { trustScore: 2, ...data };
+    // console.log("test 1=====================");
+    // await handleStepValidation();
+    console.log("test 2=====================");
+    const formData = { trustScore: totalTrustScore, ...data };
     console.log("SUCCESS", formData);
   };
 
@@ -65,7 +68,11 @@ const FeedbackForm = ({
     companyLocation: 0,
     feedbackComment: 0,
   });
-  //   feedtype 2 logo 2 linkedin 2 location 2 feed 2
+
+  const totalTrustScore = Object.values(trustScore).reduce(
+    (total, score) => total + score,
+    0,
+  );
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -79,6 +86,8 @@ const FeedbackForm = ({
     };
   }, []);
   const handleStepValidation = async () => {
+    console.log("testingggg");
+
     const isValid = await trigger();
     if (isValid) {
       console.log("step is valid");
@@ -139,7 +148,7 @@ const FeedbackForm = ({
         {currentStep !== 1 && currentStep < 5 && (
           <FeedbackFormHeader
             currentStep={currentStep}
-            trustScore={trustScore}
+            totalTrustScore={totalTrustScore}
             watch={watch}
           ></FeedbackFormHeader>
         )}
@@ -163,6 +172,7 @@ const FeedbackForm = ({
             <CompanyInfosStep
               setTrustScore={setTrustScore}
               trustScore={trustScore}
+              setValue={setValue}
               register={register}
               errors={errors}
               watch={watch}
@@ -199,6 +209,7 @@ const FeedbackForm = ({
             <FormInputField
               setTrustScore={setTrustScore}
               trustScore={trustScore}
+              setValue={setValue}
               watch={watch}
               type="text"
               placeholder="Feedback comment"
@@ -268,7 +279,7 @@ const FeedbackForm = ({
               <button
                 type="submit"
                 className={`bg-primary p-3 text-white font-bold w-[130px] h-11 flex justify-center items-center rounded-md max-sm:min-w-[49%]`}
-                onClick={handleStepValidation}
+                // onClick={handleStepValidation}
               >
                 PUBLISH
               </button>
@@ -333,27 +344,17 @@ const PopUpFormClose = ({
 
 const FeedbackFormHeader = ({
   watch,
-  trustScore,
+  totalTrustScore,
   currentStep,
 }: {
   watch: UseFormWatch<FormData>;
   currentStep: number;
-  trustScore: {
-    feedbackType: number;
-    companyLogo: number;
-    companyLinkedIn: number;
-    companyLocation: number;
-    feedbackComment: number;
-  };
+  totalTrustScore: number;
 }) => {
   const trustSoreRadius = 15;
   const fullCircle = 2 * Math.PI * trustSoreRadius;
   console.log();
 
-  const totalTrustScore = Object.values(trustScore).reduce(
-    (total, score) => total + score,
-    0,
-  );
   const full = fullCircle - (fullCircle * totalTrustScore) / 10;
   if (totalTrustScore === 10) console.log("full", full);
 

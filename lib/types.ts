@@ -43,6 +43,7 @@ export type FormInputFieldProps = {
   placeholder: string;
   label: string;
   watch: UseFormWatch<FormData>;
+  setValue: UseFormSetValue<FormData>;
   inputName: ValidInputFieldName;
   register: UseFormRegister<FormData>;
   error: FieldError | undefined;
