@@ -110,7 +110,7 @@ const FeedbackForm = ({
       style={{
         transformOrigin: `${buttonCreateFeedbackPosition.left}px ${buttonCreateFeedbackPosition.top}px`,
       }}
-      className={` relative w-[98%] max-w-[700px] h-[740px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
+      className={` relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}
     >
       {isPopUpFeedbackFormOpen && (
@@ -203,7 +203,7 @@ const FeedbackForm = ({
               type="text"
               placeholder="Feedback comment"
               label="Feedback comment"
-              name="feedbackComment"
+              inputName="feedbackComment"
               isRequired={false}
               register={register}
               error={errors.feedbackComment}

@@ -17,20 +17,22 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   type,
   placeholder,
   label,
-  name,
+  inputName,
   register,
   watch,
-  valueAsNumber,
   trustScore,
   isRequired,
   setTrustScore,
 }) => {
   let result;
   let previewFileURL = null;
-  if (type === "file") result = watch(name) as unknown as FileList;
-  else result = watch(name);
+  console.log("test ==========================");
 
-  if (type !== "file") console.log(`watch input name ${name} : '${result}'`);
+  if (type === "file") result = watch(inputName) as unknown as FileList;
+  else result = watch(inputName);
+
+  if (type !== "file")
+    console.log(`watch input inputName ${inputName} : '${result}'`);
   else if (
     result !== undefined &&
     type === "file" &&
@@ -38,12 +40,24 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   ) {
     const file = result[0];
     if (file instanceof File) previewFileURL = URL.createObjectURL(file);
-    console.log("Selected file:", file); // File name
-    // console.log("Selected file:", file.name); // File name
+    console.log("Selected file:", file); // File inputName
+    // console.log("Selected file:", file.inputName); // File inputName
     // console.log("File size:", file.size); // File size
     // console.log("File type:", file.type); // File type
   }
+  const { onBlur, name, onChange, ref } = register(inputName, {
+    required: isRequired ? placeholder : false,
+    ...(inputName === "companyLinkedIn" && {
+      pattern: {
+        value: /^https?:\/\/(www\.)?linkedin\.com\/.+$/,
+        message:
+          "Please enter a valid LinkedIn URL (e.g., https://www.linkedin.com/...).",
+      },
+    }),
+  });
   const [preview, setPreview] = useState<string | null>(previewFileURL);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [locationResults, setLocationResults] = useState([]);
   const [input, setInput] = useState<string | File>(
     result === undefined
       ? ""
@@ -57,23 +71,19 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
       | React.ChangeEvent<HTMLTextAreaElement>,
     type: string,
   ) => {
-    console.log("setInput(e.target?.value)", e.target?.value);
-
+    onChange(e);
     setInput(e.target?.value);
-    const result = watch(name);
-    console.log(
-      `updated ${e.target?.value} watch input name ${name} : '${result}'`,
-    );
+    // const result = watch(inputName);
     if (
       trustScore &&
       (e.target?.value !== "" || type === "file") &&
       !isRequired &&
-      name in trustScore
+      inputName in trustScore
     ) {
       setTrustScore((prevState) => {
         const newState = {
           ...prevState,
-          [name]: 2,
+          [inputName]: 2,
         };
 
         return newState;
@@ -83,12 +93,12 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
       trustScore &&
       e.target?.value === "" &&
       !isRequired &&
-      name in trustScore
+      inputName in trustScore
     ) {
       setTrustScore((prevState) => {
         const newState = {
           ...prevState,
-          [name]: 0,
+          [inputName]: 0,
         };
 
         return newState;
@@ -96,6 +106,16 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     }
     type === "file" &&
       handleFileChange(e as React.ChangeEvent<HTMLInputElement>);
+    const fetchLocations = async () => {
+      const OpenCageEndpoint = "https://api.opencagedata.com/geocode/v1/json";
+      const ResponsePromise = await fetch(
+        `${OpenCageEndpoint}?q=${e.target?.value}=${process.env.NEXT_PUBLIC_OPENCAGE_API_KEY}`,
+      );
+      const ResponseJson = await ResponsePromise.json();
+      console.log("responseJson", ResponseJson.results);
+      setLocationResults(ResponseJson.results);
+    };
+    if (inputName === "companyLocation") fetchLocations();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,7 +129,8 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     }
   };
 
-  const inputId = `${name}-input`;
+  const inputId = `${inputName}-input`;
+
   return (
     <div className="flex flex-col w-[70%]">
       <label htmlFor={inputId} className="font-semibold">
@@ -117,14 +138,16 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
         {isRequired && <span className="text-red-600">*</span>}
       </label>
       <div className="flex w-full">
-        {name === "feedbackComment" ? (
+        {inputName === "feedbackComment" ? (
           <textarea
             id={inputId}
+            name={name}
+            ref={ref}
+            onBlur={() => {
+              setIsInputFocused(false);
+              onBlur;
+            }}
             placeholder={placeholder}
-            {...register(name, {
-              required: isRequired ? placeholder : false,
-              valueAsNumber,
-            })}
             value={input as string}
             onChange={(e) => handleInputChange(e, type)}
             className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] focus:outline-none focus:border-primary hover:outline-none hover:border-primary max-h-[200px] min-h-[55px]`}
@@ -132,11 +155,14 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
         ) : type === "file" ? (
           <input
             id={inputId}
+            name={name}
+            ref={ref}
+            onBlur={() => {
+              setIsInputFocused(false);
+              onBlur;
+            }}
             type={type}
             placeholder={placeholder}
-            {...register(name, {
-              required: isRequired ? placeholder : false,
-            })}
             className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] border-dashed focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
             onChange={(e) => handleInputChange(e, type)}
           />
@@ -145,25 +171,42 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
             <input
               id={inputId}
               value={input as string}
+              name={name}
+              ref={ref}
               type={type}
+              onFocus={() => setIsInputFocused(true)}
               placeholder={placeholder}
-              {...register(name, {
-                required: isRequired ? placeholder : false,
-                ...(name === "companyLinkedIn" && {
-                  pattern: {
-                    value: /^https?:\/\/(www\.)?linkedin\.com\/.+$/,
-                    message:
-                      "Please enter a valid LinkedIn URL (e.g., https://www.linkedin.com/...).",
-                  },
-                }),
-              })}
+              onBlur={() => {
+                setIsInputFocused(false);
+                onBlur;
+              }}
               className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
-              onChange={(e) => handleInputChange(e, type)}
+              onChange={(e) => {
+                handleInputChange(e, type);
+              }}
             />
-            {name === "companyLocation" && (
-              <div className="w-[100%] h-[70px] bg-[red] mx-auto flex flex-col">
-                <button className="w-full bg-[green]">casa</button>
-                <button className="w-full bg-[green]">rabat</button>
+            {isInputFocused === true && inputName === "companyLocation" && (
+              // {inputName === "companyLocation" && (
+              <div className="w-[100%] relative h-[75px] mt-1 mx-auto flex flex-col justify-between">
+                {typeof input === "string" && input !== "" ? (
+                  <div className="w-full h-full font-semibold rounded-2xl border-2 border-secondary flex flex-col gap-1 items-center p-1">
+                    {locationResults.map((item, index) => {
+                      return (
+                        <button
+                          key={index}
+                          className="w-full h-[48%] rounded-lg italic border border-secondary text-secondary"
+                        >
+                          {/* {item.formatted} */}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="font-semibold italic h-full rounded-xl text-center border-2 border-secondary flex justify-center items-center">
+                    Search for locations{" "}
+                    <span className="font-medium">(e.g., Casablanca)</span>.
+                  </p>
+                )}
               </div>
             )}
           </div>
