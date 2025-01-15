@@ -43,7 +43,7 @@ export const FeedbackCard = () => {
     >
       <div className="flex justify-between gap-[10px] max-md:flex-col">
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
-          <div className="flex justify-start items-end rounded-full">
+          <div className="flex justify-start items-end rounded-full select-none">
             <Image
               src={feedbackDetails.CompanyLogo}
               alt={feedbackDetails.CompanyLogo}
@@ -91,6 +91,7 @@ export const FeedbackCard = () => {
                 <a
                   href={feedbackDetails.LinkedInOfCompany}
                   target="_blank"
+                  className=" select-none"
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
@@ -114,6 +115,7 @@ export const FeedbackCard = () => {
                 <div className="bg-[#00224D] rounded-full min-w-[35px] min-h-[35px] flex justify-center items-center">
                   <Image
                     src={employmentDetail.icon}
+                    className="select-none"
                     alt={employmentDetail.icon}
                     width={`${
                       employmentDetail.icon === ContractTypeIcon ? 17 : 20
@@ -128,7 +130,7 @@ export const FeedbackCard = () => {
             );
           })}
           {feedbackDetails.feedbackAuthorIntraLogin !== "" && (
-            <div className="w-full h-max flex justify-end z-[1]">
+            <div className="w-full h-max flex justify-end z-[1] select-none">
               <a
                 href={`https://profile.intra.42.fr/users/${feedbackDetails.feedbackAuthorIntraLogin}`}
                 target="_blank"
@@ -156,7 +158,7 @@ export const FeedbackCard = () => {
               alt={feedbackDetails.feedbackAuthorAvatar || ""}
               width={40}
               height={40}
-              className="rounded-full max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D] mb-1"
+              className="rounded-full select-none max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D] mb-1"
             />
             <p className="mb-[15px] font-semibold">
               {feedbackDetails.feedbackAuthorUsername}
@@ -209,7 +211,7 @@ export const FeedbackCard = () => {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           href={`/Engagement?commentAreaSelected=${true}`}
-          className="text-[#41B06E] flex item hover:bg-[#41B06E] hover:text-white s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
+          className="text-[#41B06E] select-none flex item hover:bg-[#41B06E] hover:text-white s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
         >
           <Image
             src={`${isHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}

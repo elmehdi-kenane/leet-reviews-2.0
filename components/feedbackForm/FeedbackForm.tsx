@@ -16,6 +16,7 @@ import CheckMarkIcon from "@/public/checkMarkIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import JSConfetti from "js-confetti";
 
 const FeedbackForm = ({
   setIsFeedbackFormOpen,
@@ -41,11 +42,31 @@ const FeedbackForm = ({
   //     setSelected(value);
   //   };
   const onSubmit = async (data: FormData) => {
-    // console.log("test 1=====================");
-    // await handleStepValidation();
-    console.log("test 2=====================");
+    await handleStepValidation();
     const formData = { trustScore: totalTrustScore, ...data };
     console.log("SUCCESS", formData);
+    const addNewFeedback = async () => {
+      try {
+        const response = await fetch("/api/add-new-feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ feedback: formData }),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch accounts");
+        }
+        const data = await response.json();
+        console.log("data response", data);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.log(err.message);
+        } else {
+          console.log("An unknown error occurred");
+        }
+      } finally {
+      }
+    };
+    addNewFeedback();
   };
 
   const experienceRate: FormSelectFieldItem = {
@@ -86,13 +107,15 @@ const FeedbackForm = ({
     };
   }, []);
   const handleStepValidation = async () => {
-    console.log("testingggg");
-
     const isValid = await trigger();
     if (isValid) {
       console.log("step is valid");
       if (currentStep === 4) console.log("send form");
-      setCurrentStep((prevStep) => prevStep + 1);
+      setCurrentStep((prevStep) => {
+        console.log("feedback prevStep", prevStep);
+
+        return prevStep + 1;
+      });
     } else {
       console.log("step isn't valid");
       if (errors) {
@@ -111,20 +134,39 @@ const FeedbackForm = ({
       }
     }
   };
+  const jsConfetti = new JSConfetti();
+  console.log("currentStep", currentStep);
+
+  useEffect(() => {
+    if (currentStep === 5) {
+      console.log("run a jsConfetti.addConfetti");
+
+      jsConfetti.addConfetti({
+        confettiColors: ["#41B06E", "#141E46"],
+        confettiNumber: 100,
+      });
+    }
+  }, [currentStep]);
+
   const firstStep = 1;
   const lastStep = 4;
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleStepValidation();
+        handleSubmit(onSubmit)();
+      }}
       style={{
         transformOrigin: `${buttonCreateFeedbackPosition.left}px ${buttonCreateFeedbackPosition.top}px`,
       }}
-      className={` relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
+      className={`relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}
     >
       {isPopUpFeedbackFormOpen && (
         <PopUpFormClose
           currentStep={currentStep}
+          setCurrentStep={setCurrentStep}
           setIsPopUpFeedbackFormOpen={setIsPopUpFeedbackFormOpen}
           setIsClosingFeedbackForm={setIsClosingFeedbackForm}
           setIsFeedbackFormOpen={setIsFeedbackFormOpen}
@@ -224,7 +266,7 @@ const FeedbackForm = ({
         {currentStep >= 5 ? (
           <div className="flex flex-col w-[50%] min-h-[390px] h-full items-center justify-center">
             <h1 className="font-SpaceGrotesk font-semibold text-[30px] mt-[-50px] mb-[30px] max-md:text-[20px] text-center">
-              🎉 Thank you for sharing your feedback!
+              Thank you for sharing your feedback!
             </h1>
             <Link
               href={"/home"}
@@ -269,7 +311,7 @@ const FeedbackForm = ({
             {currentStep <= lastStep - 1 && (
               <button
                 type="button"
-                className={`p-3 text-white font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%] mb-[20px]" : "max-sm:w-[48%]"} bg-primary border-2 border-primary rounded-md w-[130px] h-11 flex justify-center items-center`}
+                className={`p-3 text-neutral font-bold font-SpaceGrotesk ${currentStep === 1 ? "w-[80%] mb-[20px]" : "max-sm:w-[48%]"} bg-primary border-2 border-primary rounded-md w-[130px] h-11 flex justify-center items-center`}
                 onClick={handleStepValidation}
               >
                 {currentStep === 1 ? "Create a Public Feedback" : "NEXT"}
@@ -278,7 +320,7 @@ const FeedbackForm = ({
             {currentStep === lastStep && (
               <button
                 type="submit"
-                className={`bg-primary p-3 text-white font-bold w-[130px] h-11 flex justify-center items-center rounded-md max-sm:min-w-[49%]`}
+                className={`bg-primary p-3 text-neutral font-bold w-[130px] h-11 flex justify-center items-center rounded-md max-sm:min-w-[49%]`}
                 // onClick={handleStepValidation}
               >
                 PUBLISH
@@ -294,24 +336,30 @@ const FeedbackForm = ({
 const PopUpFormClose = ({
   currentStep,
   setIsFeedbackFormOpen,
+  setCurrentStep,
   setIsPopUpFeedbackFormOpen,
   setIsClosingFeedbackForm,
 }: {
   currentStep: number;
   setIsFeedbackFormOpen: (value: boolean) => void;
+  setCurrentStep: (value: number) => void;
   setIsPopUpFeedbackFormOpen: (value: boolean) => void;
   setIsClosingFeedbackForm: (value: boolean) => void;
 }) => {
-  if (currentStep >= 5) {
-    setIsClosingFeedbackForm(true);
-    setIsPopUpFeedbackFormOpen(false);
-    setTimeout(() => {
-      setIsClosingFeedbackForm(false);
-      setIsFeedbackFormOpen(false);
-    }, 300);
-  }
+  console.log("PopUpFormClose currentStep", currentStep);
+  useEffect(() => {
+    if (currentStep >= 5) {
+      setCurrentStep(currentStep + 1);
+      setIsClosingFeedbackForm(true);
+      setIsPopUpFeedbackFormOpen(false);
+      setTimeout(() => {
+        setIsClosingFeedbackForm(false);
+        setIsFeedbackFormOpen(false);
+      }, 300);
+    }
+  }, [currentStep]);
   return (
-    <div className="flex justify-center items-center absolute w-full h-full bg-white/30 backdrop-blur-sm rounded-[45px] mt-[2px]">
+    <div className="flex justify-center items-center absolute z-30 w-full h-full bg-white/30 backdrop-blur-sm rounded-[45px] mt-[2px]">
       <div className="flex justify-center items-center flex-col bg-secondary p-5 rounded-xl drop-shadow-xl PopUpFormClose">
         <p className="font-semibold mb-4 text-white">
           Are you sure you want to close this form?

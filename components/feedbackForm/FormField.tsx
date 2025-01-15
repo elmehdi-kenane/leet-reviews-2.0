@@ -170,7 +170,9 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
             onChange={(e) => handleInputChange(e, type)}
           />
         ) : (
-          <div className="w-full flex flex-col">
+          <div
+            className={`w-full flex flex-col ${inputName === "companyLocation" ? "relative z-20" : ""}`}
+          >
             <input
               id={inputId}
               value={input as string}
@@ -180,7 +182,9 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
               onFocus={() => setIsInputFocused(true)}
               placeholder={placeholder}
               onBlur={() => {
-                setIsInputFocused(false);
+                setTimeout(() => {
+                  setIsInputFocused(false);
+                }, 150);
                 onBlur;
               }}
               className={`p-3 bg-transparent border-2 border-secondary w-full rounded-2xl h-[55px] focus:outline-none focus:border-primary hover:outline-none hover:border-primary`}
@@ -190,7 +194,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
             />
             {isInputFocused === true && inputName === "companyLocation" && (
               // {inputName === "companyLocation" && (
-              <div className="w-[100%] relative h-[75px] mt-1 mx-auto flex flex-col justify-between">
+              <div className="w-[100%] absolute h-[100px] mt-[57px] mx-auto flex rounded-2xl flex-col justify-between bg-neutral">
                 {typeof input === "string" && input.length > 1 ? (
                   <div className="w-full h-full overflow-auto scroll-bar-width font-medium rounded-2xl border-2 border-secondary flex flex-col gap-1 items-center p-1">
                     {locationResults.length === 0 ? (
@@ -203,13 +207,14 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
                           return (
                             <button
                               key={index}
+                              className={`w-full min-h-[50%] rounded-lg italic border border-secondary hover:bg-secondary hover:text-neutral ${selectedLocation === item.formatted ? "bg-secondary text-neutral" : "text-secondary"}`}
                               onClick={(e) => {
-                                e.preventDefault();
+                                console.log("onclick");
                                 setSelectedLocation(item.formatted);
                                 setInput(item.formatted);
                                 setValue(name, item.formatted);
+                                e.preventDefault();
                               }}
-                              className={`w-full h-[48%] rounded-lg italic border border-secondary hover:bg-secondary hover:text-neutral ${selectedLocation === item.formatted ? "bg-secondary text-neutral" : "text-secondary"}`}
                             >
                               {item.formatted}
                             </button>

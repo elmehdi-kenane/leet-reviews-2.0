@@ -49,6 +49,14 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
       error: errors.companyName,
     },
     {
+      type: "text",
+      placeholder: "Company location (at least 2 letters)",
+      label: "Company location",
+      name: "companyLocation",
+      isRequired: false,
+      error: errors.companyLocation,
+    },
+    {
       type: "file",
       placeholder: "Company logo",
       label: "Company logo",
@@ -63,14 +71,6 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
       name: "companyLinkedIn",
       isRequired: false,
       error: errors.companyLinkedIn,
-    },
-    {
-      type: "text",
-      placeholder: "Company location (at least 2 letters)",
-      label: "Company location",
-      name: "companyLocation",
-      isRequired: false,
-      error: errors.companyLocation,
     },
   ];
   return (

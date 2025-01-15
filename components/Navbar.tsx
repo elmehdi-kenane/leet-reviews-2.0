@@ -147,7 +147,7 @@ const Navbar = () => {
       <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max my-3">
         <Link href={"/home"} className="mr-11 max-md:mr-auto">
           <Image
-            className="min-w-[9px] w-[50px] h-[50px]"
+            className="min-w-[9px] w-[50px] h-[50px] select-none"
             src={logoIcon}
             height={50}
             width={50}
@@ -183,6 +183,7 @@ const Navbar = () => {
               }`}
               width={30}
               height={30}
+              className=" select-none"
             ></Image>
           </button>
           <input
@@ -205,7 +206,7 @@ const Navbar = () => {
               alt="circleCross.svg"
               width={35}
               height={35}
-              className="rounded-full mr-1"
+              className="rounded-full mr-1 select-none"
             ></Image>
           </button>
         </div>
@@ -226,16 +227,17 @@ const Navbar = () => {
             }`}
             width={30}
             height={30}
+            className=" select-none"
           ></Image>
         </button>
         <button
-          className="font-SpaceGrotesk max-md:text-sm h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold text-neutral"
+          className="font-SpaceGrotesk select-none max-md:text-sm h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold text-neutral"
           ref={buttonCreateFeedbackRef}
           onClick={handleOpenFeedbackForm}
         >
           Create feedback
         </button>
-        <div className="flex justify-end" ref={DropDownRef}>
+        <div className="flex justify-end  select-none" ref={DropDownRef}>
           <button
             className={`border-[3px] ${isDropDownOpen === true ? "border-primary" : "border-secondary"} w-[53px] h-[53px] rounded-full flex justify-center items-center`}
             onClick={() => {
@@ -284,8 +286,8 @@ const Navbar = () => {
                   <Image
                     src={"/discord.svg"}
                     alt={"/discord.svg"}
-                    width={30}
-                    height={30}
+                    width={20}
+                    height={20}
                     className=""
                   ></Image>
                 </button>
@@ -298,8 +300,8 @@ const Navbar = () => {
                   <Image
                     src={"/brand-github.svg"}
                     alt={"/brand-github.svg"}
-                    width={30}
-                    height={30}
+                    width={20}
+                    height={20}
                     className=""
                   ></Image>
                 </a>

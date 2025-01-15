@@ -68,3 +68,19 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Feedback {
+    id               String    @id @default(uuid())
+    feedbackType     String
+    trustScore       Int
+    companyName      String
+    companyLogo      String
+    companyLinkedIn  String
+    companyLocation  String
+    jobStatus        String
+    workingType      String
+    contractType     String
+    jobProgressType  String
+    experienceRate   Int
+    feedbackComment  String
+}

@@ -41,7 +41,7 @@ const SideBar = () => {
   ];
   const [selected, setSelected] = useState(Buttons[0].text);
   return (
-    <div className="max-lg:hidden flex flex-col items-center gap-3 fixed z-[100] w-[60px] py-2 mt-[100px] bg-neutral rounded-xl rounded-l-none border border-quaternary border-l-0">
+    <div className="max-lg:hidden select-none flex flex-col items-center gap-3 fixed z-[100] w-[60px] py-2 mt-[100px] bg-neutral rounded-xl rounded-l-none border border-quaternary border-l-0">
       {Buttons.map((item, index) => {
         return (
           <Link
