@@ -166,6 +166,22 @@ html::-webkit-scrollbar-thumb {
   }
 }
 
+.extend-height {
+  animation: extendHeight 0.2s ease-in-out forwards;
+}
+
+@keyframes extendHeight {
+  0% {
+    height: 353px; /* Initial height */
+    scale: 0.9;
+  }
+
+  100% {
+    height: 900px; /* Final height */
+    scale: 1;
+  }
+}
+
 .close-feedback-form {
   animation: closing 0.3s ease-in forwards;
 }
