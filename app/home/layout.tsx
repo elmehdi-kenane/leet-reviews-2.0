@@ -41,7 +41,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral text-secondary w-full h-screen flex flex-col`}
       >
         <UserProvider>
-          <Navbar />
+          {/* <Navbar /> */}
           <div className="flex">
             <SideBar />
             <BottomBar />

@@ -35,6 +35,7 @@ export const FeedbackCard = () => {
       { icon: ProgressCheckIcon, text: "Progress" },
     ],
   };
+  console.log("isExpandFeedback outside", isExpandFeedback);
   return (
     <>
       {isExpandFeedback === true && (
@@ -67,11 +68,25 @@ const PreviewFeedbackCard = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const circleRadius = 15;
+  console.log("isExpandFeedback", isExpandFeedback);
+
   return (
     <div
       onClick={() => setIsExpandFeedback(true)}
       className={`flex ${isExpandFeedback === true ? "extend-height absolute z-[101]" : ""} flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] bg-white mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedback !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""}`}
     >
+      <div className="w-full flex absolute top-0 right-0 mr-[-55px] justify-end">
+        <button
+          className="p-3 bg-neutral text-secondary border border-secondary rounded-xl"
+          onClick={(e) => {
+            setIsExpandFeedback(false);
+            e.stopPropagation();
+            console.log("unexpand clicked");
+          }}
+        >
+          bac
+        </button>
+      </div>
       <div className="flex justify-between gap-[10px] max-md:flex-col">
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
           <div className="flex justify-start items-end rounded-full select-none">
@@ -160,7 +175,7 @@ const PreviewFeedbackCard = ({
                   {employmentDetail.text}
                 </div>
               );
-            },
+            }
           )}
           {feedbackDetails.feedbackAuthorIntraLogin !== "" && (
             <div className="w-full h-max flex justify-end z-[1] select-none">
