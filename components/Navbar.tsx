@@ -139,7 +139,7 @@ const Navbar = () => {
   };
 
   const avatar = userInfo?.avatar || "/default.jpeg";
-
+  const inputMaxLength = 30;
   return (
     <div
       className={`${isHidden === true ? "hidden" : ""} bg-neutral fixed flex flex-wrap justify-center w-full z-[150]`}
@@ -187,6 +187,7 @@ const Navbar = () => {
             ></Image>
           </button>
           <input
+            maxLength={inputMaxLength}
             onFocus={() => setIsSearchInputOnFocus(true)}
             onBlur={() => setIsSearchInputOnFocus(false)}
             ref={inputDesktopRef}
@@ -315,6 +316,7 @@ const Navbar = () => {
         className={`md:hidden ${isSearchBarOpen === false && "hidden"} mt-2 flex rounded-xl bg-transparent mx-2 pl-2 flex-1 w-full h-[50px] border-2 border-primary hover:border-2 hover:border-primary`}
       >
         <input
+          maxLength={inputMaxLength}
           placeholder="Search"
           onChange={handleSearchChange}
           value={searchInputValue}

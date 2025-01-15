@@ -271,7 +271,14 @@ const FeedbackForm = ({
             <Link
               href={"/home"}
               className={`p-3 text-secondary font-bold font-SpaceGrotesk w-[80%] border-2 border-secondary rounded-md mb-[10px] h-11 flex justify-center items-center`}
-              onClick={handleStepValidation}
+              onClick={() => {
+                setIsClosingFeedbackForm(true);
+                setIsPopUpFeedbackFormOpen(false);
+                setTimeout(() => {
+                  setIsClosingFeedbackForm(false);
+                  setIsFeedbackFormOpen(false);
+                }, 300);
+              }}
             >
               Back to home
             </Link>
