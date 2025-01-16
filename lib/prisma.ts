@@ -15,3 +15,20 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export default prisma;
+
+export interface FeedbackCreateInput {
+  [type: string]: number | string;
+  feedbackType: string;
+  trustScore: number;
+  companyName: string;
+  companyLogo: string;
+  companyLinkedIn: string;
+  companyLocation: string;
+  jobStatus: string;
+  workingType: string;
+  contractType: string;
+  jobProgressType: string;
+  experienceRate: number;
+  feedbackComment: string;
+  userId: string;
+}

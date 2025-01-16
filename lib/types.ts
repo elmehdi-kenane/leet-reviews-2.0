@@ -22,7 +22,7 @@ import { Dispatch, SetStateAction } from "react";
 // experience rate
 // feedback comment
 
-export type FormData = {
+export type FormDataRhf = {
   feedbackType: validFeedbackType;
   companyName: string;
   companyLogo: File;
@@ -42,10 +42,10 @@ export type FormInputFieldProps = {
   type: string;
   placeholder: string;
   label: string;
-  watch: UseFormWatch<FormData>;
-  setValue: UseFormSetValue<FormData>;
+  watch: UseFormWatch<FormDataRhf>;
+  setValue: UseFormSetValue<FormDataRhf>;
   inputName: ValidInputFieldName;
-  register: UseFormRegister<FormData>;
+  register: UseFormRegister<FormDataRhf>;
   error: FieldError | undefined;
   trustScore: {
     feedbackType: number;
@@ -129,7 +129,7 @@ export type FormSelectFieldProps<
     companyLocation: number;
     feedbackComment: number;
   };
-  setValue: UseFormSetValue<FormData>;
+  setValue: UseFormSetValue<FormDataRhf>;
   setTrustScore: Dispatch<
     SetStateAction<{
       feedbackType: number;
@@ -140,10 +140,10 @@ export type FormSelectFieldProps<
     }>
   >;
   types: T[]; // The options, passed as an array of strings
-  register: UseFormRegister<FormData>;
+  register: UseFormRegister<FormDataRhf>;
   isRequired: boolean;
   error: FieldError | undefined;
-  watch: UseFormWatch<FormData>;
+  watch: UseFormWatch<FormDataRhf>;
 };
 
 export type ValidInputFieldName =

@@ -1,4 +1,4 @@
-import { FormSelectFieldItem, feedbackTypes, FormData } from "@/lib/types";
+import { FormSelectFieldItem, feedbackTypes, FormDataRhf } from "@/lib/types";
 import { Dispatch, SetStateAction } from "react";
 import { FormSelectOptionField } from "./FormField";
 import {
@@ -9,9 +9,9 @@ import {
 } from "react-hook-form";
 
 export type FeedbackTypeStepProps = {
-  register: UseFormRegister<FormData>;
-  errors: FieldErrors<FormData>;
-  setValue: UseFormSetValue<FormData>;
+  register: UseFormRegister<FormDataRhf>;
+  errors: FieldErrors<FormDataRhf>;
+  setValue: UseFormSetValue<FormDataRhf>;
   setTrustScore: Dispatch<
     SetStateAction<{
       feedbackType: number;
@@ -28,7 +28,7 @@ export type FeedbackTypeStepProps = {
     companyLocation: number;
     feedbackComment: number;
   };
-  watch: UseFormWatch<FormData>;
+  watch: UseFormWatch<FormDataRhf>;
 };
 
 const FeedbackTypeStep: React.FC<FeedbackTypeStepProps> = ({

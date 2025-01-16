@@ -1,8 +1,9 @@
 import { useForm, UseFormWatch } from "react-hook-form";
 import {
-  FormData,
+  FormDataRhf,
   experienceRateTypes,
   FormSelectFieldItem,
+  FormInputFieldItem,
 } from "@/lib/types";
 import { FormInputField, FormSelectOptionField } from "./FormField";
 import FeedbackTypeStep from "./FeedbackTypeStep";
@@ -17,6 +18,7 @@ import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import JSConfetti from "js-confetti";
+import { json } from "stream/consumers";
 
 const FeedbackForm = ({
   setIsFeedbackFormOpen,
@@ -34,23 +36,36 @@ const FeedbackForm = ({
     setValue,
     watch,
     trigger,
-  } = useForm<FormData>();
+  } = useForm<FormDataRhf>();
 
   //   const handleSelect = (value: validWorkingTypes) => {
   //     // Set the form value for "workingType" and mark it as dirty for validation
   //     setValue("workingType", value);
   //     setSelected(value);
   //   };
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: FormDataRhf) => {
     await handleStepValidation();
-    const formData = { trustScore: totalTrustScore, ...data };
-    console.log("SUCCESS", formData);
+    const finalFormDataRhf = { trustScore: totalTrustScore, ...data };
+    const finalFormData = new FormData();
+
+    Object.entries(finalFormDataRhf).map((entry) => {
+      const key = entry[0];
+      let value = entry[1];
+      if (value instanceof File) {
+        finalFormData.append(key, value);
+      } else if (typeof value === "object") {
+        finalFormData.append(key, String(value.name));
+      } else {
+        finalFormData.append(key, String(value));
+      }
+    });
+
+    console.log("SUCCESS", finalFormData);
     const addNewFeedback = async () => {
       try {
-        const response = await fetch("/api/add-new-feedback", {
+        const response = await fetch("/api/feedback/create", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ feedback: formData }),
+          body: finalFormData,
         });
         if (!response.ok) {
           throw new Error("Failed to fetch accounts");
@@ -92,7 +107,7 @@ const FeedbackForm = ({
 
   const totalTrustScore = Object.values(trustScore).reduce(
     (total, score) => total + score,
-    0,
+    0
   );
 
   useEffect(() => {
@@ -112,8 +127,6 @@ const FeedbackForm = ({
       console.log("step is valid");
       if (currentStep === 4) console.log("send form");
       setCurrentStep((prevStep) => {
-        console.log("feedback prevStep", prevStep);
-
         return prevStep + 1;
       });
     } else {
@@ -121,7 +134,7 @@ const FeedbackForm = ({
       if (errors) {
         console.log("errors", errors);
 
-        const errorKeys = Object.keys(errors) as (keyof FormData)[]; // Explicitly cast keys to keyof FormData
+        const errorKeys = Object.keys(errors) as (keyof FormDataRhf)[]; // Explicitly cast keys to keyof FormDataRhf
         console.log("errorKeys", errorKeys);
         const firstField = errorKeys[0];
         console.log("firstField", firstField);
@@ -135,7 +148,6 @@ const FeedbackForm = ({
     }
   };
   const jsConfetti = new JSConfetti();
-  console.log("currentStep", currentStep);
 
   useEffect(() => {
     if (currentStep === 5) {
@@ -156,9 +168,6 @@ const FeedbackForm = ({
         e.preventDefault();
         handleStepValidation();
         handleSubmit(onSubmit)();
-      }}
-      style={{
-        transformOrigin: `${buttonCreateFeedbackPosition.left}px ${buttonCreateFeedbackPosition.top}px`,
       }}
       className={`relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}
@@ -353,7 +362,6 @@ const PopUpFormClose = ({
   setIsPopUpFeedbackFormOpen: (value: boolean) => void;
   setIsClosingFeedbackForm: (value: boolean) => void;
 }) => {
-  console.log("PopUpFormClose currentStep", currentStep);
   useEffect(() => {
     if (currentStep >= 5) {
       setCurrentStep(currentStep + 1);
@@ -402,13 +410,12 @@ const FeedbackFormHeader = ({
   totalTrustScore,
   currentStep,
 }: {
-  watch: UseFormWatch<FormData>;
+  watch: UseFormWatch<FormDataRhf>;
   currentStep: number;
   totalTrustScore: number;
 }) => {
   const trustSoreRadius = 15;
   const fullCircle = 2 * Math.PI * trustSoreRadius;
-  console.log();
 
   const full = fullCircle - (fullCircle * totalTrustScore) / 10;
   if (totalTrustScore === 10) console.log("full", full);

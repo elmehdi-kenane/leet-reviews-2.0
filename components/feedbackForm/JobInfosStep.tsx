@@ -1,7 +1,7 @@
 import {
   FormInputFieldItem,
   FormSelectFieldItem,
-  FormData,
+  FormDataRhf,
   workingTypes,
   contractTypes,
   jobProgressTypes,
@@ -16,9 +16,9 @@ import {
 } from "react-hook-form";
 
 export type JobInfosStepProps = {
-  register: UseFormRegister<FormData>;
-  errors: FieldErrors<FormData>;
-  setValue: UseFormSetValue<FormData>;
+  register: UseFormRegister<FormDataRhf>;
+  errors: FieldErrors<FormDataRhf>;
+  setValue: UseFormSetValue<FormDataRhf>;
   setTrustScore: Dispatch<
     SetStateAction<{
       feedbackType: number;
@@ -35,7 +35,7 @@ export type JobInfosStepProps = {
     companyLocation: number;
     feedbackComment: number;
   };
-  watch: UseFormWatch<FormData>;
+  watch: UseFormWatch<FormDataRhf>;
 };
 
 const JobInfosStep: React.FC<JobInfosStepProps> = ({

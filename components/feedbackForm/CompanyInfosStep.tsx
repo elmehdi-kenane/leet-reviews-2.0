@@ -1,4 +1,4 @@
-import { FormInputFieldItem, FormData } from "@/lib/types";
+import { FormInputFieldItem, FormDataRhf } from "@/lib/types";
 import { Dispatch, SetStateAction } from "react";
 import { FormInputField } from "./FormField";
 import {
@@ -9,10 +9,10 @@ import {
 } from "react-hook-form";
 
 export type CompanyInfosStepProps = {
-  setValue: UseFormSetValue<FormData>;
-  register: UseFormRegister<FormData>;
-  errors: FieldErrors<FormData>;
-  watch: UseFormWatch<FormData>;
+  setValue: UseFormSetValue<FormDataRhf>;
+  register: UseFormRegister<FormDataRhf>;
+  errors: FieldErrors<FormDataRhf>;
+  watch: UseFormWatch<FormDataRhf>;
   setTrustScore: Dispatch<
     SetStateAction<{
       feedbackType: number;

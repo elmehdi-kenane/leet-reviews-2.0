@@ -8,13 +8,15 @@ import CompanyCityIcon from "@/public/CompanyCityIcon.svg";
 import ContractTypeIcon from "@/public/ContractTypeIcon.svg";
 import WorkLocationIcon from "@/public/WorkLocationIcon.svg";
 import ProgressCheckIcon from "@/public/ProgressCheckIcon.svg";
-import { useContext } from "react";
-import { useState } from "react";
+import { useContext, useEffect } from "react";
+import { useState, useRef } from "react";
 import { UserContext } from "@/context/UserContext";
 
 export const FeedbackCard = () => {
   const userInfo = useContext(UserContext);
-  const [isExpandFeedback, setIsExpandFeedback] = useState(false);
+  const [isExpandFeedbackCard, setIsExpandFeedbackCard] = useState(false);
+  const [PreviewFeedbackCardPosition, setPreviewFeedbackCardPosition] =
+    useState({ top: 0, left: 0 });
   const feedbackDetails = {
     experienceRating: "experienceRating",
     ExperienceRate: fun_face,
@@ -35,22 +37,24 @@ export const FeedbackCard = () => {
       { icon: ProgressCheckIcon, text: "Progress" },
     ],
   };
-  console.log("isExpandFeedback outside", isExpandFeedback);
+
   return (
     <>
-      {isExpandFeedback === true && (
-        <div className="absolute h-full w-[100%] top-0 z-[100] bg-white/30 backdrop-blur-sm flex justify-center">
-          <div className="w-full flex justify-center items-start mt-[90px]">
-            {/* <ExpandedFeedbackCard
-              setIsExpandFeedback={setIsExpandFeedback}
+      {isExpandFeedbackCard === true && (
+        <div className="absolute h-full w-[100%] top-0 z-[100] bg-white/50 backdrop-blur-xl flex justify-center">
+          <div className="w-full flex justify-center items-start fixed mt-[90px]">
+            <ExpandedFeedbackCard
+              PreviewFeedbackCardPosition={PreviewFeedbackCardPosition}
+              isExpandFeedbackCard={isExpandFeedbackCard}
+              setIsExpandFeedbackCard={setIsExpandFeedbackCard}
               feedbackDetails={feedbackDetails}
-            ></ExpandedFeedbackCard> */}
+            ></ExpandedFeedbackCard>
           </div>
         </div>
       )}
       <PreviewFeedbackCard
-        isExpandFeedback={isExpandFeedback}
-        setIsExpandFeedback={setIsExpandFeedback}
+        setPreviewFeedbackCardPosition={setPreviewFeedbackCardPosition}
+        setIsExpandFeedbackCard={setIsExpandFeedbackCard}
         feedbackDetails={feedbackDetails}
       ></PreviewFeedbackCard>
     </>
@@ -58,35 +62,39 @@ export const FeedbackCard = () => {
 };
 
 const PreviewFeedbackCard = ({
-  setIsExpandFeedback,
-  isExpandFeedback,
+  setPreviewFeedbackCardPosition,
+  setIsExpandFeedbackCard,
   feedbackDetails,
 }: {
+  setPreviewFeedbackCardPosition: (position: {
+    top: number;
+    left: number;
+  }) => void;
+  setIsExpandFeedbackCard: (value: boolean) => void;
   feedbackDetails: any;
-  setIsExpandFeedback: (value: boolean) => void;
-  isExpandFeedback: boolean;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const PreviewFeedbackCardRef = useRef<HTMLDivElement>(null);
   const circleRadius = 15;
-  console.log("isExpandFeedback", isExpandFeedback);
 
   return (
     <div
-      onClick={() => setIsExpandFeedback(true)}
-      className={`flex ${isExpandFeedback === true ? "extend-height absolute z-[101]" : ""} flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] bg-white mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedback !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""}`}
+      ref={PreviewFeedbackCardRef}
+      onClick={() => {
+        setIsExpandFeedbackCard(true);
+        if (PreviewFeedbackCardRef.current) {
+          const rect = PreviewFeedbackCardRef.current.getBoundingClientRect();
+          console.log("rect.top", rect.top);
+          console.log("rect.left", rect.left);
+
+          setPreviewFeedbackCardPosition({
+            top: rect.top,
+            left: rect.left,
+          });
+        }
+      }}
+      className={`flex "cursor-pointer" flex-col p-10 max-md:p-5 bg-white max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px]`}
     >
-      <div className="w-full flex absolute top-0 right-0 mr-[-55px] justify-end">
-        <button
-          className="p-3 bg-neutral text-secondary border border-secondary rounded-xl"
-          onClick={(e) => {
-            setIsExpandFeedback(false);
-            e.stopPropagation();
-            console.log("unexpand clicked");
-          }}
-        >
-          bac
-        </button>
-      </div>
       <div className="flex justify-between gap-[10px] max-md:flex-col">
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
           <div className="flex justify-start items-end rounded-full select-none">
@@ -255,42 +263,90 @@ const PreviewFeedbackCard = ({
         <div className="flex flex-col max-sm:ml-[7px]">
           {feedbackDetails.creationDate}
         </div>
-        {isExpandFeedback !== true && (
-          <Link
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            href={`/Engagement?commentAreaSelected=${true}`}
-            className="text-[#41B06E] select-none flex item hover:bg-[#41B06E] hover:text-white s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
-          >
-            <Image
-              src={`${isHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}
-              alt="CommentIcon.svg"
-              width={20}
-              height={20}
-            />
-            <p className="max-sm:hidden">Comment</p>
-          </Link>
-        )}
+        <button
+          onMouseEnter={() => setIsHovered(true)}
+          onClick={() => setIsExpandFeedbackCard(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="text-[#41B06E] select-none flex item hover:bg-[#41B06E] hover:text-white s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
+        >
+          <Image
+            src={`${isHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}
+            alt="CommentIcon.svg"
+            width={20}
+            height={20}
+          />
+          <p className="max-sm:hidden">Comment</p>
+        </button>
       </div>
     </div>
   );
 };
 
 const ExpandedFeedbackCard = ({
-  setIsExpandFeedback,
+  setIsExpandFeedbackCard,
+  isExpandFeedbackCard,
+  PreviewFeedbackCardPosition,
   feedbackDetails,
 }: {
   feedbackDetails: any;
-  setIsExpandFeedback: (value: boolean) => void;
+  setIsExpandFeedbackCard: (value: boolean) => void;
+  isExpandFeedbackCard: boolean;
+  PreviewFeedbackCardPosition: { top: number; left: number };
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isUnExpandingFeedbackCard, setIsUnExpandingFeedbackCard] =
+    useState(false);
+  const ExpandedFeedbackCardRef = useRef<HTMLDivElement>(null);
   const circleRadius = 15;
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        ExpandedFeedbackCardRef.current &&
+        !ExpandedFeedbackCardRef.current.contains(e.target as Node)
+      ) {
+        closeExpandedFeedbackCard(e);
+      }
+    };
+    window.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const closeExpandedFeedbackCard = (
+    e: MouseEvent | React.MouseEvent<HTMLButtonElement>
+  ) => {
+    setIsUnExpandingFeedbackCard(true);
+    setTimeout(() => {
+      setIsUnExpandingFeedbackCard(false);
+      setIsExpandFeedbackCard(false);
+    }, 400);
+    if (e instanceof MouseEvent) e.stopPropagation();
+  };
+
   return (
     <div
-      onClick={() => setIsExpandFeedback(true)}
-      className={`flex flex-col extend-height p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] bg-white mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg h-[75%] hover:shadow-2xl font-inter text-[#00224D] gap-[10px] transition-shadow duration-300`}
+      onClick={() => setIsExpandFeedbackCard(true)}
+      style={{
+        transformOrigin: `${PreviewFeedbackCardPosition.left}px ${PreviewFeedbackCardPosition.top}px`,
+      }}
+      className={`flex ${isExpandFeedbackCard === true ? "expand-height absolute z-[101]" : "cursor-pointer"} bg-white flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] mt-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedbackCard !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""} ${isUnExpandingFeedbackCard === true ? "un-expand-height" : ""}`}
     >
-      <div className="flex justify-between gap-[10px] max-md:flex-col">
+      <div className="w-full flex absolute top-[-50px] left-[1px] justify-end">
+        <button
+          className="p-3 bg-neutral text-secondary border border-secondary rounded-xl"
+          onClick={(e) => {
+            closeExpandedFeedbackCard(e);
+          }}
+        >
+          bac
+        </button>
+      </div>
+      <div
+        ref={ExpandedFeedbackCardRef}
+        className="flex justify-between gap-[10px] max-md:flex-col"
+      >
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
           <div className="flex justify-start items-end rounded-full select-none">
             <Image
@@ -378,7 +434,7 @@ const ExpandedFeedbackCard = ({
                   {employmentDetail.text}
                 </div>
               );
-            },
+            }
           )}
           {feedbackDetails.feedbackAuthorIntraLogin !== "" && (
             <div className="w-full h-max flex justify-end z-[1] select-none">
@@ -458,6 +514,22 @@ const ExpandedFeedbackCard = ({
         <div className="flex flex-col max-sm:ml-[7px]">
           {feedbackDetails.creationDate}
         </div>
+        {isExpandFeedbackCard !== true && (
+          <button
+            onMouseEnter={() => setIsHovered(true)}
+            onClick={() => setIsExpandFeedbackCard(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="text-[#41B06E] select-none flex item hover:bg-[#41B06E] hover:text-white s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
+          >
+            <Image
+              src={`${isHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}
+              alt="CommentIcon.svg"
+              width={20}
+              height={20}
+            />
+            <p className="max-sm:hidden">Comment</p>
+          </button>
+        )}
       </div>
     </div>
   );

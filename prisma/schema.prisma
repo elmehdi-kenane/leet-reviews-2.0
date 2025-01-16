@@ -59,6 +59,8 @@ model User {
     avatar        String?
     accounts      Account[]
     sessions      Session[]
+    feedbacks     Feedback[]
+
 }
 
 model VerificationToken {
@@ -83,4 +85,7 @@ model Feedback {
     jobProgressType  String
     experienceRate   Int
     feedbackComment  String
+
+    userId           String
+    user             User     @relation(fields: [userId], references: [id])
 }
