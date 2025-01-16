@@ -25,7 +25,7 @@ import { Dispatch, SetStateAction } from "react";
 export type FormData = {
   feedbackType: validFeedbackType;
   companyName: string;
-  companyLogo: string;
+  companyLogo: File;
   companyLinkedIn: string;
   companyLocation: string;
 

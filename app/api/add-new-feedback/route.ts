@@ -4,12 +4,8 @@ import { prismaClient } from "@/lib/auth";
 export async function POST(request: NextRequest) {
   const data = await request.json();
   console.log("data request", data.feedback);
-  console.log(
-    "data.feedback.companyLogo",
-    Object.keys(data.feedback.companyLogo).length === 0
-      ? ""
-      : data.feedback.companyLogo[0],
-  );
+  const companyLogoFile = data.feedback.companyLogo as File;
+  console.log("data.feedback.companyLogo file", companyLogoFile);
   await prismaClient.feedback.create({
     data: {
       feedbackType: data.feedback.feedbackType.name,
