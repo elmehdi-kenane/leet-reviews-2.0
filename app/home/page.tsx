@@ -25,11 +25,6 @@ export default function Home() {
       <div className="w-full flex flex-col items-center my-[100px]">
         <FeedbackCard></FeedbackCard>
         <FeedbackCard></FeedbackCard>
-        <FeedbackCard></FeedbackCard>
-        <FeedbackCard></FeedbackCard>
-        <FeedbackCard></FeedbackCard>
-        <FeedbackCard></FeedbackCard>
-        <FeedbackCard></FeedbackCard>
       </div>
       <Toaster
         toastOptions={{

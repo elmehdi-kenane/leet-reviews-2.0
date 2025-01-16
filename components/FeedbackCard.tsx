@@ -14,6 +14,7 @@ import { UserContext } from "@/context/UserContext";
 
 export const FeedbackCard = () => {
   const userInfo = useContext(UserContext);
+  const [isExpandFeedback, setIsExpandFeedback] = useState(false);
   const feedbackDetails = {
     experienceRating: "experienceRating",
     ExperienceRate: fun_face,
@@ -34,13 +35,58 @@ export const FeedbackCard = () => {
       { icon: ProgressCheckIcon, text: "Progress" },
     ],
   };
+  console.log("isExpandFeedback outside", isExpandFeedback);
+  return (
+    <>
+      {isExpandFeedback === true && (
+        <div className="absolute h-full w-[100%] top-0 z-[100] bg-white/30 backdrop-blur-sm flex justify-center">
+          <div className="w-full flex justify-center items-start mt-[90px]">
+            {/* <ExpandedFeedbackCard
+              setIsExpandFeedback={setIsExpandFeedback}
+              feedbackDetails={feedbackDetails}
+            ></ExpandedFeedbackCard> */}
+          </div>
+        </div>
+      )}
+      <PreviewFeedbackCard
+        isExpandFeedback={isExpandFeedback}
+        setIsExpandFeedback={setIsExpandFeedback}
+        feedbackDetails={feedbackDetails}
+      ></PreviewFeedbackCard>
+    </>
+  );
+};
+
+const PreviewFeedbackCard = ({
+  setIsExpandFeedback,
+  isExpandFeedback,
+  feedbackDetails,
+}: {
+  feedbackDetails: any;
+  setIsExpandFeedback: (value: boolean) => void;
+  isExpandFeedback: boolean;
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const circleRadius = 15;
+  console.log("isExpandFeedback", isExpandFeedback);
+
   return (
     <div
-      //   href={`/home`}
-      className={`flex justify-between flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] bg-white mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg hover:shadow-2xl font-inter text-[#00224D] gap-[10px] transition-shadow duration-300`}
+      onClick={() => setIsExpandFeedback(true)}
+      className={`flex ${isExpandFeedback === true ? "extend-height absolute z-[101]" : ""} flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] bg-white mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedback !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""}`}
     >
+      <div className="w-full flex absolute top-0 right-0 mr-[-55px] justify-end">
+        <button
+          className="p-3 bg-neutral text-secondary border border-secondary rounded-xl"
+          onClick={(e) => {
+            setIsExpandFeedback(false);
+            e.stopPropagation();
+            console.log("unexpand clicked");
+          }}
+        >
+          bac
+        </button>
+      </div>
       <div className="flex justify-between gap-[10px] max-md:flex-col">
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
           <div className="flex justify-start items-end rounded-full select-none">
@@ -106,29 +152,31 @@ export const FeedbackCard = () => {
           </div>
         </div>
         <div className="flex items-center flex-wrap max-md:justify-end max-sm:justify-center w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
-          {feedbackDetails.employmentDetails.map((employmentDetail, index) => {
-            return (
-              <div
-                key={index}
-                className="flex items-center gap-[5px] rounded-[14px] border border-[#00224D] w-[150px] max-lg:w-[48%] max-md:max-w-[140px] max-md:text-xs min-w-max h-[50px] p-[5px] max-lg:text-sm"
-              >
-                <div className="bg-[#00224D] rounded-full min-w-[35px] min-h-[35px] flex justify-center items-center">
-                  <Image
-                    src={employmentDetail.icon}
-                    className="select-none"
-                    alt={employmentDetail.icon}
-                    width={`${
-                      employmentDetail.icon === ContractTypeIcon ? 17 : 20
-                    }`}
-                    height={`${
-                      employmentDetail.icon === ContractTypeIcon ? 17 : 20
-                    }`}
-                  />
+          {feedbackDetails.employmentDetails.map(
+            (employmentDetail: any, index: number) => {
+              return (
+                <div
+                  key={index}
+                  className="flex items-center gap-[5px] rounded-[14px] border border-[#00224D] w-[150px] max-lg:w-[48%] max-md:max-w-[140px] max-md:text-xs min-w-max h-[50px] p-[5px] max-lg:text-sm"
+                >
+                  <div className="bg-[#00224D] rounded-full min-w-[35px] min-h-[35px] flex justify-center items-center">
+                    <Image
+                      src={employmentDetail.icon}
+                      className="select-none"
+                      alt={employmentDetail.icon}
+                      width={`${
+                        employmentDetail.icon === ContractTypeIcon ? 17 : 20
+                      }`}
+                      height={`${
+                        employmentDetail.icon === ContractTypeIcon ? 17 : 20
+                      }`}
+                    />
+                  </div>
+                  {employmentDetail.text}
                 </div>
-                {employmentDetail.text}
-              </div>
-            );
-          })}
+              );
+            }
+          )}
           {feedbackDetails.feedbackAuthorIntraLogin !== "" && (
             <div className="w-full h-max flex justify-end z-[1] select-none">
               <a
@@ -207,20 +255,209 @@ export const FeedbackCard = () => {
         <div className="flex flex-col max-sm:ml-[7px]">
           {feedbackDetails.creationDate}
         </div>
-        <Link
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          href={`/Engagement?commentAreaSelected=${true}`}
-          className="text-[#41B06E] select-none flex item hover:bg-[#41B06E] hover:text-white s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
-        >
-          <Image
-            src={`${isHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}
-            alt="CommentIcon.svg"
-            width={20}
-            height={20}
-          />
-          <p className="max-sm:hidden">Comment</p>
-        </Link>
+        {isExpandFeedback !== true && (
+          <Link
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            href={`/Engagement?commentAreaSelected=${true}`}
+            className="text-[#41B06E] select-none flex item hover:bg-[#41B06E] hover:text-white s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
+          >
+            <Image
+              src={`${isHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}
+              alt="CommentIcon.svg"
+              width={20}
+              height={20}
+            />
+            <p className="max-sm:hidden">Comment</p>
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ExpandedFeedbackCard = ({
+  setIsExpandFeedback,
+  feedbackDetails,
+}: {
+  feedbackDetails: any;
+  setIsExpandFeedback: (value: boolean) => void;
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const circleRadius = 15;
+  return (
+    <div
+      onClick={() => setIsExpandFeedback(true)}
+      className={`flex flex-col extend-height p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] bg-white mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg h-[75%] hover:shadow-2xl font-inter text-[#00224D] gap-[10px] transition-shadow duration-300`}
+    >
+      <div className="flex justify-between gap-[10px] max-md:flex-col">
+        <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
+          <div className="flex justify-start items-end rounded-full select-none">
+            <Image
+              src={feedbackDetails.CompanyLogo}
+              alt={feedbackDetails.CompanyLogo}
+              width={125}
+              height={125}
+              className="rounded-full"
+            />
+            <CustomizedTooltip
+              placement="bottom"
+              title={`${feedbackDetails.experienceRating} Experience`}
+              arrow
+            >
+              <div
+                className={`w-[${circleRadius * 2}] h-[${
+                  circleRadius * 2
+                }]  ml-[-30px]`}
+              >
+                <Image
+                  src={feedbackDetails.ExperienceRate}
+                  alt={feedbackDetails.ExperienceRate}
+                  width={20}
+                  height={20}
+                  className="ml-[5px] mb-[-25px] relative z-[9]"
+                />
+                <svg
+                  width={circleRadius * 2}
+                  height={circleRadius * 2}
+                  xmlns="http://www.w3.org/2000/svg"
+                  // className="border border-[blue]"
+                >
+                  <circle
+                    r={circleRadius}
+                    cx={circleRadius}
+                    cy={circleRadius}
+                    fill="#d1d5db"
+                  />
+                </svg>
+              </div>
+            </CustomizedTooltip>
+          </div>
+          <div className="flex flex-col h-full w-full max-sm:items-center justify-center">
+            <div className="font-bold text-2xl max-lg:text-lg flex gap-1 items-center">
+              {feedbackDetails.CompanyName}
+              {feedbackDetails.LinkedInOfCompany !== "" && (
+                <a
+                  href={feedbackDetails.LinkedInOfCompany}
+                  target="_blank"
+                  className=" select-none"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Image src={linkedInIcon} alt="" width={25} height={25} />
+                </a>
+              )}
+            </div>
+            <p className="font-semibold text-xl max-lg:text-base">
+              {feedbackDetails.JobStatus}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center flex-wrap max-md:justify-end max-sm:justify-center w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
+          {feedbackDetails.employmentDetails.map(
+            (employmentDetail: any, index: number) => {
+              return (
+                <div
+                  key={index}
+                  className="flex items-center gap-[5px] rounded-[14px] border border-[#00224D] w-[150px] max-lg:w-[48%] max-md:max-w-[140px] max-md:text-xs min-w-max h-[50px] p-[5px] max-lg:text-sm"
+                >
+                  <div className="bg-[#00224D] rounded-full min-w-[35px] min-h-[35px] flex justify-center items-center">
+                    <Image
+                      src={employmentDetail.icon}
+                      className="select-none"
+                      alt={employmentDetail.icon}
+                      width={`${
+                        employmentDetail.icon === ContractTypeIcon ? 17 : 20
+                      }`}
+                      height={`${
+                        employmentDetail.icon === ContractTypeIcon ? 17 : 20
+                      }`}
+                    />
+                  </div>
+                  {employmentDetail.text}
+                </div>
+              );
+            },
+          )}
+          {feedbackDetails.feedbackAuthorIntraLogin !== "" && (
+            <div className="w-full h-max flex justify-end z-[1] select-none">
+              <a
+                href={`https://profile.intra.42.fr/users/${feedbackDetails.feedbackAuthorIntraLogin}`}
+                target="_blank"
+                className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Image
+                  src="/42-logo.svg"
+                  alt="42-logo.svg"
+                  width={20}
+                  height={20}
+                />
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+      {feedbackDetails.feedbackSubtitle !== "" ? (
+        <div className="flex justify-between items-start flex-col mt-[-30px]">
+          <div className="flex items-center gap-2">
+            <Image
+              src={feedbackDetails.feedbackAuthorAvatar || ""}
+              alt={feedbackDetails.feedbackAuthorAvatar || ""}
+              width={40}
+              height={40}
+              className="rounded-full select-none max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D] mb-1"
+            />
+            <p className="mb-[15px] font-semibold">
+              {feedbackDetails.feedbackAuthorUsername}
+            </p>
+          </div>
+          <div className="border-2 border-[#00224D] p-4 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px]">
+            <p className="overflow-x-auto w-full dark-scrollbar">
+              {feedbackDetails.feedbackSubtitle}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex border-2 border-[#00224D] rounded-2xl justify-between items-center p-2 gap-[5px]">
+          <div className="flex items-center gap-2">
+            <Image
+              src={feedbackDetails.feedbackAuthorAvatar || ""}
+              alt={feedbackDetails.feedbackAuthorAvatar || ""}
+              width={50}
+              height={50}
+              className="rounded-full max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D]"
+            />
+            <p className="font-semibold">
+              {feedbackDetails.feedbackAuthorUsername}
+            </p>
+          </div>
+          <div className="w-max h-max flex">
+            <a
+              href={`https://profile.intra.42.fr/users/${feedbackDetails.feedbackAuthorIntraLogin}`}
+              target="_blank"
+              className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Image
+                src="/42-logo.svg"
+                alt="42-logo.svg"
+                width={20}
+                height={20}
+              />
+            </a>
+          </div>
+        </div>
+      )}
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col max-sm:ml-[7px]">
+          {feedbackDetails.creationDate}
+        </div>
       </div>
     </div>
   );
