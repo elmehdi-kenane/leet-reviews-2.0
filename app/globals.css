@@ -167,11 +167,11 @@ html::-webkit-scrollbar-thumb {
 }
 
 .expand-height {
-    animation: expandHeight 0.4s ease-in-out forwards;
+  animation: expandHeight 0.4s ease-in-out forwards;
 }
 
 @keyframes expandHeight {
-    0% {
+  0% {
     height: 353px;
     transform: scale(0);
   }
@@ -183,11 +183,11 @@ html::-webkit-scrollbar-thumb {
 }
 
 .un-expand-height {
-    animation: unExpandHeight 0.4s ease-in-out forwards;
+  animation: unExpandHeight 0.4s ease-in-out forwards;
 }
 
 @keyframes unExpandHeight {
-    0% {
+  0% {
     transform: scale(1);
   }
 

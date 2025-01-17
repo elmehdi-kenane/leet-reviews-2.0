@@ -15,7 +15,7 @@ export default function SignIn() {
         </Link>
       </div>
       <div>
-        <Link href={"/api/auth/login/fortyTwo"}>
+        <Link href={"/api/auth/login/forty-two"}>
           <button>Sign in with 42</button>
         </Link>
       </div>

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import CustomizedTooltip from "./CustomizedTooltip";
 import linkedInIcon from "@/public/LInkedInIcon.svg";
@@ -12,25 +11,63 @@ import { useContext, useEffect } from "react";
 import { useState, useRef } from "react";
 import { UserContext } from "@/context/UserContext";
 
+interface employmentDetailInterface {
+  icon: string;
+  text: string;
+}
+
+interface FeedbackInterface {
+  ExperienceRate: number;
+  id: string;
+  CompanyLogo: string;
+  CompanyName: string;
+  CompanyLinkedIn: string;
+  JobStatus: string;
+  feedbackSubtitle: string;
+  feedbackAuthorAvatar: string;
+  feedbackAuthorUsername: string;
+  creationDate: string;
+  feedbackAuthorIntraLogin: string;
+  employmentDetail: employmentDetailInterface[];
+}
+
+const getExperienceRateIcon = (experienceRate: number) => {
+  const icons = [
+    "VeryPoor.svg",
+    "Poor.svg",
+    "Average.svg",
+    "Good.svg",
+    "Excellent.svg",
+  ];
+  return icons[experienceRate];
+};
+
+const getExperienceRateText = (experienceRate: number) => {
+  const icons = ["VeryPoor", "Poor", "Average", "Good", "Excellent"];
+  return icons[experienceRate];
+};
+
 export const FeedbackCard = () => {
   const userInfo = useContext(UserContext);
   const [isExpandFeedbackCard, setIsExpandFeedbackCard] = useState(false);
   const [PreviewFeedbackCardPosition, setPreviewFeedbackCardPosition] =
     useState({ top: 0, left: 0 });
-  const feedbackDetails = {
-    experienceRating: "experienceRating",
+  const avatar = userInfo?.userInfo?.avatar
+    ? userInfo?.userInfo?.avatar
+    : "/default.jpeg";
+  const feedback: FeedbackInterface = {
     ExperienceRate: fun_face,
-    FeedbackId: "1", // will be used to redirect the user to the feedback page
+    id: "1",
     CompanyLogo: DefaultCompanyLogo,
     CompanyName: "um6p",
-    LinkedInOfCompany: "linkedInUrl",
+    CompanyLinkedIn: "linkedInUrl",
     JobStatus: "software engineer",
     feedbackSubtitle: "feedback subtitle",
-    feedbackAuthorAvatar: userInfo?.userInfo?.avatar, // will be replaced by the actual feedback author avatar
+    feedbackAuthorAvatar: avatar, // will be replaced by the actual feedback author avatar
     feedbackAuthorUsername: "feedbackAuthorUsername",
     creationDate: "dateTime",
     feedbackAuthorIntraLogin: "feedbackAuthorIntraLogin",
-    employmentDetails: [
+    employmentDetail: [
       { icon: WorkLocationIcon, text: "Location" },
       { icon: ContractTypeIcon, text: "Contract" },
       { icon: CompanyCityIcon, text: "City" },
@@ -47,7 +84,7 @@ export const FeedbackCard = () => {
               PreviewFeedbackCardPosition={PreviewFeedbackCardPosition}
               isExpandFeedbackCard={isExpandFeedbackCard}
               setIsExpandFeedbackCard={setIsExpandFeedbackCard}
-              feedbackDetails={feedbackDetails}
+              feedback={feedback}
             ></ExpandedFeedbackCard>
           </div>
         </div>
@@ -55,7 +92,7 @@ export const FeedbackCard = () => {
       <PreviewFeedbackCard
         setPreviewFeedbackCardPosition={setPreviewFeedbackCardPosition}
         setIsExpandFeedbackCard={setIsExpandFeedbackCard}
-        feedbackDetails={feedbackDetails}
+        feedback={feedback}
       ></PreviewFeedbackCard>
     </>
   );
@@ -64,14 +101,14 @@ export const FeedbackCard = () => {
 const PreviewFeedbackCard = ({
   setPreviewFeedbackCardPosition,
   setIsExpandFeedbackCard,
-  feedbackDetails,
+  feedback,
 }: {
   setPreviewFeedbackCardPosition: (position: {
     top: number;
     left: number;
   }) => void;
   setIsExpandFeedbackCard: (value: boolean) => void;
-  feedbackDetails: any;
+  feedback: FeedbackInterface;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const PreviewFeedbackCardRef = useRef<HTMLDivElement>(null);
@@ -93,21 +130,21 @@ const PreviewFeedbackCard = ({
           });
         }
       }}
-      className={`flex "cursor-pointer" flex-col p-10 max-md:p-5 bg-white max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px]`}
+      className={`flex "cursor-pointer" flex-col p-10 max-md:p-5 cursor-pointer bg-white max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px]`}
     >
       <div className="flex justify-between gap-[10px] max-md:flex-col">
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
           <div className="flex justify-start items-end rounded-full select-none">
             <Image
-              src={feedbackDetails.CompanyLogo}
-              alt={feedbackDetails.CompanyLogo}
+              src={feedback.CompanyLogo}
+              alt={feedback.CompanyLogo}
               width={125}
               height={125}
               className="rounded-full"
             />
             <CustomizedTooltip
               placement="bottom"
-              title={`${feedbackDetails.experienceRating} Experience`}
+              title={`${getExperienceRateText(feedback.ExperienceRate)} Experience`}
               arrow
             >
               <div
@@ -116,8 +153,8 @@ const PreviewFeedbackCard = ({
                 }]  ml-[-30px]`}
               >
                 <Image
-                  src={feedbackDetails.ExperienceRate}
-                  alt={feedbackDetails.ExperienceRate}
+                  src={getExperienceRateIcon(feedback.ExperienceRate)}
+                  alt={getExperienceRateIcon(feedback.ExperienceRate)}
                   width={20}
                   height={20}
                   className="ml-[5px] mb-[-25px] relative z-[9]"
@@ -140,10 +177,10 @@ const PreviewFeedbackCard = ({
           </div>
           <div className="flex flex-col h-full w-full max-sm:items-center justify-center">
             <div className="font-bold text-2xl max-lg:text-lg flex gap-1 items-center">
-              {feedbackDetails.CompanyName}
-              {feedbackDetails.LinkedInOfCompany !== "" && (
+              {feedback.CompanyName}
+              {feedback.CompanyLinkedIn !== "" && (
                 <a
-                  href={feedbackDetails.LinkedInOfCompany}
+                  href={feedback.CompanyLinkedIn}
                   target="_blank"
                   className=" select-none"
                   onClick={(e) => {
@@ -155,13 +192,13 @@ const PreviewFeedbackCard = ({
               )}
             </div>
             <p className="font-semibold text-xl max-lg:text-base">
-              {feedbackDetails.JobStatus}
+              {feedback.JobStatus}
             </p>
           </div>
         </div>
         <div className="flex items-center flex-wrap max-md:justify-end max-sm:justify-center w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
-          {feedbackDetails.employmentDetails.map(
-            (employmentDetail: any, index: number) => {
+          {feedback.employmentDetail.map(
+            (employmentDetail: employmentDetailInterface, index: number) => {
               return (
                 <div
                   key={index}
@@ -183,12 +220,12 @@ const PreviewFeedbackCard = ({
                   {employmentDetail.text}
                 </div>
               );
-            }
+            },
           )}
-          {feedbackDetails.feedbackAuthorIntraLogin !== "" && (
+          {feedback.feedbackAuthorIntraLogin !== "" && (
             <div className="w-full h-max flex justify-end z-[1] select-none">
               <a
-                href={`https://profile.intra.42.fr/users/${feedbackDetails.feedbackAuthorIntraLogin}`}
+                href={`https://profile.intra.42.fr/users/${feedback.feedbackAuthorIntraLogin}`}
                 target="_blank"
                 className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
                 onClick={(e) => {
@@ -206,23 +243,23 @@ const PreviewFeedbackCard = ({
           )}
         </div>
       </div>
-      {feedbackDetails.feedbackSubtitle !== "" ? (
+      {feedback.feedbackSubtitle !== "" ? (
         <div className="flex justify-between items-start flex-col mt-[-30px]">
           <div className="flex items-center gap-2">
             <Image
-              src={feedbackDetails.feedbackAuthorAvatar || ""}
-              alt={feedbackDetails.feedbackAuthorAvatar || ""}
+              src={feedback.feedbackAuthorAvatar || ""}
+              alt={feedback.feedbackAuthorAvatar || ""}
               width={40}
               height={40}
               className="rounded-full select-none max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D] mb-1"
             />
             <p className="mb-[15px] font-semibold">
-              {feedbackDetails.feedbackAuthorUsername}
+              {feedback.feedbackAuthorUsername}
             </p>
           </div>
           <div className="border-2 border-[#00224D] p-4 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px]">
             <p className="overflow-x-auto w-full dark-scrollbar">
-              {feedbackDetails.feedbackSubtitle}
+              {feedback.feedbackSubtitle}
             </p>
           </div>
         </div>
@@ -230,19 +267,17 @@ const PreviewFeedbackCard = ({
         <div className="flex border-2 border-[#00224D] rounded-2xl justify-between items-center p-2 gap-[5px]">
           <div className="flex items-center gap-2">
             <Image
-              src={feedbackDetails.feedbackAuthorAvatar || ""}
-              alt={feedbackDetails.feedbackAuthorAvatar || ""}
+              src={feedback.feedbackAuthorAvatar || ""}
+              alt={feedback.feedbackAuthorAvatar || ""}
               width={50}
               height={50}
               className="rounded-full max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D]"
             />
-            <p className="font-semibold">
-              {feedbackDetails.feedbackAuthorUsername}
-            </p>
+            <p className="font-semibold">{feedback.feedbackAuthorUsername}</p>
           </div>
           <div className="w-max h-max flex">
             <a
-              href={`https://profile.intra.42.fr/users/${feedbackDetails.feedbackAuthorIntraLogin}`}
+              href={`https://profile.intra.42.fr/users/${feedback.feedbackAuthorIntraLogin}`}
               target="_blank"
               className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
               onClick={(e) => {
@@ -261,7 +296,7 @@ const PreviewFeedbackCard = ({
       )}
       <div className="flex justify-between items-center">
         <div className="flex flex-col max-sm:ml-[7px]">
-          {feedbackDetails.creationDate}
+          {feedback.creationDate}
         </div>
         <button
           onMouseEnter={() => setIsHovered(true)}
@@ -286,9 +321,9 @@ const ExpandedFeedbackCard = ({
   setIsExpandFeedbackCard,
   isExpandFeedbackCard,
   PreviewFeedbackCardPosition,
-  feedbackDetails,
+  feedback,
 }: {
-  feedbackDetails: any;
+  feedback: FeedbackInterface;
   setIsExpandFeedbackCard: (value: boolean) => void;
   isExpandFeedbackCard: boolean;
   PreviewFeedbackCardPosition: { top: number; left: number };
@@ -315,7 +350,7 @@ const ExpandedFeedbackCard = ({
   }, []);
 
   const closeExpandedFeedbackCard = (
-    e: MouseEvent | React.MouseEvent<HTMLButtonElement>
+    e: MouseEvent | React.MouseEvent<HTMLButtonElement>,
   ) => {
     setIsUnExpandingFeedbackCard(true);
     setTimeout(() => {
@@ -350,15 +385,15 @@ const ExpandedFeedbackCard = ({
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
           <div className="flex justify-start items-end rounded-full select-none">
             <Image
-              src={feedbackDetails.CompanyLogo}
-              alt={feedbackDetails.CompanyLogo}
+              src={feedback.CompanyLogo}
+              alt={feedback.CompanyLogo}
               width={125}
               height={125}
               className="rounded-full"
             />
             <CustomizedTooltip
               placement="bottom"
-              title={`${feedbackDetails.experienceRating} Experience`}
+              title={`${getExperienceRateText(feedback.ExperienceRate)} Experience`}
               arrow
             >
               <div
@@ -367,8 +402,8 @@ const ExpandedFeedbackCard = ({
                 }]  ml-[-30px]`}
               >
                 <Image
-                  src={feedbackDetails.ExperienceRate}
-                  alt={feedbackDetails.ExperienceRate}
+                  src={getExperienceRateIcon(feedback.ExperienceRate)}
+                  alt={getExperienceRateIcon(feedback.ExperienceRate)}
                   width={20}
                   height={20}
                   className="ml-[5px] mb-[-25px] relative z-[9]"
@@ -391,10 +426,10 @@ const ExpandedFeedbackCard = ({
           </div>
           <div className="flex flex-col h-full w-full max-sm:items-center justify-center">
             <div className="font-bold text-2xl max-lg:text-lg flex gap-1 items-center">
-              {feedbackDetails.CompanyName}
-              {feedbackDetails.LinkedInOfCompany !== "" && (
+              {feedback.CompanyName}
+              {feedback.CompanyLinkedIn !== "" && (
                 <a
-                  href={feedbackDetails.LinkedInOfCompany}
+                  href={feedback.CompanyLinkedIn}
                   target="_blank"
                   className=" select-none"
                   onClick={(e) => {
@@ -406,13 +441,13 @@ const ExpandedFeedbackCard = ({
               )}
             </div>
             <p className="font-semibold text-xl max-lg:text-base">
-              {feedbackDetails.JobStatus}
+              {feedback.JobStatus}
             </p>
           </div>
         </div>
         <div className="flex items-center flex-wrap max-md:justify-end max-sm:justify-center w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
-          {feedbackDetails.employmentDetails.map(
-            (employmentDetail: any, index: number) => {
+          {feedback.employmentDetail.map(
+            (employmentDetail: employmentDetailInterface, index: number) => {
               return (
                 <div
                   key={index}
@@ -434,12 +469,12 @@ const ExpandedFeedbackCard = ({
                   {employmentDetail.text}
                 </div>
               );
-            }
+            },
           )}
-          {feedbackDetails.feedbackAuthorIntraLogin !== "" && (
+          {feedback.feedbackAuthorIntraLogin !== "" && (
             <div className="w-full h-max flex justify-end z-[1] select-none">
               <a
-                href={`https://profile.intra.42.fr/users/${feedbackDetails.feedbackAuthorIntraLogin}`}
+                href={`https://profile.intra.42.fr/users/${feedback.feedbackAuthorIntraLogin}`}
                 target="_blank"
                 className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
                 onClick={(e) => {
@@ -457,23 +492,23 @@ const ExpandedFeedbackCard = ({
           )}
         </div>
       </div>
-      {feedbackDetails.feedbackSubtitle !== "" ? (
+      {feedback.feedbackSubtitle !== "" ? (
         <div className="flex justify-between items-start flex-col mt-[-30px]">
           <div className="flex items-center gap-2">
             <Image
-              src={feedbackDetails.feedbackAuthorAvatar || ""}
-              alt={feedbackDetails.feedbackAuthorAvatar || ""}
+              src={feedback.feedbackAuthorAvatar || ""}
+              alt={feedback.feedbackAuthorAvatar || ""}
               width={40}
               height={40}
               className="rounded-full select-none max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D] mb-1"
             />
             <p className="mb-[15px] font-semibold">
-              {feedbackDetails.feedbackAuthorUsername}
+              {feedback.feedbackAuthorUsername}
             </p>
           </div>
           <div className="border-2 border-[#00224D] p-4 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px]">
             <p className="overflow-x-auto w-full dark-scrollbar">
-              {feedbackDetails.feedbackSubtitle}
+              {feedback.feedbackSubtitle}
             </p>
           </div>
         </div>
@@ -481,19 +516,17 @@ const ExpandedFeedbackCard = ({
         <div className="flex border-2 border-[#00224D] rounded-2xl justify-between items-center p-2 gap-[5px]">
           <div className="flex items-center gap-2">
             <Image
-              src={feedbackDetails.feedbackAuthorAvatar || ""}
-              alt={feedbackDetails.feedbackAuthorAvatar || ""}
+              src={feedback.feedbackAuthorAvatar || ""}
+              alt={feedback.feedbackAuthorAvatar || ""}
               width={50}
               height={50}
               className="rounded-full max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D]"
             />
-            <p className="font-semibold">
-              {feedbackDetails.feedbackAuthorUsername}
-            </p>
+            <p className="font-semibold">{feedback.feedbackAuthorUsername}</p>
           </div>
           <div className="w-max h-max flex">
             <a
-              href={`https://profile.intra.42.fr/users/${feedbackDetails.feedbackAuthorIntraLogin}`}
+              href={`https://profile.intra.42.fr/users/${feedback.feedbackAuthorIntraLogin}`}
               target="_blank"
               className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
               onClick={(e) => {
@@ -512,7 +545,7 @@ const ExpandedFeedbackCard = ({
       )}
       <div className="flex justify-between items-center">
         <div className="flex flex-col max-sm:ml-[7px]">
-          {feedbackDetails.creationDate}
+          {feedback.creationDate}
         </div>
         {isExpandFeedbackCard !== true && (
           <button

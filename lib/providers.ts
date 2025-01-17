@@ -13,7 +13,7 @@ export const github = new GitHub(
 );
 
 const fortyTwoRedirectURI =
-  "http://localhost:3000/api/auth/login/fortyTwo/callback";
+  "http://localhost:3000/api/auth/login/forty-two/callback";
 export const fortyTwo = new FortyTwo(
   process.env.FORTY_TWO_CLIENT_ID!,
   process.env.FORTY_TWO_CLIENT_SECRET!,

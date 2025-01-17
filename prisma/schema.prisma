@@ -85,6 +85,7 @@ model Feedback {
     jobProgressType  String
     experienceRate   Int
     feedbackComment  String
+    createdAt        DateTime
 
     userId           String
     user             User     @relation(fields: [userId], references: [id])

@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === "production") {
 export default prisma;
 
 export interface FeedbackCreateInput {
-  [type: string]: number | string;
+  [type: string]: number | string | Date;
   feedbackType: string;
   trustScore: number;
   companyName: string;
@@ -30,5 +30,6 @@ export interface FeedbackCreateInput {
   jobProgressType: string;
   experienceRate: number;
   feedbackComment: string;
+  createdAt: Date;
   userId: string;
 }

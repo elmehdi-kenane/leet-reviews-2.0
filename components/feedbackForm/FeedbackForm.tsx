@@ -3,7 +3,6 @@ import {
   FormDataRhf,
   experienceRateTypes,
   FormSelectFieldItem,
-  FormInputFieldItem,
 } from "@/lib/types";
 import { FormInputField, FormSelectOptionField } from "./FormField";
 import FeedbackTypeStep from "./FeedbackTypeStep";
@@ -18,12 +17,10 @@ import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import JSConfetti from "js-confetti";
-import { json } from "stream/consumers";
 
 const FeedbackForm = ({
   setIsFeedbackFormOpen,
   setIsClosingFeedbackForm,
-  buttonCreateFeedbackPosition,
 }: {
   setIsFeedbackFormOpen: (value: boolean) => void;
   setIsClosingFeedbackForm: (value: boolean) => void;
@@ -50,7 +47,7 @@ const FeedbackForm = ({
 
     Object.entries(finalFormDataRhf).map((entry) => {
       const key = entry[0];
-      let value = entry[1];
+      const value = entry[1];
       if (value instanceof File) {
         finalFormData.append(key, value);
       } else if (typeof value === "object") {
@@ -107,7 +104,7 @@ const FeedbackForm = ({
 
   const totalTrustScore = Object.values(trustScore).reduce(
     (total, score) => total + score,
-    0
+    0,
   );
 
   useEffect(() => {

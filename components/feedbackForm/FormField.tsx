@@ -70,7 +70,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>,
-    type: string
+    type: string,
   ) => {
     if (
       type === "file" &&
@@ -80,7 +80,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
       handleFilePreviewChange(e as React.ChangeEvent<HTMLInputElement>);
       setValue("companyLogo", e.target.files?.[0]);
     } else onChange(e);
-    
+
     setInput(e.target?.value);
 
     if (
@@ -118,7 +118,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     const fetchLocations = async () => {
       const OpenCageEndpoint = "https://api.opencagedata.com/geocode/v1/json";
       const ResponsePromise = await fetch(
-        `${OpenCageEndpoint}?q=${e.target?.value}&key=${process.env.NEXT_PUBLIC_OPEN_CAGE_API_KEY}`
+        `${OpenCageEndpoint}?q=${e.target?.value}&key=${process.env.NEXT_PUBLIC_OPEN_CAGE_API_KEY}`,
       );
       const ResponseJson = await ResponsePromise.json();
       console.log("responseJson", ResponseJson.results);
@@ -129,7 +129,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   };
 
   const handleFilePreviewChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     // console.log("event.target.files", event.target.files);
