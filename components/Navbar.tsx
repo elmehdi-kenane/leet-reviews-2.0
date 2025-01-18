@@ -130,7 +130,6 @@ const Navbar = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInputValue(event.target.value);
-    localStorage.setItem("searchTerm", event.target.value);
 
     // Trigger a custom event when the search term changes
     // window.dispatchEvent(
@@ -343,7 +342,7 @@ const Navbar = () => {
           <div
             className={`absolute ${isClosingFeedbackForm === true ? "close-feedback-form" : ""} open-feedback-form w-[100%] max-w-[700px] h-full my-auto flex flex-col items-center pt-5 pb-10 overflow-auto`}
             style={{
-              transformOrigin: `${buttonCreateFeedbackPosition.left}px ${buttonCreateFeedbackPosition.top}px`,
+              transformOrigin: `${buttonCreateFeedbackPosition.left / 2}px ${buttonCreateFeedbackPosition.top}px`,
             }}
           >
             <FeedbackForm

@@ -153,7 +153,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
         {isRequired && <span className="text-red-600">*</span>}
       </label>
       <div className="flex w-full">
-        {inputName === "feedbackComment" ? (
+        {inputName === "authorComment" ? (
           <textarea
             maxLength={textareaMaxLength}
             id={inputId}

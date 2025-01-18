@@ -1,4 +1,3 @@
-// import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
 import Navbar from "@/components/Navbar";
@@ -42,7 +41,7 @@ export default async function RootLayout({
       >
         <UserProvider>
           <Navbar />
-          <div className="flex">
+          <div className={`flex overflow-y-auto overflow-x-hidden home-scroll`}>
             <SideBar />
             <BottomBar />
             {children}

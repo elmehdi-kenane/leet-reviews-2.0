@@ -17,8 +17,13 @@
   }
 }
 
+::selection {
+  color: #141e46;
+  background-color: #41b06e;
+}
+
 body {
-  overflow-y: auto;
+  overflow-y: hidden;
   scrollbar-gutter: stable;
 }
 
@@ -43,19 +48,28 @@ body {
   scrollbar-width: thin; */
 }
 
-html::-webkit-scrollbar {
+.home-scroll::-webkit-scrollbar {
   width: 7px;
   margin: 0 100px;
 }
-html::-webkit-scrollbar-track {
+.home-scroll::-webkit-scrollbar-track {
   background: #fff5e0;
   margin-top: 100px;
 }
 
-html::-webkit-scrollbar-thumb {
+.home-scroll::-webkit-scrollbar-thumb {
   background: #141e46;
   border-radius: 15px;
 }
+
+.hidden-scroll::-webkit-scrollbar {
+  width: 0px;
+}
+
+.hidden-scroll::-webkit-scrollbar-thumb {
+  background: #fff5e0;
+}
+
 .scroll-bar-width::-webkit-scrollbar-track {
   margin: 10px;
 }
@@ -64,10 +78,10 @@ html::-webkit-scrollbar-thumb {
   width: 3px;
 }
 
-.scroll-bar-width::-webkit-scrollbar-thumb {
+/* .scroll-bar-width::-webkit-scrollbar-thumb {
   border-radius: 30px;
   background: #141e46;
-}
+} */
 
 @layer utilities {
   .text-balance {

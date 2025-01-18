@@ -14,12 +14,17 @@ enum account_type {
   CONNECTED // Just linked, not used for logging in
 }
 
+enum provider {
+  fortyTwo
+  github
+}
+
 
 model Account {
     id                  String  @id @default(cuid())
     userId              String
     type                String
-    provider            String
+    provider            provider
     provider_account_id String
     account_type        account_type
     username            String? // needed for connect accounts appearance
@@ -72,20 +77,24 @@ model VerificationToken {
 }
 
 model Feedback {
-    id               String    @id @default(uuid())
-    feedbackType     String
-    trustScore       Int
-    companyName      String
-    companyLogo      String
-    companyLinkedIn  String
-    companyLocation  String
-    jobStatus        String
-    workingType      String
-    contractType     String
-    jobProgressType  String
-    experienceRate   Int
-    feedbackComment  String
-    createdAt        DateTime
+    id                   String    @id @default(uuid())
+    feedbackType         String
+    trustScore           Int
+    companyName          String
+    companyLogo          String
+    companyLinkedIn      String
+    companyLocation      String
+    jobStatus            String
+    workingType          String
+    contractType         String
+    jobProgressType      String
+    experienceRate       Int
+    authorComment        String
+    authorAvatar         String
+    authorName           String
+    authorIntraProfile   String
+    authorDiscordProfile String
+    createdAt            DateTime
 
     userId           String
     user             User     @relation(fields: [userId], references: [id])

@@ -99,7 +99,7 @@ const FeedbackForm = ({
     companyLogo: 0,
     companyLinkedIn: 0,
     companyLocation: 0,
-    feedbackComment: 0,
+    authorComment: 0,
   });
 
   const totalTrustScore = Object.values(trustScore).reduce(
@@ -262,10 +262,10 @@ const FeedbackForm = ({
               type="text"
               placeholder="Feedback comment"
               label="Feedback comment"
-              inputName="feedbackComment"
+              inputName="authorComment"
               isRequired={false}
               register={register}
-              error={errors.feedbackComment}
+              error={errors.authorComment}
             />
           </div>
         )}

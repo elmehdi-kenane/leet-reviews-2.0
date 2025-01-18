@@ -35,7 +35,7 @@ export type FormDataRhf = {
   jobProgressType: validJobProgressType;
 
   experienceRate: validExperienceRateType;
-  feedbackComment: string;
+  authorComment: string;
 };
 
 export type FormInputFieldProps = {
@@ -52,7 +52,7 @@ export type FormInputFieldProps = {
     companyLogo: number;
     companyLinkedIn: number;
     companyLocation: number;
-    feedbackComment: number;
+    authorComment: number;
   };
   valueAsNumber?: boolean;
   isRequired: boolean;
@@ -62,7 +62,7 @@ export type FormInputFieldProps = {
       companyLogo: number;
       companyLinkedIn: number;
       companyLocation: number;
-      feedbackComment: number;
+      authorComment: number;
     }>
   >;
 };
@@ -127,7 +127,7 @@ export type FormSelectFieldProps<
     companyLogo: number;
     companyLinkedIn: number;
     companyLocation: number;
-    feedbackComment: number;
+    authorComment: number;
   };
   setValue: UseFormSetValue<FormDataRhf>;
   setTrustScore: Dispatch<
@@ -136,7 +136,7 @@ export type FormSelectFieldProps<
       companyLogo: number;
       companyLinkedIn: number;
       companyLocation: number;
-      feedbackComment: number;
+      authorComment: number;
     }>
   >;
   types: T[]; // The options, passed as an array of strings
@@ -152,7 +152,7 @@ export type ValidInputFieldName =
   | "companyLinkedIn"
   | "companyLocation"
   | "jobStatus"
-  | "feedbackComment";
+  | "authorComment";
 
 export type ValidSelectFieldName =
   | "feedbackType"
@@ -184,3 +184,29 @@ export type FormInputFieldItem = {
   label: string;
   error: FieldError | undefined;
 };
+
+export interface employmentDetailInterface {
+  icon: string;
+  text: string;
+}
+
+export interface FeedbackInterface {
+  experienceRate: number;
+  id: string;
+  companyLogo: string;
+  companyName: string;
+  companyLinkedIn: string;
+  jobStatus: string;
+  userId: string;
+  authorComment: string;
+  authorAvatar: string;
+  authorName: string;
+  authorDiscordProfile: string;
+  authorIntraProfile: string;
+  createdAt: string;
+  workingType: string;
+  contractType: string;
+  companyLocation: string;
+  jobProgressType: string;
+  employmentDetail: employmentDetailInterface[];
+}
