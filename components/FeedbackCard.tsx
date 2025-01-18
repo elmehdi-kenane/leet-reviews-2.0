@@ -144,7 +144,7 @@ const PreviewFeedbackCard = ({
       style={{
         transformOrigin: `${PreviewFeedbackCardPosition.left / 2}px ${PreviewFeedbackCardPosition.top}px`,
       }}
-      className={`flex font-SpaceGrotesk ${isExpandFeedbackCard === true ? "expand-height absolute z-[101] mt-[160px]" : "cursor-pointer"} bg-white flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedbackCard !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""} ${isUnExpandingFeedbackCard === true ? "un-expand-height" : ""}`}
+      className={`flex font-SpaceGrotesk ${isExpandFeedbackCard === true ? "expand-height absolute z-[101] mt-[160px]" : "cursor-pointer"} bg-neutral flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedbackCard !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""} ${isUnExpandingFeedbackCard === true ? "un-expand-height" : ""}`}
     >
       <div className="flex justify-between gap-[10px] max-md:flex-col items-center">
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">

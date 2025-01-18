@@ -141,7 +141,7 @@ const Navbar = () => {
   const inputMaxLength = 30;
   return (
     <div
-      className={`${isHidden === true ? "hidden" : ""} bg-neutral fixed flex flex-wrap justify-center w-full z-[150]`}
+      className={`${isHidden === true ? "hidden" : ""} bg-secondary fixed flex flex-wrap justify-center w-full z-[150]`}
     >
       <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max my-3">
         <Link href={"/home"} className="mr-11 max-md:mr-auto">
@@ -158,9 +158,7 @@ const Navbar = () => {
         </p> */}
         <div
           className={`max-md:hidden flex rounded-xl bg-transparent flex-1 h-[50px] py-1 pl-1 border-2 ${
-            isSearchInputOnFocus === true
-              ? "border-primary"
-              : "border-secondary"
+            isSearchInputOnFocus === true ? "border-primary" : "border-neutral"
           } hover:border-2 hover:border-primary`}
           ref={searchBarRef}
         >
@@ -173,12 +171,12 @@ const Navbar = () => {
               src={`${
                 isSearchInputOnFocus === true
                   ? "/searchGreen.svg"
-                  : "/searchBlue.svg"
+                  : "/searchWhite.svg"
               }`}
               alt={`${
                 isSearchInputOnFocus === true
                   ? "/searchGreen.svg"
-                  : "/searchBlue.svg"
+                  : "/searchWhite.svg"
               }`}
               width={30}
               height={30}
@@ -193,7 +191,7 @@ const Navbar = () => {
             placeholder="Search"
             onChange={handleSearchChange}
             value={searchInputValue}
-            className="outline-none w-full bg-transparent text-secondary font-medium ml-2"
+            className="outline-none w-full bg-transparent text-neutral font-medium ml-2"
           />
           <button
             onClick={() => {
@@ -231,7 +229,7 @@ const Navbar = () => {
           ></Image>
         </button>
         <button
-          className="font-SpaceGrotesk select-none max-md:text-sm h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold text-neutral"
+          className="font-SpaceGrotesk select-none max-md:text-sm h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold text-secondary"
           ref={buttonCreateFeedbackRef}
           onClick={handleOpenFeedbackForm}
         >
@@ -239,7 +237,7 @@ const Navbar = () => {
         </button>
         <div className="flex justify-end  select-none" ref={DropDownRef}>
           <button
-            className={`border-[3px] ${isDropDownOpen === true ? "border-primary" : "border-secondary"} w-[53px] h-[53px] rounded-full flex justify-center items-center`}
+            className={`border-[3px] ${isDropDownOpen === true ? "border-primary" : "border-neutral"} w-[53px] h-[53px] rounded-full flex justify-center items-center`}
             onClick={() => {
               console.log("setIsDropDownOpen", isDropDownOpen);
               setIsDropDownOpen(!isDropDownOpen);
@@ -319,7 +317,7 @@ const Navbar = () => {
           placeholder="Search"
           onChange={handleSearchChange}
           value={searchInputValue}
-          className="outline-none w-full bg-transparent text-secondary font-medium ml-2"
+          className="outline-none w-full bg-transparent text-neutral font-medium ml-2"
           ref={inputMobileRef}
         />
         <button
