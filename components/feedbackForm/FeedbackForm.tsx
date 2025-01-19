@@ -12,11 +12,11 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import closeIcon from "@/public/closeIcon.svg";
 import PublicIcon from "@/public/PublicIcon.svg";
-import PublicIconMinimal from "@/public/PublicIconMinimal.svg";
+// import PublicIconMinimal from "@/public/PublicIconMinimal.svg";
 import CheckMarkIcon from "@/public/checkMarkIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import toast from "react-hot-toast";
-import Link from "next/link";
+// import Link from "next/link";
 import JSConfetti from "js-confetti";
 
 const FeedbackForm = ({
@@ -105,7 +105,7 @@ const FeedbackForm = ({
 
   const totalTrustScore = Object.values(trustScore).reduce(
     (total, score) => total + score,
-    0
+    0,
   );
 
   useEffect(() => {
@@ -160,10 +160,6 @@ const FeedbackForm = ({
 
   const firstStep = 1;
   const lastStep = 4;
-
-  const trustSoreRadius = 15;
-  const fullCircle = 2 * Math.PI * trustSoreRadius;
-  const svgSize = 35;
 
   return (
     <form
@@ -276,6 +272,7 @@ const FeedbackForm = ({
           </div>
         )}
         {currentStep >= 5 ? (
+          <div>thanks</div>
         ) : (
           <div
             className={`flex items-center justify-center flex-wrap gap-2 ${currentStep === 1 ? "w-full" : "max-sm:justify-between w-[80%] mt-auto mb-[20px]"}`}
@@ -314,7 +311,6 @@ const FeedbackForm = ({
               <button
                 type="submit"
                 className={`bg-primary p-3 text-neutral font-bold w-[130px] h-11 flex justify-center items-center rounded-md max-sm:min-w-[49%]`}
-                // onClick={handleStepValidation}
               >
                 PUBLISH
               </button>
@@ -533,119 +529,132 @@ const FeedbackFormHeader = ({
 
 export default FeedbackForm;
 
+// const minimal = ({
+//   totalTrustScore,
+//   setIsClosingFeedbackForm,
+//   setIsPopUpFeedbackFormOpen,
+//   setIsFeedbackFormOpen,
+// }: {
+//   totalTrustScore: number;
+//   setIsClosingFeedbackForm: (value: boolean) => void;
+//   setIsPopUpFeedbackFormOpen: (value: boolean) => void;
+//   setIsFeedbackFormOpen: (value: boolean) => void;
+// }) => {
+//   const trustSoreRadius = 15;
+//   const fullCircle = 2 * Math.PI * trustSoreRadius;
+//   const svgSize = 35;
 
-const minimal = () => {
-    return (
-                  <div className="flex flex-col w-[50%] min-h-[390px] h-full items-center justify-center">
-            <h1 className="font-SpaceGrotesk font-semibold text-[30px] mt-[-50px] max-md:text-[20px] text-center">
-              Thank you for sharing your feedback!
-            </h1>
-            <div className="bg-secondary w-full text-neutral my-[30px] p-5 rounded-xl flex flex-col items-center gap-[30px]">
-              <div className="flex w-full justify-between">
-                <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary">
-                  <div className="rounded-full min-w-[25px] min-h-[25px] bg-secondary flex justify-center items-center">
-                    <Image
-                      className="min-w-[20px]"
-                      src={PublicIconMinimal}
-                      height={20}
-                      width={20}
-                      alt={PublicIconMinimal}
-                    ></Image>
-                  </div>
-                  <p className="text-[12px]">Public Feedback</p>
-                </div>
-                <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-[6px] rounded-xl text-secondary">
-                  <svg
-                    width={svgSize}
-                    height={svgSize}
-                    viewBox={`0 0 ${svgSize} ${svgSize}`}
-                    className={`rounded-full flex justify-center items-center`}
-                  >
-                    <circle
-                      cx={svgSize / 2}
-                      cy={svgSize / 2 + 0.5}
-                      r={trustSoreRadius + 0.7}
-                      stroke="#141e46"
-                      strokeWidth="3"
-                      fill="none"
-                      strokeDasharray={`${fullCircle + 0.1}`}
-                      style={{
-                        transition: "stroke-dashoffset 1s ease-in-out",
-                        strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
-                      }}
-                      transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
-                      strokeLinecap="round"
-                    />
-                    <text
-                      x="50%"
-                      y="50%"
-                      textAnchor="middle"
-                      dy="0.3em"
-                      fontSize="17"
-                      fill="#141e46"
-                    >
-                      {totalTrustScore}
-                    </text>
-                  </svg>
-                </div>
-              </div>
-              <div className="flex flex-col items-center gap-4 mb-[20px]">
-                <Image
-                  className="min-w-[70px]"
-                  src={"DefaultCompanyLogo.svg"}
-                  height={70}
-                  width={70}
-                  alt={"DefaultCompanyLogo.svg"}
-                ></Image>
-                <div className="flex flex-col items-center">
-                  <p className="font-semibold text-[20px]">Tanger Med - TMSA</p>
-                  <p className="font-medium">Software Engineer</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <button className="p-1 w-[32px] h-[32px] justify-center  rounded-md bg-neutral flex items-center gap-1 text-secondary">
-                  <Image
-                    className="min-w-[20px]"
-                    src={"/link.svg"}
-                    height={20}
-                    width={20}
-                    alt={"/link.svg"}
-                  ></Image>
-                </button>
-                <button className="w-[32px] h-[32px] flex justify-center items-center p-1 rounded-md bg-neutral">
-                  <Image
-                    className="min-w-[20px]"
-                    src={"/edit.svg"}
-                    height={20}
-                    width={20}
-                    alt={"/edit.svg"}
-                  ></Image>
-                </button>
-                <button className="w-[32px] h-[32px] flex justify-center items-center p-1 rounded-md bg-neutral">
-                  <Image
-                    className="min-w-[20px]"
-                    src={"/eye.svg"}
-                    height={20}
-                    width={20}
-                    alt={"/eye.svg"}
-                  ></Image>
-                </button>
-              </div>
-            </div>
-            <Link
-              href={"/home"}
-              className={`p-3 text-secondary font-bold font-SpaceGrotesk w-[100%] border-2 border-secondary rounded-md mb-[10px] h-11 flex justify-center items-center`}
-              onClick={() => {
-                setIsClosingFeedbackForm(true);
-                setIsPopUpFeedbackFormOpen(false);
-                setTimeout(() => {
-                  setIsClosingFeedbackForm(false);
-                  setIsFeedbackFormOpen(false);
-                }, 300);
-              }}
-            >
-              Back to home
-            </Link>
-          </div>
-    )
-}
+//   return (
+//     <div className="flex flex-col w-[50%] min-h-[390px] h-full items-center justify-center">
+//       <h1 className="font-SpaceGrotesk font-semibold text-[30px] mt-[-50px] max-md:text-[20px] text-center">
+//         Thank you for sharing your feedback!
+//       </h1>
+//       <div className="bg-secondary w-full text-neutral my-[30px] p-5 rounded-xl flex flex-col items-center gap-[30px]">
+//         <div className="flex w-full justify-between">
+//           <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary">
+//             <div className="rounded-full min-w-[25px] min-h-[25px] bg-secondary flex justify-center items-center">
+//               <Image
+//                 className="min-w-[20px]"
+//                 src={PublicIconMinimal}
+//                 height={20}
+//                 width={20}
+//                 alt={PublicIconMinimal}
+//               ></Image>
+//             </div>
+//             <p className="text-[12px]">Public Feedback</p>
+//           </div>
+//           <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-[6px] rounded-xl text-secondary">
+//             <svg
+//               width={svgSize}
+//               height={svgSize}
+//               viewBox={`0 0 ${svgSize} ${svgSize}`}
+//               className={`rounded-full flex justify-center items-center`}
+//             >
+//               <circle
+//                 cx={svgSize / 2}
+//                 cy={svgSize / 2 + 0.5}
+//                 r={trustSoreRadius + 0.7}
+//                 stroke="#141e46"
+//                 strokeWidth="3"
+//                 fill="none"
+//                 strokeDasharray={`${fullCircle + 0.1}`}
+//                 style={{
+//                   transition: "stroke-dashoffset 1s ease-in-out",
+//                   strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
+//                 }}
+//                 transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
+//                 strokeLinecap="round"
+//               />
+//               <text
+//                 x="50%"
+//                 y="50%"
+//                 textAnchor="middle"
+//                 dy="0.3em"
+//                 fontSize="17"
+//                 fill="#141e46"
+//               >
+//                 {totalTrustScore}
+//               </text>
+//             </svg>
+//           </div>
+//         </div>
+//         <div className="flex flex-col items-center gap-4 mb-[20px]">
+//           <Image
+//             className="min-w-[70px]"
+//             src={"DefaultCompanyLogo.svg"}
+//             height={70}
+//             width={70}
+//             alt={"DefaultCompanyLogo.svg"}
+//           ></Image>
+//           <div className="flex flex-col items-center">
+//             <p className="font-semibold text-[20px]">Tanger Med - TMSA</p>
+//             <p className="font-medium">Software Engineer</p>
+//           </div>
+//         </div>
+//         <div className="flex gap-2">
+//           <button className="p-1 w-[32px] h-[32px] justify-center  rounded-md bg-neutral flex items-center gap-1 text-secondary">
+//             <Image
+//               className="min-w-[20px]"
+//               src={"/link.svg"}
+//               height={20}
+//               width={20}
+//               alt={"/link.svg"}
+//             ></Image>
+//           </button>
+//           <button className="w-[32px] h-[32px] flex justify-center items-center p-1 rounded-md bg-neutral">
+//             <Image
+//               className="min-w-[20px]"
+//               src={"/edit.svg"}
+//               height={20}
+//               width={20}
+//               alt={"/edit.svg"}
+//             ></Image>
+//           </button>
+//           <button className="w-[32px] h-[32px] flex justify-center items-center p-1 rounded-md bg-neutral">
+//             <Image
+//               className="min-w-[20px]"
+//               src={"/eye.svg"}
+//               height={20}
+//               width={20}
+//               alt={"/eye.svg"}
+//             ></Image>
+//           </button>
+//         </div>
+//       </div>
+//       <Link
+//         href={"/home"}
+//         className={`p-3 text-secondary font-bold font-SpaceGrotesk w-[100%] border-2 border-secondary rounded-md mb-[10px] h-11 flex justify-center items-center`}
+//         onClick={() => {
+//           setIsClosingFeedbackForm(true);
+//           setIsPopUpFeedbackFormOpen(false);
+//           setTimeout(() => {
+//             setIsClosingFeedbackForm(false);
+//             setIsFeedbackFormOpen(false);
+//           }, 300);
+//         }}
+//       >
+//         Back to home
+//       </Link>
+//     </div>
+//   );
+// };

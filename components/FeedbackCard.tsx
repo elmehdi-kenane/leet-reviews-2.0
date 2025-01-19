@@ -39,12 +39,13 @@ const getExperienceRateIcon = (experienceRate: number) => {
     "Good.svg",
     "Excellent.svg",
   ];
-  return icons[experienceRate];
+  console.log("experienceRate", experienceRate);
+  return icons[experienceRate - 1];
 };
 
 const getExperienceRateText = (experienceRate: number) => {
-  const icons = ["VeryPoor", "Poor", "Average", "Good", "Excellent"];
-  return icons[experienceRate];
+  const texts = ["VeryPoor", "Poor", "Average", "Good", "Excellent"];
+  return texts[experienceRate - 1];
 };
 
 export const FeedbackCard = () => {
