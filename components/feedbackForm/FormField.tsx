@@ -147,13 +147,13 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   const textareaMaxLength = 180;
 
   return (
-    <div className="flex flex-col w-[70%]">
+    <div className="text-secondary flex flex-col w-[70%]">
       <label htmlFor={inputId} className="font-semibold">
         {label}
         {isRequired && <span className="text-red-600">*</span>}
       </label>
       <div className="flex w-full">
-        {inputName === "feedbackComment" ? (
+        {inputName === "authorComment" ? (
           <textarea
             maxLength={textareaMaxLength}
             id={inputId}
@@ -334,7 +334,9 @@ export const FormSelectOptionField = <
     "Excellent",
   ];
   return (
-    <div className={`${currentStep === 1 ? "w-full" : "w-[70%]"}`}>
+    <div
+      className={`${currentStep === 1 ? "w-full" : "w-[70%]"} text-secondary`}
+    >
       {currentStep !== 1 && (
         <label htmlFor={selectId} className="font-semibold">
           {label}

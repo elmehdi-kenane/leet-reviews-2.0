@@ -10,13 +10,34 @@ interface CloudinaryUploadResult {
 }
 
 export async function POST(request: NextRequest) {
-  //   console.log("request", request);
   const formData = await request.formData();
-  //   console.log("formData:", formData);
   const result = await validateRequest();
   const userId = result.user?.id;
   if (userId === undefined)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const authorAvatar = result.user?.avatar ?? "";
+  const user = await prismaClient.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  const authorName = user?.name ?? "";
+
+  const userAccounts = await prismaClient.account.findMany({
+    where: {
+      userId: userId,
+    },
+  });
+  let authorIntraProfile = "";
+  const authorDiscordProfile = "";
+  for (let index = 0; index < userAccounts.length; index++) {
+    if (
+      userAccounts[index].account_type === "AUTH" &&
+      userAccounts[index].provider === "fortyTwo"
+    )
+      authorIntraProfile = `https://profile.intra.42.fr/users/${userAccounts[index].username}`;
+  }
 
   const createAt = new Date();
   const data: FeedbackCreateInput = {
@@ -31,7 +52,11 @@ export async function POST(request: NextRequest) {
     contractType: "",
     jobProgressType: "",
     experienceRate: 0,
-    feedbackComment: "",
+    authorComment: "",
+    authorIntraProfile: authorIntraProfile,
+    authorDiscordProfile: authorDiscordProfile,
+    authorAvatar: authorAvatar,
+    authorName: authorName,
     createdAt: createAt,
     userId: userId,
   };
@@ -39,8 +64,7 @@ export async function POST(request: NextRequest) {
   for (const [key, value] of formData.entries()) {
     if (value instanceof File || key === "companyLogo") {
       if (value === "undefined") {
-        console.log("value undefined");
-        data[key] = "/default.jpeg";
+        data[key] = "/DefaultCompanyLogo.svg";
       } else {
         const companyLogoFile = value as File;
         const fileBuffer = Buffer.from(await companyLogoFile.arrayBuffer());

@@ -29,7 +29,11 @@ export interface FeedbackCreateInput {
   contractType: string;
   jobProgressType: string;
   experienceRate: number;
-  feedbackComment: string;
+  authorComment: string;
+  authorAvatar: string;
+  authorName: string;
+  authorIntraProfile: string;
+  authorDiscordProfile: string;
   createdAt: Date;
   userId: string;
 }

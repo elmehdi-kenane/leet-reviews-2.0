@@ -19,7 +19,7 @@ export type CompanyInfosStepProps = {
       companyLogo: number;
       companyLinkedIn: number;
       companyLocation: number;
-      feedbackComment: number;
+      authorComment: number;
     }>
   >;
   trustScore: {
@@ -27,7 +27,7 @@ export type CompanyInfosStepProps = {
     companyLogo: number;
     companyLinkedIn: number;
     companyLocation: number;
-    feedbackComment: number;
+    authorComment: number;
   };
 };
 

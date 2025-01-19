@@ -1,4 +1,3 @@
-// import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
 import Navbar from "@/components/Navbar";
@@ -32,17 +31,17 @@ export default async function RootLayout({
   //   const { user } = await validateRequest();
   //   if (!user) {
   //     console.log("redirect to sign in page");
-  //     return redirect("/auth/signin");
+  //     return redirect("/auth/sign-in");
   //   }
 
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral text-secondary w-full h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary text-neutral w-full h-screen flex flex-col`}
       >
         <UserProvider>
           <Navbar />
-          <div className="flex">
+          <div className={`flex overflow-y-auto overflow-x-hidden home-scroll`}>
             <SideBar />
             <BottomBar />
             {children}

@@ -33,7 +33,7 @@ export const UserProvider: React.FC<{
   const router = useRouter();
 
   useEffect(() => {
-    const hiddenRoutes = ["/auth/signin", "/auth/signup"];
+    const hiddenRoutes = ["/auth/sign-in", "/auth/sign-up"];
     const isHidden = hiddenRoutes.includes(pathname);
 
     if (isHidden) {
@@ -50,10 +50,10 @@ export const UserProvider: React.FC<{
         console.error("Error fetching user:", errorData.error);
         if (response.status === 401) {
           console.log("Unauthorized access. Please log in.");
-          router.push("/auth/signin");
+          router.push("/auth/sign-in");
         } else {
           console.log("An unexpected error occurred.");
-          router.push("/auth/signin");
+          router.push("/auth/sign-in");
         }
         return;
       }

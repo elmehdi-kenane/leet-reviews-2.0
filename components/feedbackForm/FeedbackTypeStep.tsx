@@ -18,7 +18,7 @@ export type FeedbackTypeStepProps = {
       companyLogo: number;
       companyLinkedIn: number;
       companyLocation: number;
-      feedbackComment: number;
+      authorComment: number;
     }>
   >;
   trustScore: {
@@ -26,7 +26,7 @@ export type FeedbackTypeStepProps = {
     companyLogo: number;
     companyLinkedIn: number;
     companyLocation: number;
-    feedbackComment: number;
+    authorComment: number;
   };
   watch: UseFormWatch<FormDataRhf>;
 };
