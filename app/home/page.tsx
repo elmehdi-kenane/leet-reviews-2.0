@@ -30,13 +30,13 @@ export default function Home() {
   }
 
   return (
-    <div className={`w-full px-3`}>
+    <div className={`w-full`}>
       {/* <h1>Welcome, {userInfo?.username}</h1>
       <Link href={"/api/auth/connect/discord"}>
         <button>connect with discord</button>
       </Link>
       <DisplayAccounts></DisplayAccounts> */}
-      <div className="w-full flex flex-col items-center my-[100px]">
+      <div className="w-full pl-[6px] flex flex-col items-center my-[100px]">
         {feedbacks.map((feedback) => {
           return (
             <FeedbackCard feedback={feedback} key={feedback.id}></FeedbackCard>

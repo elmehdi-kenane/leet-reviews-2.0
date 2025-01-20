@@ -11,6 +11,7 @@ import { FeedbackInterface, employmentDetailInterface } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
+import { RefObject } from "react";
 
 const getExperienceRateIcon = (experienceRate: number) => {
   const icons = [
@@ -37,15 +38,20 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   );
   const [PreviewFeedbackCardPosition, setPreviewFeedbackCardPosition] =
     useState({ top: 0, left: 0 });
+  const PreviewFeedbackCardRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
       {isExpandFeedbackCard === true && (
-        <div className="absolute font-SpaceGrotesk h-full min-w-[100%] top-0 z-[100] bg-white/50 backdrop-blur-xl flex justify-center">
-          <div className="w-full flex justify-center items-start fixed">
+        <div className="absolute font-SpaceGrotesk h-full min-w-[100%] top-0 z-[151] bg-white/50 backdrop-blur-xl flex justify-center">
+          <div
+            className="max-w-[860px] w-full flex justify-center h-full items-start overflow-auto"
+            ref={PreviewFeedbackCardRef}
+          >
             <PreviewFeedbackCard
               PreviewFeedbackCardPosition={PreviewFeedbackCardPosition}
               isExpandFeedbackCard={true}
+              PreviewFeedbackCardRef={PreviewFeedbackCardRef}
               setPreviewFeedbackCardPosition={setPreviewFeedbackCardPosition}
               setIsExpandFeedbackCard={setIsExpandFeedbackCard}
               feedback={feedback}
@@ -56,6 +62,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
       <PreviewFeedbackCard
         PreviewFeedbackCardPosition={PreviewFeedbackCardPosition}
         isExpandFeedbackCard={false}
+        PreviewFeedbackCardRef={PreviewFeedbackCardRef}
         setPreviewFeedbackCardPosition={setPreviewFeedbackCardPosition}
         setIsExpandFeedbackCard={setIsExpandFeedbackCard}
         feedback={feedback}
@@ -70,6 +77,7 @@ const PreviewFeedbackCard = ({
   feedback,
   isExpandFeedbackCard,
   PreviewFeedbackCardPosition,
+  PreviewFeedbackCardRef,
 }: {
   setPreviewFeedbackCardPosition: (position: {
     top: number;
@@ -79,9 +87,9 @@ const PreviewFeedbackCard = ({
   isExpandFeedbackCard: boolean;
   PreviewFeedbackCardPosition: { top: number; left: number };
   feedback: FeedbackInterface;
+  PreviewFeedbackCardRef: RefObject<HTMLDivElement>;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const PreviewFeedbackCardRef = useRef<HTMLDivElement>(null);
   const [isUnExpandingFeedbackCard, setIsUnExpandingFeedbackCard] =
     useState(false);
   const router = useRouter();
@@ -126,7 +134,6 @@ const PreviewFeedbackCard = ({
 
   return (
     <div
-      ref={PreviewFeedbackCardRef}
       onClick={() => {
         router.push(`/home?feedbackId=${feedback.id}`);
         setIsExpandFeedbackCard(true);
@@ -144,7 +151,7 @@ const PreviewFeedbackCard = ({
       style={{
         transformOrigin: `${PreviewFeedbackCardPosition.left / 2}px ${PreviewFeedbackCardPosition.top}px`,
       }}
-      className={`flex font-SpaceGrotesk ${isExpandFeedbackCard === true ? "expand-height absolute z-[101] mt-[160px]" : "cursor-pointer"} bg-neutral flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedbackCard !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""} ${isUnExpandingFeedbackCard === true ? "un-expand-height" : ""}`}
+      className={`flex font-SpaceGrotesk ${isExpandFeedbackCard === true ? "expand-height z-[101] mt-[160px] mb-[100px]" : "cursor-pointer"} bg-neutral flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedbackCard !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""} ${isUnExpandingFeedbackCard === true ? "un-expand-height" : ""}`}
     >
       <div className="flex justify-between gap-[10px] max-md:flex-col items-center">
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
@@ -154,7 +161,7 @@ const PreviewFeedbackCard = ({
               alt={feedback.companyLogo}
               width={125}
               height={125}
-              className="rounded-full min-w-[125px] min-h-[125px] max-w-[125px] max-h-[125px]"
+              className="rounded-full min-w-[125px] min-h-[125px] max-w-[125px] max-h-[125px] border-2 border-secondary"
             />
             <CustomizedTooltip
               placement="bottom"
@@ -250,7 +257,7 @@ const PreviewFeedbackCard = ({
             />
             <p className="mb-[15px] font-semibold">{feedback.authorName}</p>
           </div>
-          <div className="border-2 border-[#00224D] p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
+          <div className="border-2 border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
             <p className="overflow-x-auto w-full font-Inter dark-scrollbar">
               {feedback.authorComment}
             </p>
@@ -310,7 +317,7 @@ const PreviewFeedbackCard = ({
       )}
       <div className="flex justify-between items-center">
         <div className="flex flex-col max-sm:ml-[7px]">
-          <p className="font-semibold italic text-[12px]">
+          <p className="font-medium italic text-[12px]">
             {formatDistanceToNow(new Date(feedback.createdAt), {
               addSuffix: true,
             })}
@@ -321,7 +328,7 @@ const PreviewFeedbackCard = ({
             onMouseEnter={() => setIsHovered(true)}
             onClick={() => setIsExpandFeedbackCard(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="text-[#41B06E] select-none items-center flex item hover:bg-[#41B06E] hover:text-white s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
+            className="text-[#41B06E] select-none items-center flex item hover:bg-[#41B06E] hover:text-neutral s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
           >
             <Image
               src={`${isHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}
@@ -329,7 +336,7 @@ const PreviewFeedbackCard = ({
               width={20}
               height={20}
             />
-            <p className="max-sm:hidden">Comment</p>
+            <p className="max-sm:hidden font-semibold">Comment</p>
           </button>
         )}
       </div>
@@ -341,7 +348,6 @@ const PreviewFeedbackCard = ({
           <button
             className="p-3 bg-secondary text-neutral rounded-xl font-semibold w-max flex gap-2"
             onClick={(e) => {
-              console.log("backkkkkkkkkkkkkkk");
               closeExpandedFeedbackCard(e);
               e.stopPropagation();
             }}

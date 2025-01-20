@@ -225,3 +225,16 @@ body {
     opacity: 1;
   }
 }
+
+.scaleUp-minimal-preview-feedback {
+  animation: scaleUpMinimalPreviewFeedback 0.1s ease-in forwards;
+}
+
+@keyframes scaleUpMinimalPreviewFeedback {
+  0% {
+    scale: 1;
+  }
+  100% {
+    scale: 1.5;
+  }
+}

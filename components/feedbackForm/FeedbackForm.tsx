@@ -275,7 +275,6 @@ const FeedbackForm = ({
           <MinimalPreviewFeedback
             totalTrustScore={totalTrustScore}
             setIsClosingFeedbackForm={setIsClosingFeedbackForm}
-            setIsPopUpFeedbackFormOpen={setIsPopUpFeedbackFormOpen}
             setIsFeedbackFormOpen={setIsFeedbackFormOpen}
           ></MinimalPreviewFeedback>
         ) : (
@@ -537,38 +536,36 @@ export default FeedbackForm;
 const MinimalPreviewFeedback = ({
   totalTrustScore,
   setIsClosingFeedbackForm,
-  setIsPopUpFeedbackFormOpen,
   setIsFeedbackFormOpen,
 }: {
   totalTrustScore: number;
   setIsClosingFeedbackForm: (value: boolean) => void;
-  setIsPopUpFeedbackFormOpen: (value: boolean) => void;
   setIsFeedbackFormOpen: (value: boolean) => void;
 }) => {
-  const trustSoreRadius = 15;
+  const trustSoreRadius = 8;
   const fullCircle = 2 * Math.PI * trustSoreRadius;
-  const svgSize = 35;
+  const svgSize = 20;
 
   return (
     <div className="flex flex-col w-[50%] min-h-[390px] h-full items-center justify-center">
       <h1 className="font-SpaceGrotesk text-secondary font-semibold text-[30px] mt-[-50px] max-md:text-[20px] text-center">
         Thank you for sharing your feedback!
       </h1>
-      <div className="bg-secondary shadow-2xl w-full text-neutral my-[30px] p-5 rounded-xl flex flex-col items-center gap-[30px]">
+      <div className="bg-secondary transition-transform duration-300 hover:scale-105 shadow-2xl w-full text-neutral my-[30px] p-5 rounded-xl flex flex-col items-center gap-[30px]">
         <div className="flex w-full justify-between">
-          <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary">
-            <div className="rounded-full min-w-[25px] min-h-[25px] bg-secondary flex justify-center items-center">
+          <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary h-max">
+            <div className="rounded-full min-w-[20px] min-h-[20px] bg-secondary flex justify-center items-center">
               <Image
-                className="min-w-[20px]"
+                className="min-w-[15px]"
                 src={PublicIconMinimal}
-                height={20}
-                width={20}
+                height={15}
+                width={15}
                 alt={PublicIconMinimal}
               ></Image>
             </div>
-            <p className="text-[12px]">Public Feedback</p>
+            <p className="text-[10px]">Public Feedback</p>
           </div>
-          <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-[6px] rounded-xl text-secondary">
+          <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary">
             <svg
               width={svgSize}
               height={svgSize}
@@ -595,7 +592,7 @@ const MinimalPreviewFeedback = ({
                 y="50%"
                 textAnchor="middle"
                 dy="0.3em"
-                fontSize="17"
+                fontSize="10"
                 fill="#141e46"
               >
                 {totalTrustScore}
@@ -649,9 +646,9 @@ const MinimalPreviewFeedback = ({
       <Link
         href={"/home"}
         className={`p-3 text-secondary font-bold font-SpaceGrotesk w-[100%] border-2 border-secondary rounded-md mb-[10px] h-11 flex justify-center items-center`}
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           setIsClosingFeedbackForm(true);
-          setIsPopUpFeedbackFormOpen(false);
           setTimeout(() => {
             setIsClosingFeedbackForm(false);
             setIsFeedbackFormOpen(false);
