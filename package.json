@@ -40,6 +40,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.53.1",
     "react-hot-toast": "^2.4.1",
+    "react-loading-skeleton": "^3.5.0",
     "react-simple-star-rating": "^5.1.7",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",

@@ -24,6 +24,8 @@ import CustomizedTooltip from "@/components/CustomizedTooltip";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface responseDataInterface {
   newFeedback: FeedbackInterface;
@@ -46,7 +48,31 @@ const FeedbackForm = ({
     trigger,
   } = useForm<FormDataRhf>();
 
-  const [newFeedback, setNewFeedback] = useState<FeedbackInterface>();
+  const defaultNewFeedback: FeedbackInterface = {
+    experienceRate: 0,
+    trustScore: 0,
+    id: "",
+    companyLogo: "",
+    feedbackType: "",
+    companyName: "",
+    companyLinkedIn: "",
+    jobStatus: "",
+    userId: "",
+    authorComment: "",
+    authorAvatar: "",
+    authorName: "",
+    authorDiscordProfile: "",
+    authorIntraProfile: "",
+    createdAt: "",
+    workingType: "",
+    contractType: "",
+    companyLocation: "",
+    jobProgressType: "",
+    employmentDetail: [{ icon: "", text: "" }],
+  };
+
+  const [newFeedback, setNewFeedback] =
+    useState<FeedbackInterface>(defaultNewFeedback);
   const userContext = useContext(UserContext);
 
   const onSubmit = async (data: FormDataRhf) => {
@@ -282,7 +308,7 @@ const FeedbackForm = ({
             />
           </div>
         )}
-        {currentStep >= 5 && newFeedback ? (
+        {currentStep >= 5 ? (
           <MinimalPreviewFeedback
             feedback={newFeedback}
             setIsClosingFeedbackForm={setIsClosingFeedbackForm}
@@ -630,107 +656,117 @@ const MinimalPreviewFeedback = ({
 
   return (
     <div className="flex flex-col w-[50%] min-h-[390px] h-full items-center justify-center">
-      <h1 className="font-SpaceGrotesk text-secondary font-semibold text-[30px] mt-[-50px] max-md:text-[20px] text-center">
+      <h1 className="font-SpaceGrotesk text-secondary font-semibold text-[30px] max-md:text-[20px] text-center">
         Thank you for sharing your feedback!
       </h1>
       <div className="bg-secondary transition-transform duration-300 hover:scale-105 shadow-2xl w-full text-neutral my-[30px] p-5 rounded-xl flex flex-col items-center gap-[30px]">
-        <div className="flex w-full justify-between">
-          <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary h-[38px]">
-            <div className="rounded-full min-w-[20px] min-h-[20px] bg-secondary flex justify-center items-center">
-              <Image
-                className="min-w-[15px]"
-                src={
-                  feedback.feedbackType === "Publicly"
-                    ? PublicIconMinimal
-                    : AnonymousIconMinimal
-                }
-                height={15}
-                width={15}
-                alt={
-                  feedback.feedbackType === "Publicly"
-                    ? PublicIconMinimal
-                    : AnonymousIconMinimal
-                }
-              ></Image>
+        {feedback.id === "" ? (
+          <MinimalPreviewFeedbackSkeleton></MinimalPreviewFeedbackSkeleton>
+        ) : (
+          <>
+            <div className="flex w-full justify-between">
+              <div className="w-full font-semibold flex items-center justify-between rounded-lg text-secondary h-[38px]">
+                <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary">
+                  <svg
+                    width={svgSize}
+                    height={svgSize}
+                    viewBox={`0 0 ${svgSize} ${svgSize}`}
+                    className={`rounded-full flex justify-center items-center`}
+                  >
+                    <circle
+                      cx={svgSize / 2}
+                      cy={svgSize / 2 + 0.5}
+                      r={trustSoreRadius + 0.7}
+                      stroke="#141e46"
+                      strokeWidth="2"
+                      fill="none"
+                      strokeDasharray={`${fullCircle + 0.1}`}
+                      style={{
+                        transition: "stroke-dashoffset 1s ease-in-out",
+                        strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${feedback.trustScore} / 10))`,
+                      }}
+                      transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
+                      strokeLinecap="round"
+                    />
+                    <text
+                      x="50%"
+                      y="50%"
+                      textAnchor="middle"
+                      dy="0.3em"
+                      fontSize="14"
+                      fill="#141e46"
+                    >
+                      {feedback.trustScore}
+                    </text>
+                  </svg>
+                </div>
+                <div className="flex items-center gap-1 bg-neutral p-2 rounded-lg h-[38px]">
+                  <div className="rounded-full min-w-[20px] min-h-[20px] bg-secondary flex justify-center items-center">
+                    <Image
+                      className="min-w-[15px]"
+                      src={
+                        feedback.feedbackType === "Publicly"
+                          ? PublicIconMinimal
+                          : AnonymousIconMinimal
+                      }
+                      height={15}
+                      width={15}
+                      alt={
+                        feedback.feedbackType === "Publicly"
+                          ? PublicIconMinimal
+                          : AnonymousIconMinimal
+                      }
+                    ></Image>
+                  </div>
+                  <p className="text-[10px]">{feedback.feedbackType}</p>
+                </div>
+              </div>
             </div>
-            <p className="text-[10px]">{feedback.feedbackType}</p>
-          </div>
-          <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary">
-            <svg
-              width={svgSize}
-              height={svgSize}
-              viewBox={`0 0 ${svgSize} ${svgSize}`}
-              className={`rounded-full flex justify-center items-center`}
-            >
-              <circle
-                cx={svgSize / 2}
-                cy={svgSize / 2 + 0.5}
-                r={trustSoreRadius + 0.7}
-                stroke="#141e46"
-                strokeWidth="2"
-                fill="none"
-                strokeDasharray={`${fullCircle + 0.1}`}
-                style={{
-                  transition: "stroke-dashoffset 1s ease-in-out",
-                  strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${feedback.trustScore} / 10))`,
-                }}
-                transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
-                strokeLinecap="round"
-              />
-              <text
-                x="50%"
-                y="50%"
-                textAnchor="middle"
-                dy="0.3em"
-                fontSize="14"
-                fill="#141e46"
-              >
-                {feedback.trustScore}
-              </text>
-            </svg>
-          </div>
-        </div>
-        <div className="flex flex-col items-center gap-4 mb-[20px]">
-          <Image
-            className="min-w-[70px]"
-            src={feedback.companyLogo}
-            height={70}
-            width={70}
-            alt={feedback.companyLogo}
-          ></Image>
-          <div className="flex flex-col items-center">
-            <p className="font-semibold text-[20px]">{feedback.companyName}</p>
-            <p className="font-medium">{feedback.jobStatus}</p>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          {buttons.map((item, index) => {
-            return (
-              <CustomizedTooltip
-                key={index}
-                placement="top"
-                title={item.text}
-                arrow
-              >
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    item.onclick(e);
-                  }}
-                  className={`p-1 w-[32px] h-[32px] justify-center  rounded-md bg-neutral flex items-center gap-1 text-secondary`}
-                >
-                  <Image
-                    className="min-w-[20px]"
-                    src={item.icon}
-                    height={20}
-                    width={20}
-                    alt={item.icon}
-                  ></Image>
-                </button>
-              </CustomizedTooltip>
-            );
-          })}
-        </div>
+            <div className="flex flex-col items-center gap-4 mb-[5px]">
+              <Image
+                className="min-w-[70px]"
+                src={feedback.companyLogo}
+                height={150}
+                width={150}
+                alt={feedback.companyLogo}
+              ></Image>
+              <div className="flex flex-col items-center">
+                <p className="font-semibold text-[20px]">
+                  {feedback.companyName}
+                </p>
+                <p className="font-medium">{feedback.jobStatus}</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              {buttons.map((item, index) => {
+                return (
+                  <CustomizedTooltip
+                    key={index}
+                    placement="top"
+                    title={item.text}
+                    arrow
+                  >
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        item.onclick(e);
+                      }}
+                      className={`p-1 w-[32px] h-[32px] justify-center  rounded-md bg-neutral flex items-center gap-1 text-secondary`}
+                    >
+                      <Image
+                        className="min-w-[20px]"
+                        src={item.icon}
+                        height={20}
+                        width={20}
+                        alt={item.icon}
+                      ></Image>
+                    </button>
+                  </CustomizedTooltip>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
       <Link
         href={"/home"}
@@ -742,5 +778,79 @@ const MinimalPreviewFeedback = ({
         Back to home
       </Link>
     </div>
+  );
+};
+
+const MinimalPreviewFeedbackSkeleton = () => {
+  return (
+    <>
+      <SkeletonTheme
+        baseColor="#D9D9D9"
+        //   baseColor="red"
+        highlightColor="#fff5e0"
+      >
+        <div className="flex flex-col w-full justify-center items-center gap-3">
+          <div className="flex flex-col w-full justify-center items-center gap-3">
+            <div className="flex w-full items-center justify-between">
+              <Skeleton
+                className=""
+                containerClassName=""
+                height={35}
+                width={120}
+              ></Skeleton>
+              <Skeleton
+                className=""
+                containerClassName=""
+                height={35}
+                width={35}
+              ></Skeleton>
+            </div>
+            <div className="w-[125px] h-[125px] rounded-full flex justify-center items-center">
+              <Skeleton
+                className=""
+                containerClassName="flex-1"
+                circle={true}
+                height={125}
+                width={125}
+              ></Skeleton>
+            </div>
+            <div className="flex flex-col max-sm:items-center items-center justify-center ">
+              <Skeleton
+                className=""
+                containerClassName="flex-1"
+                height={25}
+                width={150}
+              ></Skeleton>
+              <Skeleton
+                className=""
+                containerClassName="flex-1"
+                height={25}
+                width={105}
+              ></Skeleton>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Skeleton
+              className=""
+              containerClassName="flex-1"
+              height={32}
+              width={32}
+            ></Skeleton>
+            <Skeleton
+              className=""
+              containerClassName="flex-1"
+              height={32}
+              width={32}
+            ></Skeleton>
+            <Skeleton
+              className=""
+              containerClassName="flex-1"
+              height={32}
+              width={32}
+            ></Skeleton>
+          </div>
+        </div>
+      </SkeletonTheme>
+    </>
   );
 };
