@@ -2,6 +2,8 @@
 
 import React, { createContext, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { FeedbackInterface } from "@/lib/types";
+
 export interface User {
   username: string;
   avatar: string;
@@ -11,12 +13,14 @@ export interface User {
 
 interface UserContextType {
   userInfo: User | null;
+  feedbacks: FeedbackInterface[];
+  setFeedbacks: (
+    value:
+      | FeedbackInterface[]
+      | ((prevFeedbacks: FeedbackInterface[]) => FeedbackInterface[]),
+  ) => void;
   setUserInfo: (user: User | null) => void;
 }
-
-export const UserContext = createContext<UserContextType | undefined>(
-  undefined,
-);
 
 const defaultUser: User = {
   username: "default_username",
@@ -25,10 +29,20 @@ const defaultUser: User = {
   email: "default_email",
 };
 
+const defaultUserContext: UserContextType = {
+  userInfo: defaultUser,
+  feedbacks: [],
+  setFeedbacks: () => {},
+  setUserInfo: () => {},
+};
+
+export const UserContext = createContext<UserContextType>(defaultUserContext);
+
 export const UserProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [userInfo, setUserInfo] = useState<User | null>(defaultUser);
+  const [feedbacks, setFeedbacks] = useState<FeedbackInterface[] | []>([]);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -67,7 +81,9 @@ export const UserProvider: React.FC<{
   }, [pathname]);
 
   return (
-    <UserContext.Provider value={{ userInfo, setUserInfo }}>
+    <UserContext.Provider
+      value={{ userInfo, setUserInfo, feedbacks, setFeedbacks }}
+    >
       {children}
     </UserContext.Provider>
   );

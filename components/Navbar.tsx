@@ -218,10 +218,10 @@ const Navbar = () => {
         >
           <Image
             src={`${
-              isSearchBarOpen === true ? "/searchGreen.svg" : "/searchBlue.svg"
+              isSearchBarOpen === true ? "/searchGreen.svg" : "/searchWhite.svg"
             }`}
             alt={`${
-              isSearchBarOpen === true ? "/searchGreen.svg" : "/searchBlue.svg"
+              isSearchBarOpen === true ? "/searchGreen.svg" : "/searchWhite.svg"
             }`}
             width={30}
             height={30}

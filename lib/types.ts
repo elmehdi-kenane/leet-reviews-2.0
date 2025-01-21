@@ -192,8 +192,10 @@ export interface employmentDetailInterface {
 
 export interface FeedbackInterface {
   experienceRate: number;
+  trustScore: number;
   id: string;
   companyLogo: string;
+  feedbackType: string;
   companyName: string;
   companyLinkedIn: string;
   jobStatus: string;

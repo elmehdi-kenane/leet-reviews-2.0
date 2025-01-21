@@ -36,6 +36,11 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   const [isExpandFeedbackCard, setIsExpandFeedbackCard] = useState(
     feedbackId === feedback.id ? true : false,
   );
+
+  useEffect(() => {
+    setIsExpandFeedbackCard(feedbackId === feedback.id);
+  }, [feedbackId, feedback.id]);
+
   const [PreviewFeedbackCardPosition, setPreviewFeedbackCardPosition] =
     useState({ top: 0, left: 0 });
   const PreviewFeedbackCardRef = useRef<HTMLDivElement>(null);
@@ -122,7 +127,6 @@ const PreviewFeedbackCard = ({
     e: MouseEvent | React.MouseEvent<HTMLButtonElement>,
   ) => {
     if (isExpandFeedbackCard === false) return;
-    console.log("PreviewFeedbackCardRef", PreviewFeedbackCardRef);
     router.push(`/home`);
     setIsUnExpandingFeedbackCard(true);
     setTimeout(() => {
@@ -262,7 +266,7 @@ const PreviewFeedbackCard = ({
               {feedback.authorComment}
             </p>
             {feedback.authorIntraProfile !== "" && (
-              <div className="h-max flex">
+              <div className="h-max w-[40px] flex justify-end items-center ">
                 <a
                   href={feedback.authorIntraProfile}
                   target="_blank"
@@ -295,7 +299,7 @@ const PreviewFeedbackCard = ({
             <p className="font-semibold">{feedback.authorName}</p>
           </div>
           {feedback.authorIntraProfile !== "" && (
-            <div className="h-max flex">
+            <div className="h-max w-[40px] flex justify-end items-center ">
               <a
                 href={feedback.authorIntraProfile}
                 target="_blank"

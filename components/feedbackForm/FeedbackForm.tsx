@@ -3,6 +3,7 @@ import {
   FormDataRhf,
   experienceRateTypes,
   FormSelectFieldItem,
+  FeedbackInterface,
 } from "@/lib/types";
 import { FormInputField, FormSelectOptionField } from "./FormField";
 import FeedbackTypeStep from "./FeedbackTypeStep";
@@ -13,11 +14,20 @@ import Image from "next/image";
 import closeIcon from "@/public/closeIcon.svg";
 import PublicIcon from "@/public/PublicIcon.svg";
 import PublicIconMinimal from "@/public/PublicIconMinimal.svg";
+import AnonymousIconMinimal from "@/public/AnonymousIconMinimal.svg";
 import CheckMarkIcon from "@/public/checkMarkIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import JSConfetti from "js-confetti";
+import CustomizedTooltip from "@/components/CustomizedTooltip";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { UserContext } from "@/context/UserContext";
+
+interface responseDataInterface {
+  newFeedback: FeedbackInterface;
+}
 
 const FeedbackForm = ({
   setIsFeedbackFormOpen,
@@ -36,11 +46,9 @@ const FeedbackForm = ({
     trigger,
   } = useForm<FormDataRhf>();
 
-  //   const handleSelect = (value: validWorkingTypes) => {
-  //     // Set the form value for "workingType" and mark it as dirty for validation
-  //     setValue("workingType", value);
-  //     setSelected(value);
-  //   };
+  const [newFeedback, setNewFeedback] = useState<FeedbackInterface>();
+  const userContext = useContext(UserContext);
+
   const onSubmit = async (data: FormDataRhf) => {
     await handleStepValidation();
     const finalFormDataRhf = { trustScore: totalTrustScore, ...data };
@@ -59,6 +67,7 @@ const FeedbackForm = ({
     });
 
     console.log("SUCCESS", finalFormData);
+    let responseData: responseDataInterface;
     const addNewFeedback = async () => {
       try {
         const response = await fetch("/api/feedback/create", {
@@ -68,8 +77,7 @@ const FeedbackForm = ({
         if (!response.ok) {
           throw new Error("Failed to fetch accounts");
         }
-        const data = await response.json();
-        console.log("data response", data);
+        responseData = await response.json();
       } catch (err: unknown) {
         if (err instanceof Error) {
           console.log(err.message);
@@ -77,6 +85,10 @@ const FeedbackForm = ({
           console.log("An unknown error occurred");
         }
       } finally {
+        setNewFeedback(responseData.newFeedback);
+        userContext?.setFeedbacks((prev: FeedbackInterface[]) => {
+          return [responseData.newFeedback, ...prev];
+        });
       }
     };
     addNewFeedback();
@@ -165,7 +177,6 @@ const FeedbackForm = ({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        handleStepValidation();
         handleSubmit(onSubmit)();
       }}
       className={`relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
@@ -271,9 +282,9 @@ const FeedbackForm = ({
             />
           </div>
         )}
-        {currentStep >= 5 ? (
+        {currentStep >= 5 && newFeedback ? (
           <MinimalPreviewFeedback
-            totalTrustScore={totalTrustScore}
+            feedback={newFeedback}
             setIsClosingFeedbackForm={setIsClosingFeedbackForm}
             setIsFeedbackFormOpen={setIsFeedbackFormOpen}
           ></MinimalPreviewFeedback>
@@ -534,17 +545,88 @@ const FeedbackFormHeader = ({
 export default FeedbackForm;
 
 const MinimalPreviewFeedback = ({
-  totalTrustScore,
   setIsClosingFeedbackForm,
   setIsFeedbackFormOpen,
+  feedback,
 }: {
-  totalTrustScore: number;
   setIsClosingFeedbackForm: (value: boolean) => void;
   setIsFeedbackFormOpen: (value: boolean) => void;
+  feedback: FeedbackInterface;
 }) => {
-  const trustSoreRadius = 8;
+  const trustSoreRadius = 9;
   const fullCircle = 2 * Math.PI * trustSoreRadius;
-  const svgSize = 20;
+  const svgSize = 22;
+  const router = useRouter();
+
+  const copyFeedbackLink = () =>
+    // e:
+    //   | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    //   | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    {
+      navigator.clipboard.writeText(
+        `http://localhost:3000/home?feedbackId=${feedback.id}`,
+      );
+      toast.dismiss();
+      toast.success("feedback link copied!");
+    };
+
+  const handleFeedbackFormClosing = (
+    e:
+      | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    if (!(e instanceof HTMLButtonElement)) e.stopPropagation();
+    setIsClosingFeedbackForm(true);
+    setTimeout(() => {
+      setIsClosingFeedbackForm(false);
+      setIsFeedbackFormOpen(false);
+    }, 300);
+  };
+
+  const editFeedback = () =>
+    // e:
+    //   | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    //   | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    {};
+
+  const viewFeedback = (
+    e:
+      | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    router.push(`/home?feedbackId=${feedback.id}`);
+    handleFeedbackFormClosing(e);
+  };
+
+  const buttons = [
+    {
+      icon: "/link.svg",
+      text: "Copy",
+      onclick: () =>
+        // e:
+        //   | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+        //   | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+        copyFeedbackLink(),
+    },
+    {
+      icon: "/edit.svg",
+      text: "Edit",
+      onclick: () =>
+        // e:
+        //   | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+        //   | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+        editFeedback(),
+    },
+    {
+      icon: "/eye.svg",
+      text: "View",
+      onclick: (
+        e:
+          | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+          | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+      ) => viewFeedback(e),
+    },
+  ];
 
   return (
     <div className="flex flex-col w-[50%] min-h-[390px] h-full items-center justify-center">
@@ -553,17 +635,25 @@ const MinimalPreviewFeedback = ({
       </h1>
       <div className="bg-secondary transition-transform duration-300 hover:scale-105 shadow-2xl w-full text-neutral my-[30px] p-5 rounded-xl flex flex-col items-center gap-[30px]">
         <div className="flex w-full justify-between">
-          <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary h-max">
+          <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary h-[38px]">
             <div className="rounded-full min-w-[20px] min-h-[20px] bg-secondary flex justify-center items-center">
               <Image
                 className="min-w-[15px]"
-                src={PublicIconMinimal}
+                src={
+                  feedback.feedbackType === "Publicly"
+                    ? PublicIconMinimal
+                    : AnonymousIconMinimal
+                }
                 height={15}
                 width={15}
-                alt={PublicIconMinimal}
+                alt={
+                  feedback.feedbackType === "Publicly"
+                    ? PublicIconMinimal
+                    : AnonymousIconMinimal
+                }
               ></Image>
             </div>
-            <p className="text-[10px]">Public Feedback</p>
+            <p className="text-[10px]">{feedback.feedbackType}</p>
           </div>
           <div className="bg-neutral w-max font-semibold flex items-center gap-2 p-2 rounded-lg text-secondary">
             <svg
@@ -577,12 +667,12 @@ const MinimalPreviewFeedback = ({
                 cy={svgSize / 2 + 0.5}
                 r={trustSoreRadius + 0.7}
                 stroke="#141e46"
-                strokeWidth="3"
+                strokeWidth="2"
                 fill="none"
                 strokeDasharray={`${fullCircle + 0.1}`}
                 style={{
                   transition: "stroke-dashoffset 1s ease-in-out",
-                  strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
+                  strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${feedback.trustScore} / 10))`,
                 }}
                 transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
                 strokeLinecap="round"
@@ -592,10 +682,10 @@ const MinimalPreviewFeedback = ({
                 y="50%"
                 textAnchor="middle"
                 dy="0.3em"
-                fontSize="10"
+                fontSize="14"
                 fill="#141e46"
               >
-                {totalTrustScore}
+                {feedback.trustScore}
               </text>
             </svg>
           </div>
@@ -603,56 +693,50 @@ const MinimalPreviewFeedback = ({
         <div className="flex flex-col items-center gap-4 mb-[20px]">
           <Image
             className="min-w-[70px]"
-            src={"DefaultCompanyLogo.svg"}
+            src={feedback.companyLogo}
             height={70}
             width={70}
-            alt={"DefaultCompanyLogo.svg"}
+            alt={feedback.companyLogo}
           ></Image>
           <div className="flex flex-col items-center">
-            <p className="font-semibold text-[20px]">Tanger Med - TMSA</p>
-            <p className="font-medium">Software Engineer</p>
+            <p className="font-semibold text-[20px]">{feedback.companyName}</p>
+            <p className="font-medium">{feedback.jobStatus}</p>
           </div>
         </div>
         <div className="flex gap-2">
-          <button className="p-1 w-[32px] h-[32px] justify-center  rounded-md bg-neutral flex items-center gap-1 text-secondary">
-            <Image
-              className="min-w-[20px]"
-              src={"/link.svg"}
-              height={20}
-              width={20}
-              alt={"/link.svg"}
-            ></Image>
-          </button>
-          <button className="w-[32px] h-[32px] flex justify-center items-center p-1 rounded-md bg-neutral">
-            <Image
-              className="min-w-[20px]"
-              src={"/edit.svg"}
-              height={20}
-              width={20}
-              alt={"/edit.svg"}
-            ></Image>
-          </button>
-          <button className="w-[32px] h-[32px] flex justify-center items-center p-1 rounded-md bg-neutral">
-            <Image
-              className="min-w-[20px]"
-              src={"/eye.svg"}
-              height={20}
-              width={20}
-              alt={"/eye.svg"}
-            ></Image>
-          </button>
+          {buttons.map((item, index) => {
+            return (
+              <CustomizedTooltip
+                key={index}
+                placement="top"
+                title={item.text}
+                arrow
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    item.onclick(e);
+                  }}
+                  className={`p-1 w-[32px] h-[32px] justify-center  rounded-md bg-neutral flex items-center gap-1 text-secondary`}
+                >
+                  <Image
+                    className="min-w-[20px]"
+                    src={item.icon}
+                    height={20}
+                    width={20}
+                    alt={item.icon}
+                  ></Image>
+                </button>
+              </CustomizedTooltip>
+            );
+          })}
         </div>
       </div>
       <Link
         href={"/home"}
         className={`p-3 text-secondary font-bold font-SpaceGrotesk w-[100%] border-2 border-secondary rounded-md mb-[10px] h-11 flex justify-center items-center`}
         onClick={(e) => {
-          e.stopPropagation();
-          setIsClosingFeedbackForm(true);
-          setTimeout(() => {
-            setIsClosingFeedbackForm(false);
-            setIsFeedbackFormOpen(false);
-          }, 300);
+          handleFeedbackFormClosing(e);
         }}
       >
         Back to home

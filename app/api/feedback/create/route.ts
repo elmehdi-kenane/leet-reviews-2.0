@@ -91,8 +91,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  await prismaClient.feedback.create({
+  const newFeedback = await prismaClient.feedback.create({
     data: data,
   });
-  return NextResponse.json({ message: "feedback saved" });
+  console.log("newFeedback", newFeedback);
+  return NextResponse.json({ newFeedback: newFeedback });
 }
