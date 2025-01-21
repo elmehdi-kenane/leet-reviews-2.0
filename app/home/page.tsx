@@ -30,7 +30,7 @@ export default function Home() {
         <button>connect with discord</button>
       </Link>
       <DisplayAccounts></DisplayAccounts> */}
-      <div className="w-full flex flex-col items-center my-[100px]">
+      <div className="w-full flex flex-col items-center my-[100px] pl-[5px]">
         {userContext.feedbacks.map((feedback) => {
           return (
             <FeedbackCard feedback={feedback} key={feedback.id}></FeedbackCard>
