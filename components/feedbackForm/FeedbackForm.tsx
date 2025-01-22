@@ -69,6 +69,7 @@ const FeedbackForm = ({
     companyLocation: "",
     jobProgressType: "",
     employmentDetail: [{ icon: "", text: "" }],
+    votes: [],
   };
 
   const [newFeedback, setNewFeedback] =

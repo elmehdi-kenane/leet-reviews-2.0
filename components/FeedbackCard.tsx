@@ -6,12 +6,22 @@ import ContractTypeIcon from "@/public/ContractTypeIcon.svg";
 import WorkLocationIcon from "@/public/WorkLocationIcon.svg";
 import ProgressCheckIcon from "@/public/ProgressCheckIcon.svg";
 import { useEffect } from "react";
-import { useState, useRef } from "react";
-import { FeedbackInterface, employmentDetailInterface } from "@/lib/types";
+import { useState, useRef, useContext } from "react";
+import {
+  FeedbackInterface,
+  employmentDetailInterface,
+  voteInterface,
+} from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { RefObject } from "react";
+import AnonymousIcon from "@/public/AnonymousIcon.svg";
+import arrowDown from "@/public/arrow-down.svg";
+import arrowDownFilled from "@/public/arrow-down-filled.svg";
+import arrowUp from "@/public/arrow-up.svg";
+import arrowUpFilled from "@/public/arrow-up-filled.svg";
+import { UserContext } from "@/context/UserContext";
 
 const getExperienceRateIcon = (experienceRate: number) => {
   const icons = [
@@ -31,6 +41,8 @@ const getExperienceRateText = (experienceRate: number) => {
 
 export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   const searchParams = useSearchParams();
+  console.log(feedback);
+
   const feedbackId = searchParams.get("feedbackId");
 
   const [isExpandFeedbackCard, setIsExpandFeedbackCard] = useState(
@@ -94,7 +106,55 @@ const PreviewFeedbackCard = ({
   feedback: FeedbackInterface;
   PreviewFeedbackCardRef: RefObject<HTMLDivElement>;
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isCommentBtnHovered, setIsCommentBtnHovered] = useState(false);
+  enum vote {
+    NONE,
+    UP,
+    DOWN,
+  }
+  const userContext = useContext(UserContext);
+
+  const userVote = feedback.votes.find(
+    (vote: voteInterface) => vote.userId === userContext.userInfo?.id,
+  );
+  const [SelectedVote, setSelectedVote] = useState(
+    userVote === undefined
+      ? vote.NONE
+      : userVote.isUp === true
+        ? vote.UP
+        : vote.DOWN,
+  );
+
+  const upVotesLength = feedback.votes.filter(
+    (vote: voteInterface) => vote.isUp === true,
+  ).length;
+  const downVotesLength = feedback.votes.filter(
+    (vote: voteInterface) => vote.isUp === false,
+  ).length;
+
+  type votesCounterType = {
+    up: number;
+    down: number;
+  };
+
+  const [votesCounter, setVotesCounter] = useState<votesCounterType>({
+    up: upVotesLength,
+    down: downVotesLength,
+  });
+
+  useEffect(() => {
+    const userVote = feedback.votes.find(
+      (vote: voteInterface) => vote.userId === userContext.userInfo?.id,
+    );
+    setSelectedVote(
+      userVote === undefined
+        ? vote.NONE
+        : userVote.isUp === true
+          ? vote.UP
+          : vote.DOWN,
+    );
+  }, [userContext.userInfo?.id]);
+
   const [isUnExpandingFeedbackCard, setIsUnExpandingFeedbackCard] =
     useState(false);
   const router = useRouter();
@@ -134,6 +194,35 @@ const PreviewFeedbackCard = ({
       setIsExpandFeedbackCard(false);
     }, 400);
     if (e instanceof MouseEvent) e.stopPropagation();
+  };
+  const createVote = async (feedbackId: string, isUp: boolean) => {
+    try {
+      const response = await fetch(
+        `/api/feedback-vote/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
+        {
+          method: "POST",
+        },
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
+  const deleteVote = async (feedbackId: string, isUp: boolean) => {
+    try {
+      const response = await fetch(
+        `/api/feedback-vote/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
+        {
+          method: "POST",
+        },
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error", error);
+    }
   };
 
   return (
@@ -252,38 +341,55 @@ const PreviewFeedbackCard = ({
       {feedback.authorComment !== "" ? (
         <div className="flex justify-between items-start flex-col">
           <div className="flex items-center gap-1">
-            <Image
-              src={feedback.authorAvatar || ""}
-              alt={feedback.authorAvatar || ""}
-              width={40}
-              height={40}
-              className="rounded-full select-none max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D] mb-1"
-            />
-            <p className="mb-[15px] font-semibold">{feedback.authorName}</p>
+            <div
+              className={`border-2 border-[#00224D] flex justify-center items-center mb-1 rounded-full w-[44px] h-[44px] relative z-[9] bg-neutral`}
+            >
+              <Image
+                src={
+                  feedback.feedbackType === "Publicly"
+                    ? feedback.authorAvatar
+                    : AnonymousIcon
+                }
+                alt={
+                  feedback.feedbackType === "Publicly"
+                    ? feedback.authorAvatar
+                    : AnonymousIcon
+                }
+                width={feedback.feedbackType === "Publicly" ? 40 : 30}
+                height={feedback.feedbackType === "Publicly" ? 40 : 30}
+                className={`rounded-full select-none max-w-[${feedback.feedbackType === "Publicly" ? 40 : 30}px] max-h-[${feedback.feedbackType === "Publicly" ? 40 : 30}px] w-[${feedback.feedbackType === "Publicly" ? 40 : 30}] h-[${feedback.feedbackType === "Publicly" ? 40 : 30}]`}
+              />
+            </div>
+            <p className="mb-[15px] font-semibold">
+              {feedback.feedbackType === "Publicly"
+                ? feedback.authorName
+                : "Anonymous Author"}
+            </p>
           </div>
           <div className="border-2 border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
             <p className="overflow-x-auto w-full font-Inter dark-scrollbar">
               {feedback.authorComment}
             </p>
-            {feedback.authorIntraProfile !== "" && (
-              <div className="h-max w-[40px] flex justify-end items-center ">
-                <a
-                  href={feedback.authorIntraProfile}
-                  target="_blank"
-                  className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <Image
-                    src="/42-logo.svg"
-                    alt="42-logo.svg"
-                    width={20}
-                    height={20}
-                  />
-                </a>
-              </div>
-            )}
+            {feedback.authorIntraProfile !== "" &&
+              feedback.feedbackType === "Publicly" && (
+                <div className="h-max w-[40px] flex justify-end items-center ">
+                  <a
+                    href={feedback.authorIntraProfile}
+                    target="_blank"
+                    className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <Image
+                      src="/42-logo.svg"
+                      alt="42-logo.svg"
+                      width={20}
+                      height={20}
+                    />
+                  </a>
+                </div>
+              )}
           </div>
         </div>
       ) : (
@@ -342,22 +448,76 @@ const PreviewFeedbackCard = ({
             })}
           </p>
         </div>
-        {!isExpandFeedbackCard && (
-          <button
-            onMouseEnter={() => setIsHovered(true)}
-            onClick={() => setIsExpandFeedbackCard(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className="text-[#41B06E] select-none items-center flex item hover:bg-[#41B06E] hover:text-neutral s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
-          >
-            <Image
-              src={`${isHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}
-              alt="CommentIcon.svg"
-              width={20}
-              height={20}
-            />
-            {/* <p className="max-sm:hidden font-semibold">Comment</p> */}
-          </button>
-        )}
+        <div className="flex gap-2">
+          <div className="flex border-[2px] border-[#41B06E] rounded-xl h-[38px] items-center">
+            <button
+              className="h-[38px] flex justify-center items-center"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (SelectedVote === vote.DOWN) {
+                  setVotesCounter((prev: votesCounterType) => ({
+                    up: prev.up + 1,
+                    down: prev.down - 1,
+                  }));
+                  deleteVote(feedback.id, false);
+                }
+                createVote(feedback.id, true);
+                setSelectedVote(vote.UP);
+              }}
+            >
+              <Image
+                src={SelectedVote === vote.UP ? arrowUpFilled : arrowUp}
+                alt={SelectedVote === vote.UP ? arrowUpFilled : arrowUp}
+                width={20}
+                height={20}
+              />
+              <p className="pr-2">
+                {isExpandFeedbackCard === true ? votesCounter.up : ""}
+              </p>
+            </button>
+            <button
+              className="h-[38px] flex justify-center items-center"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (SelectedVote === vote.UP) {
+                  setVotesCounter((prev: votesCounterType) => ({
+                    up: prev.up - 1,
+                    down: prev.down + 1,
+                  }));
+                  deleteVote(feedback.id, true);
+                }
+                createVote(feedback.id, false);
+                setSelectedVote(vote.DOWN);
+              }}
+            >
+              <Image
+                src={SelectedVote === vote.DOWN ? arrowDownFilled : arrowDown}
+                alt={SelectedVote === vote.DOWN ? arrowDownFilled : arrowDown}
+                width={20}
+                height={20}
+              />
+              <p className="pr-2">
+                {isExpandFeedbackCard === true ? votesCounter.down : ""}
+              </p>
+            </button>
+          </div>
+          {!isExpandFeedbackCard && (
+            <button
+              onMouseEnter={() => setIsCommentBtnHovered(true)}
+              onClick={() => setIsExpandFeedbackCard(true)}
+              onMouseLeave={() => setIsCommentBtnHovered(false)}
+              className="text-[#41B06E] select-none items-center flex item hover:bg-[#41B06E] hover:text-neutral s-center gap-[3px] border-[2px] border-[#41B06E] rounded-xl p-2 h-max"
+            >
+              <Image
+                src={`${isCommentBtnHovered ? "/CommentIconLight.svg" : "/CommentIcon.svg"}`}
+                alt="CommentIcon.svg"
+                width={20}
+                height={20}
+              />
+              {/* <p className="max-sm:hidden font-semibold">Comment</p> */}
+            </button>
+          )}
+        </div>
       </div>
       {isExpandFeedbackCard && !isUnExpandingFeedbackCard && (
         <div className="w-full flex absolute top-[910px] left-[1px] justify-between">

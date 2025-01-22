@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     authorAvatar: authorAvatar,
     authorName: authorName,
     createdAt: createAt,
-    userId: userId,
+    authorId: userId,
   };
 
   for (const [key, value] of formData.entries()) {

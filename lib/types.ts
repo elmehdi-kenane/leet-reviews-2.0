@@ -190,6 +190,13 @@ export interface employmentDetailInterface {
   text: string;
 }
 
+export interface voteInterface {
+  id: string;
+  feedbackId: string;
+  userId: string;
+  isUp: boolean;
+}
+
 export interface FeedbackInterface {
   experienceRate: number;
   trustScore: number;
@@ -211,4 +218,5 @@ export interface FeedbackInterface {
   companyLocation: string;
   jobProgressType: string;
   employmentDetail: employmentDetailInterface[];
+  votes: voteInterface[];
 }

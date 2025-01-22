@@ -35,5 +35,5 @@ export interface FeedbackCreateInput {
   authorIntraProfile: string;
   authorDiscordProfile: string;
   createdAt: Date;
-  userId: string;
+  authorId: string;
 }

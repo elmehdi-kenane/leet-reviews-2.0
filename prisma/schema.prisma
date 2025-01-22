@@ -66,6 +66,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     feedbacks     Feedback[]
+    votes         Vote[]
 
 }
 
@@ -96,7 +97,18 @@ model Feedback {
     authorIntraProfile   String
     authorDiscordProfile String
     createdAt            DateTime
+    votes              Vote[]
 
-    userId           String
+    authorId           String
+    user             User     @relation(fields: [authorId], references: [id])
+}
+
+model Vote {
+    id                   String    @id @default(uuid())
+    feedbackId           String
+    userId               String
+    isUp                 Boolean
+
     user             User     @relation(fields: [userId], references: [id])
+    feedback         Feedback @relation(fields: [feedbackId], references: [id])
 }

@@ -7,6 +7,11 @@ export async function GET() {
   const userId = result.user?.id;
   if (userId === undefined)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const feedbacks = await prismaClient.feedback.findMany();
+  const feedbacks = await prismaClient.feedback.findMany({
+    include: {
+      votes: true,
+    },
+  });
+  console.log("feedbacks", feedbacks);
   return NextResponse.json({ feedbacks: feedbacks });
 }
