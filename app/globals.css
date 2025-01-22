@@ -194,11 +194,13 @@ body {
 
 @keyframes unExpandHeight {
   0% {
+    height: 900px;
     transform: scale(1);
   }
 
   100% {
     transform: scale(0);
+    height: 353px;
   }
 }
 

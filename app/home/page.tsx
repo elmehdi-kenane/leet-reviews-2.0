@@ -16,7 +16,7 @@ export default function Home() {
       try {
         const response = await fetch("/api/feedback/get");
         const responseData = await response.json();
-        console.log("responseData", responseData);
+        // console.log("responseData", responseData);
         userContext.setFeedbacks(responseData.feedbacks.reverse());
         setLoading(false);
       } catch (error) {

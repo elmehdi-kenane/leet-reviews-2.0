@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-
+import { voteInterface } from "./types";
 let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === "production") {
@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === "production") {
 export default prisma;
 
 export interface FeedbackCreateInput {
-  [type: string]: number | string | Date;
+  [type: string]: number | string | Date | voteInterface[];
   feedbackType: string;
   trustScore: number;
   companyName: string;

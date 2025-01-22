@@ -112,6 +112,8 @@ const FeedbackForm = ({
           console.log("An unknown error occurred");
         }
       } finally {
+        console.log("responseData.newFeedback", responseData.newFeedback);
+
         setNewFeedback(responseData.newFeedback);
         userContext?.setFeedbacks((prev: FeedbackInterface[]) => {
           return [responseData.newFeedback, ...prev];

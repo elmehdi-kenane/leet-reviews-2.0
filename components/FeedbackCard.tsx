@@ -41,7 +41,6 @@ const getExperienceRateText = (experienceRate: number) => {
 
 export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   const searchParams = useSearchParams();
-  console.log(feedback);
 
   const feedbackId = searchParams.get("feedbackId");
 
@@ -50,7 +49,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   );
 
   useEffect(() => {
-    setIsExpandFeedbackCard(feedbackId === feedback.id);
+    if (feedbackId === feedback.id) setIsExpandFeedbackCard(true);
   }, [feedbackId, feedback.id]);
 
   const [PreviewFeedbackCardPosition, setPreviewFeedbackCardPosition] =
@@ -61,10 +60,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
     <>
       {isExpandFeedbackCard === true && (
         <div className="absolute font-SpaceGrotesk h-full min-w-[100%] top-0 z-[151] bg-white/50 backdrop-blur-xl flex justify-center">
-          <div
-            className="max-w-[860px] w-full flex justify-center h-full items-start overflow-auto"
-            ref={PreviewFeedbackCardRef}
-          >
+          <div className="max-w-[860px] w-full flex justify-center h-full items-start overflow-auto">
             <PreviewFeedbackCard
               PreviewFeedbackCardPosition={PreviewFeedbackCardPosition}
               isExpandFeedbackCard={true}
@@ -114,23 +110,19 @@ const PreviewFeedbackCard = ({
   }
   const userContext = useContext(UserContext);
 
-  const userVote = feedback.votes.find(
-    (vote: voteInterface) => vote.userId === userContext.userInfo?.id,
-  );
-  const [SelectedVote, setSelectedVote] = useState(
-    userVote === undefined
-      ? vote.NONE
-      : userVote.isUp === true
-        ? vote.UP
-        : vote.DOWN,
-  );
+  const [SelectedVote, setSelectedVote] = useState(vote.NONE);
 
-  const upVotesLength = feedback.votes.filter(
-    (vote: voteInterface) => vote.isUp === true,
-  ).length;
-  const downVotesLength = feedback.votes.filter(
-    (vote: voteInterface) => vote.isUp === false,
-  ).length;
+  let upVotesLength = 0;
+  let downVotesLength = 0;
+
+  if (feedback.votes) {
+    upVotesLength = feedback.votes.filter(
+      (vote: voteInterface) => vote.isUp === true,
+    ).length;
+    downVotesLength = feedback.votes.filter(
+      (vote: voteInterface) => vote.isUp === false,
+    ).length;
+  }
 
   type votesCounterType = {
     up: number;
@@ -143,16 +135,18 @@ const PreviewFeedbackCard = ({
   });
 
   useEffect(() => {
-    const userVote = feedback.votes.find(
-      (vote: voteInterface) => vote.userId === userContext.userInfo?.id,
-    );
-    setSelectedVote(
-      userVote === undefined
-        ? vote.NONE
-        : userVote.isUp === true
-          ? vote.UP
-          : vote.DOWN,
-    );
+    if (feedback.votes) {
+      const userVote = feedback.votes.find(
+        (vote: voteInterface) => vote.userId === userContext.userInfo?.id,
+      );
+      setSelectedVote(
+        userVote === undefined
+          ? vote.NONE
+          : userVote.isUp === true
+            ? vote.UP
+            : vote.DOWN,
+      );
+    }
   }, [userContext.userInfo?.id]);
 
   const [isUnExpandingFeedbackCard, setIsUnExpandingFeedbackCard] =
@@ -227,6 +221,7 @@ const PreviewFeedbackCard = ({
 
   return (
     <div
+      ref={isExpandFeedbackCard === false ? PreviewFeedbackCardRef : undefined}
       onClick={() => {
         router.push(`/home?feedbackId=${feedback.id}`);
         setIsExpandFeedbackCard(true);
@@ -239,12 +234,12 @@ const PreviewFeedbackCard = ({
             top: rect.top,
             left: rect.left,
           });
-        }
+        } else console.log("PreviewFeedbackCardPosition not setted");
       }}
       style={{
         transformOrigin: `${PreviewFeedbackCardPosition.left / 2}px ${PreviewFeedbackCardPosition.top}px`,
       }}
-      className={`flex font-SpaceGrotesk ${isExpandFeedbackCard === true ? "expand-height z-[101] mt-[160px] mb-[100px]" : "cursor-pointer"} bg-neutral flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedbackCard !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""} ${isUnExpandingFeedbackCard === true ? "un-expand-height" : ""}`}
+      className={`flex font-SpaceGrotesk ${isExpandFeedbackCard === true ? "expand-height z-[101] mt-[110px] mb-[100px]" : "cursor-pointer"} bg-neutral flex-col p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] rounded-[16px] mb-[50px] w-[100%] max-w-[850px] max-md:h-max shadow-lg font-inter text-[#00224D] gap-[10px] ${isExpandFeedbackCard !== true ? "transition-shadow duration-300 hover:shadow-2xl" : ""} ${isUnExpandingFeedbackCard === true ? "un-expand-height" : ""}`}
     >
       <div className="flex justify-between gap-[10px] max-md:flex-col items-center">
         <div className="flex max-sm:flex-col justify-center items-center gap-4 h-max min-h-[110px]">
@@ -449,7 +444,7 @@ const PreviewFeedbackCard = ({
           </p>
         </div>
         <div className="flex gap-2">
-          <div className="flex border-[2px] border-[#41B06E] rounded-xl h-[38px] items-center">
+          <div className="flex border-[2px] border-[#41B06E] gap-2 px-2 rounded-xl h-[38px] items-center">
             <button
               className="h-[38px] flex justify-center items-center"
               onClick={(e) => {
@@ -471,9 +466,7 @@ const PreviewFeedbackCard = ({
                 width={20}
                 height={20}
               />
-              <p className="pr-2">
-                {isExpandFeedbackCard === true ? votesCounter.up : ""}
-              </p>
+              {isExpandFeedbackCard === true && <p>{votesCounter.up}</p>}
             </button>
             <button
               className="h-[38px] flex justify-center items-center"
@@ -496,9 +489,7 @@ const PreviewFeedbackCard = ({
                 width={20}
                 height={20}
               />
-              <p className="pr-2">
-                {isExpandFeedbackCard === true ? votesCounter.down : ""}
-              </p>
+              {isExpandFeedbackCard === true && <p>{votesCounter.down}</p>}
             </button>
           </div>
           {!isExpandFeedbackCard && (
