@@ -89,16 +89,18 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
       !isRequired &&
       inputName in trustScore
     ) {
+      console.log("add +2", inputName);
       setTrustScore((prevState) => {
+        console.log("prevState", prevState);
+
         const newState = {
           ...prevState,
           [inputName]: 2,
         };
-
+        console.log("newState", newState);
         return newState;
       });
-    }
-    if (
+    } else if (
       trustScore &&
       e.target?.value === "" &&
       !isRequired &&
@@ -121,7 +123,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
         `${OpenCageEndpoint}?q=${e.target?.value}&key=${process.env.NEXT_PUBLIC_OPEN_CAGE_API_KEY}`,
       );
       const ResponseJson = await ResponsePromise.json();
-      console.log("responseJson", ResponseJson.results);
       setLocationResults(ResponseJson.results);
     };
     if (inputName === "companyLocation" && e.target?.value.length > 1)

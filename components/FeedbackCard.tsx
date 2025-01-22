@@ -320,6 +320,21 @@ const PreviewFeedbackCard = ({
         </div>
       )}
       <div className="flex justify-between items-center">
+        <CustomizedTooltip
+          placement="bottom"
+          title={`[${feedback.trustScore}/10]`}
+          arrow
+        >
+          <div className="h-[44px] flex flex-col justify-center items-center w-[100px]">
+            <p>trust score</p>
+            <div className="h-[8px] w-full border border-secondary rounded-full flex items-center py-1">
+              <div
+                className={`h-[8px] bg-secondary rounded-full`}
+                style={{ width: `${feedback.trustScore * 10}%` }}
+              ></div>
+            </div>
+          </div>
+        </CustomizedTooltip>
         <div className="flex flex-col max-sm:ml-[7px]">
           <p className="font-medium italic text-[12px]">
             {formatDistanceToNow(new Date(feedback.createdAt), {
@@ -340,7 +355,7 @@ const PreviewFeedbackCard = ({
               width={20}
               height={20}
             />
-            <p className="max-sm:hidden font-semibold">Comment</p>
+            {/* <p className="max-sm:hidden font-semibold">Comment</p> */}
           </button>
         )}
       </div>
