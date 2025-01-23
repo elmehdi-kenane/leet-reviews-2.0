@@ -603,19 +603,19 @@ const PreviewFeedbackCard = ({
       </div>
       {isExpandFeedbackCard && (
         <>
-          <div className="flex flex-col gap-2">
-            <textarea
-              className="bg-transparent border border-secondary w-full p-2 rounded-lg border-tl-0 focus:outline-primary min-h-[70px] max-h-[70px]"
-              placeholder="type your comment"
-              onChange={(e) => setCommentText(e.target.value)}
-            ></textarea>
-            <button
-              className={`${commentText === "" ? "bg-gray cursor-not-allowed" : "bg-primary"} p-2 text-neutral rounded-md ml-auto text-[12px]`}
-            >
-              comment
-            </button>
-          </div>
           <div className="w-full border-2 border-secondary h-full p-3 rounded-xl">
+            <div className="flex flex-col gap-2">
+              <textarea
+                className="bg-transparent border border-secondary w-full p-2 rounded-lg border-tl-0 focus:outline-primary min-h-[70px] max-h-[70px]"
+                placeholder="type your comment"
+                onChange={(e) => setCommentText(e.target.value)}
+              ></textarea>
+              <button
+                className={`${commentText === "" ? "bg-gray cursor-not-allowed" : "bg-primary"} p-2 text-neutral rounded-md ml-auto text-[12px]`}
+              >
+                comment
+              </button>
+            </div>
             <div className="flex justify-between items-start flex-col">
               <div className="flex items-center gap-1">
                 <div
