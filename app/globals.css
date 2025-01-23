@@ -241,11 +241,11 @@ body {
   }
 }
 
-.click-vote {
-  animation: clickVote 0.5s ease-in forwards;
+.click-animation {
+  animation: clickAnimation 0.5s ease-in forwards;
 }
 
-@keyframes clickVote {
+@keyframes clickAnimation {
   0% {
     scale: 1;
   }

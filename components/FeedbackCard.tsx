@@ -165,6 +165,7 @@ const PreviewFeedbackCard = ({
   PreviewFeedbackCardRef: RefObject<HTMLDivElement>;
 }) => {
   const [isCommentBtnHovered, setIsCommentBtnHovered] = useState(false);
+  const [commentText, setCommentText] = useState("");
 
   const [isVoteBtnClicked, setIsVoteBtnClicked] = useState({
     up: false,
@@ -409,6 +410,7 @@ const PreviewFeedbackCard = ({
                   >
                     <Image
                       src="/42-logo.svg"
+                      className="select-none"
                       alt="42-logo.svg"
                       width={20}
                       height={20}
@@ -457,6 +459,7 @@ const PreviewFeedbackCard = ({
                 >
                   <Image
                     src="/42-logo.svg"
+                    className="select-none"
                     alt="42-logo.svg"
                     width={20}
                     height={20}
@@ -469,10 +472,10 @@ const PreviewFeedbackCard = ({
       <div className="flex justify-between items-center">
         <CustomizedTooltip
           placement="bottom"
-          title={`[${feedback.trustScore / 2}/5]`}
+          title={`[ ${feedback.trustScore / 2}/5 ]`}
           arrow
         >
-          <div className="h-[44px] flex flex-col justify-center items-center w-[100px]">
+          <div className="h-[44px] cursor-pointer select-none flex flex-col justify-center items-center w-[100px]">
             <p>trust score</p>
             <div className="h-[8px] w-full border border-secondary rounded-full flex items-center py-1">
               <div
@@ -528,7 +531,7 @@ const PreviewFeedbackCard = ({
                 alt={SelectedVote === vote.UP ? arrowUpFilled : arrowUp}
                 width={20}
                 height={20}
-                className={`${isVoteBtnClicked.up === true ? "click-vote" : ""}`}
+                className={`${isVoteBtnClicked.up === true ? "click-animation" : ""} select-none`}
               />
               {isExpandFeedbackCard === true && (
                 <p className="text-primary">{votesCounter.up}</p>
@@ -572,7 +575,7 @@ const PreviewFeedbackCard = ({
                 alt={SelectedVote === vote.DOWN ? arrowDownFilled : arrowDown}
                 width={20}
                 height={20}
-                className={`${isVoteBtnClicked.down === true ? "click-vote" : ""}`}
+                className={`${isVoteBtnClicked.down === true ? "click-animation" : ""} select-none`}
               />
               {isExpandFeedbackCard === true && (
                 <p className="text-primary">{votesCounter.down}</p>
@@ -598,6 +601,58 @@ const PreviewFeedbackCard = ({
           )}
         </div>
       </div>
+      {isExpandFeedbackCard && (
+        <>
+          <div className="flex flex-col gap-2">
+            <textarea
+              className="bg-transparent border border-secondary w-full p-2 rounded-lg border-tl-0 focus:outline-primary min-h-[70px] max-h-[70px]"
+              placeholder="type your comment"
+              onChange={(e) => setCommentText(e.target.value)}
+            ></textarea>
+            <button
+              className={`${commentText === "" ? "bg-gray cursor-not-allowed" : "bg-primary"} p-2 text-neutral rounded-md ml-auto text-[12px]`}
+            >
+              comment
+            </button>
+          </div>
+          <div className="w-full border-2 border-secondary h-full p-3 rounded-xl">
+            <div className="flex justify-between items-start flex-col">
+              <div className="flex items-center gap-1">
+                <div
+                  className={`border-2 border-[#00224D] flex justify-center items-center mb-1 rounded-full w-[33px] h-[33px] relative z-[9] bg-neutral`}
+                >
+                  <Image
+                    src={
+                      feedback.feedbackType === "Publicly"
+                        ? feedback.authorAvatar
+                        : AnonymousIcon
+                    }
+                    alt={
+                      feedback.feedbackType === "Publicly"
+                        ? feedback.authorAvatar
+                        : AnonymousIcon
+                    }
+                    width={feedback.feedbackType === "Publicly" ? 30 : 20}
+                    height={feedback.feedbackType === "Publicly" ? 30 : 20}
+                    className={`rounded-full select-none max-w-[${feedback.feedbackType === "Publicly" ? 30 : 20}px] max-h-[${feedback.feedbackType === "Publicly" ? 30 : 20}px] w-[${feedback.feedbackType === "Publicly" ? 30 : 20}] h-[${feedback.feedbackType === "Publicly" ? 30 : 20}]`}
+                  />
+                </div>
+                <p className="mb-[20px] font-semibold text-sm">
+                  {feedback.feedbackType === "Publicly"
+                    ? feedback.authorName
+                    : "Anonymous Author"}
+                </p>
+              </div>
+              <div className="border border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
+                <p className="overflow-x-auto w-full font-Inter dark-scrollbar">
+                  text comment
+                </p>
+              </div>
+            </div>
+            <p>5/10/2025</p>
+          </div>
+        </>
+      )}
       {isExpandFeedbackCard && !isUnExpandingFeedbackCard && (
         <div className="w-full flex absolute top-[910px] left-[1px] justify-between">
           <button className="p-3 bg-secondary text-neutral rounded-xl font-semibold w-max flex gap-2">
