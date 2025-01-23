@@ -56,9 +56,7 @@ export const UserProvider: React.FC<{
     }
 
     const fetchUser = async () => {
-      console.log("inside fetchUser");
       const response = await fetch("/api/user");
-
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error fetching user:", errorData.error);
@@ -73,7 +71,7 @@ export const UserProvider: React.FC<{
       }
 
       const data = await response.json();
-      console.log("data inside useEffect", data);
+      //   console.log("data inside useEffect", data);
       setUserInfo(data);
     };
 

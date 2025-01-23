@@ -240,3 +240,22 @@ body {
     scale: 1.5;
   }
 }
+
+.click-vote {
+  animation: clickVote 0.5s ease-in forwards;
+}
+
+@keyframes clickVote {
+  0% {
+    scale: 1;
+  }
+  25% {
+    scale: 0.5;
+  }
+  50% {
+    scale: 1.2;
+  }
+  100% {
+    scale: 1;
+  }
+}

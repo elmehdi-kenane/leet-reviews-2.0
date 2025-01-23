@@ -34,6 +34,17 @@ const getExperienceRateIcon = (experienceRate: number) => {
   return icons[experienceRate - 1];
 };
 
+type votesCounterType = {
+  up: number;
+  down: number;
+};
+
+enum vote {
+  NONE,
+  UP,
+  DOWN,
+}
+
 const getExperienceRateText = (experienceRate: number) => {
   const texts = ["VeryPoor", "Poor", "Average", "Good", "Excellent"];
   return texts[experienceRate - 1];
@@ -48,70 +59,6 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
     feedbackId === feedback.id ? true : false,
   );
 
-  useEffect(() => {
-    if (feedbackId === feedback.id) setIsExpandFeedbackCard(true);
-  }, [feedbackId, feedback.id]);
-
-  const [PreviewFeedbackCardPosition, setPreviewFeedbackCardPosition] =
-    useState({ top: 0, left: 0 });
-  const PreviewFeedbackCardRef = useRef<HTMLDivElement>(null);
-
-  return (
-    <>
-      {isExpandFeedbackCard === true && (
-        <div className="absolute font-SpaceGrotesk h-full min-w-[100%] top-0 z-[151] bg-white/50 backdrop-blur-xl flex justify-center">
-          <div className="max-w-[860px] w-full flex justify-center h-full items-start overflow-auto">
-            <PreviewFeedbackCard
-              PreviewFeedbackCardPosition={PreviewFeedbackCardPosition}
-              isExpandFeedbackCard={true}
-              PreviewFeedbackCardRef={PreviewFeedbackCardRef}
-              setPreviewFeedbackCardPosition={setPreviewFeedbackCardPosition}
-              setIsExpandFeedbackCard={setIsExpandFeedbackCard}
-              feedback={feedback}
-            ></PreviewFeedbackCard>
-          </div>
-        </div>
-      )}
-      <PreviewFeedbackCard
-        PreviewFeedbackCardPosition={PreviewFeedbackCardPosition}
-        isExpandFeedbackCard={false}
-        PreviewFeedbackCardRef={PreviewFeedbackCardRef}
-        setPreviewFeedbackCardPosition={setPreviewFeedbackCardPosition}
-        setIsExpandFeedbackCard={setIsExpandFeedbackCard}
-        feedback={feedback}
-      ></PreviewFeedbackCard>
-    </>
-  );
-};
-
-const PreviewFeedbackCard = ({
-  setPreviewFeedbackCardPosition,
-  setIsExpandFeedbackCard,
-  feedback,
-  isExpandFeedbackCard,
-  PreviewFeedbackCardPosition,
-  PreviewFeedbackCardRef,
-}: {
-  setPreviewFeedbackCardPosition: (position: {
-    top: number;
-    left: number;
-  }) => void;
-  setIsExpandFeedbackCard: (value: boolean) => void;
-  isExpandFeedbackCard: boolean;
-  PreviewFeedbackCardPosition: { top: number; left: number };
-  feedback: FeedbackInterface;
-  PreviewFeedbackCardRef: RefObject<HTMLDivElement>;
-}) => {
-  const [isCommentBtnHovered, setIsCommentBtnHovered] = useState(false);
-  enum vote {
-    NONE,
-    UP,
-    DOWN,
-  }
-  const userContext = useContext(UserContext);
-
-  const [SelectedVote, setSelectedVote] = useState(vote.NONE);
-
   let upVotesLength = 0;
   let downVotesLength = 0;
 
@@ -124,15 +71,17 @@ const PreviewFeedbackCard = ({
     ).length;
   }
 
-  type votesCounterType = {
-    up: number;
-    down: number;
-  };
-
   const [votesCounter, setVotesCounter] = useState<votesCounterType>({
     up: upVotesLength,
     down: downVotesLength,
   });
+  const [SelectedVote, setSelectedVote] = useState(vote.NONE);
+
+  useEffect(() => {
+    if (feedbackId === feedback.id) setIsExpandFeedbackCard(true);
+  }, [feedbackId, feedback.id]);
+
+  const userContext = useContext(UserContext);
 
   useEffect(() => {
     if (feedback.votes) {
@@ -149,8 +98,84 @@ const PreviewFeedbackCard = ({
     }
   }, [userContext.userInfo?.id]);
 
+  const [PreviewFeedbackCardPosition, setPreviewFeedbackCardPosition] =
+    useState({ top: 0, left: 0 });
+  const PreviewFeedbackCardRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <>
+      {isExpandFeedbackCard === true && (
+        <div className="absolute font-SpaceGrotesk h-full min-w-[100%] top-0 z-[151] bg-white/50 backdrop-blur-xl flex justify-center">
+          <div className="max-w-[860px] w-full flex justify-center h-full items-start overflow-auto">
+            <PreviewFeedbackCard
+              setVotesCounter={setVotesCounter}
+              votesCounter={votesCounter}
+              setSelectedVote={setSelectedVote}
+              SelectedVote={SelectedVote}
+              PreviewFeedbackCardPosition={PreviewFeedbackCardPosition}
+              isExpandFeedbackCard={true}
+              PreviewFeedbackCardRef={PreviewFeedbackCardRef}
+              setPreviewFeedbackCardPosition={setPreviewFeedbackCardPosition}
+              setIsExpandFeedbackCard={setIsExpandFeedbackCard}
+              feedback={feedback}
+            ></PreviewFeedbackCard>
+          </div>
+        </div>
+      )}
+      <PreviewFeedbackCard
+        setVotesCounter={setVotesCounter}
+        votesCounter={votesCounter}
+        setSelectedVote={setSelectedVote}
+        SelectedVote={SelectedVote}
+        PreviewFeedbackCardPosition={PreviewFeedbackCardPosition}
+        isExpandFeedbackCard={false}
+        PreviewFeedbackCardRef={PreviewFeedbackCardRef}
+        setPreviewFeedbackCardPosition={setPreviewFeedbackCardPosition}
+        setIsExpandFeedbackCard={setIsExpandFeedbackCard}
+        feedback={feedback}
+      ></PreviewFeedbackCard>
+    </>
+  );
+};
+
+const PreviewFeedbackCard = ({
+  setPreviewFeedbackCardPosition,
+  setVotesCounter,
+  setSelectedVote,
+  SelectedVote,
+  setIsExpandFeedbackCard,
+  feedback,
+  isExpandFeedbackCard,
+  PreviewFeedbackCardPosition,
+  votesCounter,
+  PreviewFeedbackCardRef,
+}: {
+  setPreviewFeedbackCardPosition: (position: {
+    top: number;
+    left: number;
+  }) => void;
+  setVotesCounter: React.Dispatch<React.SetStateAction<votesCounterType>>;
+  setIsExpandFeedbackCard: (value: boolean) => void;
+  setSelectedVote: (value: vote) => void;
+  SelectedVote: vote;
+  isExpandFeedbackCard: boolean;
+  PreviewFeedbackCardPosition: { top: number; left: number };
+  votesCounter: { up: number; down: number };
+  feedback: FeedbackInterface;
+  PreviewFeedbackCardRef: RefObject<HTMLDivElement>;
+}) => {
+  const [isCommentBtnHovered, setIsCommentBtnHovered] = useState(false);
+
+  const [isVoteBtnClicked, setIsVoteBtnClicked] = useState({
+    up: false,
+    down: false,
+  });
+
+  const userContext = useContext(UserContext);
+
   const [isUnExpandingFeedbackCard, setIsUnExpandingFeedbackCard] =
     useState(false);
+
   const router = useRouter();
 
   const circleRadius = 15;
@@ -162,11 +187,13 @@ const PreviewFeedbackCard = ({
     { icon: ProgressCheckIcon, text: feedback.jobProgressType },
   ];
 
+  const ExpandedPreviewFeedbackCardRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
-        PreviewFeedbackCardRef.current &&
-        !PreviewFeedbackCardRef.current.contains(e.target as Node)
+        ExpandedPreviewFeedbackCardRef.current &&
+        !ExpandedPreviewFeedbackCardRef.current.contains(e.target as Node)
       ) {
         closeExpandedFeedbackCard(e);
       }
@@ -221,7 +248,11 @@ const PreviewFeedbackCard = ({
 
   return (
     <div
-      ref={isExpandFeedbackCard === false ? PreviewFeedbackCardRef : undefined}
+      ref={
+        isExpandFeedbackCard === false
+          ? PreviewFeedbackCardRef
+          : ExpandedPreviewFeedbackCardRef
+      }
       onClick={() => {
         router.push(`/home?feedbackId=${feedback.id}`);
         setIsExpandFeedbackCard(true);
@@ -390,40 +421,55 @@ const PreviewFeedbackCard = ({
       ) : (
         <div className="flex border-2 border-[#00224D] rounded-2xl justify-between items-center mt-[24px] p-2 gap-[5px]">
           <div className="flex items-center gap-2">
-            <Image
-              src={feedback.authorAvatar || ""}
-              alt={feedback.authorAvatar || ""}
-              width={50}
-              height={50}
-              className="rounded-full max-w-[40px] max-h-[40px] relative z-[9] border-2 border-[#00224D]"
-            />
-            <p className="font-semibold">{feedback.authorName}</p>
-          </div>
-          {feedback.authorIntraProfile !== "" && (
-            <div className="h-max w-[40px] flex justify-end items-center ">
-              <a
-                href={feedback.authorIntraProfile}
-                target="_blank"
-                className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <Image
-                  src="/42-logo.svg"
-                  alt="42-logo.svg"
-                  width={20}
-                  height={20}
-                />
-              </a>
+            <div className="border-2 border-[#00224D] w-[44px] h-[44px] flex justify-center items-center rounded-full">
+              <Image
+                src={
+                  feedback.feedbackType === "Publicly"
+                    ? feedback.authorAvatar
+                    : AnonymousIcon
+                }
+                alt={
+                  feedback.feedbackType === "Publicly"
+                    ? feedback.authorAvatar
+                    : AnonymousIcon
+                }
+                width={feedback.feedbackType === "Publicly" ? 40 : 30}
+                height={feedback.feedbackType === "Publicly" ? 40 : 30}
+                className={`rounded-full select-none max-w-[${feedback.feedbackType === "Publicly" ? 40 : 30}px] max-h-[${feedback.feedbackType === "Publicly" ? 40 : 30}px] w-[${feedback.feedbackType === "Publicly" ? 40 : 30}] h-[${feedback.feedbackType === "Publicly" ? 40 : 30}]`}
+              />
             </div>
-          )}
+            <p className="font-semibold">
+              {feedback.feedbackType === "Publicly"
+                ? feedback.authorName
+                : "Anonymous Author"}
+            </p>
+          </div>
+          {feedback.authorIntraProfile !== "" &&
+            feedback.feedbackType === "Publicly" && (
+              <div className="h-max w-[40px] flex justify-end items-center ">
+                <a
+                  href={feedback.authorIntraProfile}
+                  target="_blank"
+                  className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Image
+                    src="/42-logo.svg"
+                    alt="42-logo.svg"
+                    width={20}
+                    height={20}
+                  />
+                </a>
+              </div>
+            )}
         </div>
       )}
       <div className="flex justify-between items-center">
         <CustomizedTooltip
           placement="bottom"
-          title={`[${feedback.trustScore}/10]`}
+          title={`[${feedback.trustScore / 2}/5]`}
           arrow
         >
           <div className="h-[44px] flex flex-col justify-center items-center w-[100px]">
@@ -446,16 +492,33 @@ const PreviewFeedbackCard = ({
         <div className="flex gap-2">
           <div className="flex border-[2px] border-[#41B06E] gap-2 px-2 rounded-xl h-[38px] items-center">
             <button
-              className="h-[38px] flex justify-center items-center"
+              className={`h-[38px] flex justify-center items-center `}
               onClick={(e) => {
                 e.stopPropagation();
+                setIsVoteBtnClicked({ up: true, down: false });
+                setTimeout(() => {
+                  setIsVoteBtnClicked({ up: false, down: false });
+                }, 500);
+                if (SelectedVote === vote.UP) {
+                  setVotesCounter((prev: votesCounterType) => ({
+                    up: prev.up - 1,
+                    down: prev.down,
+                  }));
+                  setSelectedVote(vote.NONE);
+                  deleteVote(feedback.id, true);
+                  return;
+                }
                 if (SelectedVote === vote.DOWN) {
                   setVotesCounter((prev: votesCounterType) => ({
                     up: prev.up + 1,
                     down: prev.down - 1,
                   }));
                   deleteVote(feedback.id, false);
-                }
+                } else
+                  setVotesCounter((prev: votesCounterType) => ({
+                    up: prev.up + 1,
+                    down: prev.down,
+                  }));
                 createVote(feedback.id, true);
                 setSelectedVote(vote.UP);
               }}
@@ -465,20 +528,41 @@ const PreviewFeedbackCard = ({
                 alt={SelectedVote === vote.UP ? arrowUpFilled : arrowUp}
                 width={20}
                 height={20}
+                className={`${isVoteBtnClicked.up === true ? "click-vote" : ""}`}
               />
-              {isExpandFeedbackCard === true && <p>{votesCounter.up}</p>}
+              {isExpandFeedbackCard === true && (
+                <p className="text-primary">{votesCounter.up}</p>
+              )}
+              {/* <p>{votesCounter.up}</p> */}
             </button>
             <button
-              className="h-[38px] flex justify-center items-center"
+              className={`h-[38px] flex justify-center items-center `}
               onClick={(e) => {
                 e.stopPropagation();
+                setIsVoteBtnClicked({ up: false, down: true });
+                setTimeout(() => {
+                  setIsVoteBtnClicked({ up: false, down: false });
+                }, 500);
+                if (SelectedVote === vote.DOWN) {
+                  setVotesCounter((prev: votesCounterType) => ({
+                    up: prev.up,
+                    down: prev.down - 1,
+                  }));
+                  setSelectedVote(vote.NONE);
+                  deleteVote(feedback.id, false);
+                  return;
+                }
                 if (SelectedVote === vote.UP) {
                   setVotesCounter((prev: votesCounterType) => ({
                     up: prev.up - 1,
                     down: prev.down + 1,
                   }));
                   deleteVote(feedback.id, true);
-                }
+                } else
+                  setVotesCounter((prev: votesCounterType) => ({
+                    up: prev.up,
+                    down: prev.down + 1,
+                  }));
                 createVote(feedback.id, false);
                 setSelectedVote(vote.DOWN);
               }}
@@ -488,8 +572,12 @@ const PreviewFeedbackCard = ({
                 alt={SelectedVote === vote.DOWN ? arrowDownFilled : arrowDown}
                 width={20}
                 height={20}
+                className={`${isVoteBtnClicked.down === true ? "click-vote" : ""}`}
               />
-              {isExpandFeedbackCard === true && <p>{votesCounter.down}</p>}
+              {isExpandFeedbackCard === true && (
+                <p className="text-primary">{votesCounter.down}</p>
+              )}
+              {/* <p>{votesCounter.down}</p> */}
             </button>
           </div>
           {!isExpandFeedbackCard && (
