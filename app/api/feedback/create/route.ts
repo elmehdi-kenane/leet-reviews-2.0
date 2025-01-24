@@ -16,29 +16,6 @@ export async function POST(request: NextRequest) {
   if (userId === undefined)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const authorAvatar = result.user?.avatar ?? "";
-  const user = await prismaClient.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-  const authorName = user?.name ?? "";
-
-  const userAccounts = await prismaClient.account.findMany({
-    where: {
-      userId: userId,
-    },
-  });
-  let authorIntraProfile = "";
-  const authorDiscordProfile = "";
-  for (let index = 0; index < userAccounts.length; index++) {
-    if (
-      userAccounts[index].account_type === "AUTH" &&
-      userAccounts[index].provider === "fortyTwo"
-    )
-      authorIntraProfile = `https://profile.intra.42.fr/users/${userAccounts[index].username}`;
-  }
-
   const createAt = new Date();
   const data: FeedbackCreateInput = {
     feedbackType: "",
@@ -74,7 +51,7 @@ export async function POST(request: NextRequest) {
                 } else {
                   resolve(result as CloudinaryUploadResult);
                 }
-              }
+              },
             );
             uploadStream.end(fileBuffer);
           });
@@ -129,6 +106,28 @@ export async function POST(request: NextRequest) {
       },
     },
   });
-  console.log("newFeedback", newFeedback);
-  return NextResponse.json({ newFeedback: newFeedback });
+
+  const intraProfileUrl = `https://profile.intra.42.fr/users/${
+    newFeedback.author.accounts.find(
+      (account) =>
+        account.provider === "fortyTwo" && account.account_type === "AUTH",
+    )?.username
+  }`;
+
+  const discordProfileUrl = `${
+    newFeedback.author.accounts.find(
+      (account) =>
+        account.provider === "discord" && account.account_type === "CONNECTED",
+    )?.username
+  }`;
+
+  const updatedNewFeedback = {
+    ...newFeedback,
+    author: {
+      ...newFeedback.author,
+      intraProfileUrl: intraProfileUrl,
+      discordProfileUrl: discordProfileUrl,
+    },
+  };
+  return NextResponse.json({ newFeedback: updatedNewFeedback });
 }

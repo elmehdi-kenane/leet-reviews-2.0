@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const requestUrl = new URL(
     request.nextUrl,
-    `http://${request.headers.get("host")}`
+    `http://${request.headers.get("host")}`,
   );
   const feedbackId = requestUrl.searchParams.get("feedbackId");
   const text = requestUrl.searchParams.get("text");
@@ -22,6 +22,17 @@ export async function POST(request: NextRequest) {
       text: text ? text : "",
       createdAt: createAt,
     },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+        },
+      },
+    },
   });
+  console.log("newComment", newComment);
+
   return NextResponse.json({ newComment: newComment });
 }

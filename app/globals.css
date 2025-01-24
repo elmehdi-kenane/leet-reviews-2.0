@@ -70,13 +70,13 @@ body {
   margin: 0 0px;
 }
 .light-scroll::-webkit-scrollbar-track {
-    background: #fff5e0;
-    /* margin-top: 100px; */
-    margin-top: 0px;
+  background: #fff5e0;
+  /* margin-top: 100px; */
+  margin-top: 0px;
 }
 
 .light-scroll::-webkit-scrollbar-thumb {
-    background: #141e46;
+  background: #141e46;
   border-radius: 15px;
 }
 

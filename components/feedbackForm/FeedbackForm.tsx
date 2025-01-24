@@ -59,6 +59,13 @@ const FeedbackForm = ({
     jobStatus: "",
     userId: "",
     authorComment: "",
+    author: {
+      id: "",
+      username: "",
+      name: "",
+      avatar: "",
+      intraProfileUrl: "",
+    },
     createdAt: "",
     workingType: "",
     contractType: "",
@@ -66,6 +73,7 @@ const FeedbackForm = ({
     jobProgressType: "",
     employmentDetail: [{ icon: "", text: "" }],
     votes: [],
+    comments: [],
   };
 
   const [newFeedback, setNewFeedback] =
@@ -658,7 +666,7 @@ const MinimalPreviewFeedback = ({
       <h1 className="font-SpaceGrotesk text-secondary font-semibold text-[30px] max-md:text-[20px] text-center">
         Thank you for sharing your feedback!
       </h1>
-      <div className="bg-secondary transition-transform duration-300 hover:scale-105 shadow-2xl w-full text-neutral my-[30px] p-5 rounded-xl flex flex-col items-center gap-[30px]">
+      <div className="bg-secondary h-[395px] transition-transform duration-300 hover:scale-105 shadow-2xl w-full text-neutral my-[30px] p-5 rounded-xl flex flex-col items-center gap-[30px]">
         {feedback.id === "" ? (
           <MinimalPreviewFeedbackSkeleton></MinimalPreviewFeedbackSkeleton>
         ) : (
@@ -783,25 +791,21 @@ const MinimalPreviewFeedback = ({
 const MinimalPreviewFeedbackSkeleton = () => {
   return (
     <>
-      <SkeletonTheme
-        baseColor="#D9D9D9"
-        //   baseColor="red"
-        highlightColor="#fff5e0"
-      >
-        <div className="flex flex-col w-full justify-center items-center gap-3">
+      <SkeletonTheme baseColor="#D9D9D9" highlightColor="#fff5e0" height={395}>
+        <div className="flex flex-col w-full h-full justify-between items-center gap-3">
           <div className="flex flex-col w-full justify-center items-center gap-3">
             <div className="flex w-full items-center justify-between">
               <Skeleton
                 className=""
                 containerClassName=""
                 height={35}
-                width={120}
+                width={35}
               ></Skeleton>
               <Skeleton
                 className=""
                 containerClassName=""
                 height={35}
-                width={35}
+                width={95}
               ></Skeleton>
             </div>
             <div className="w-[125px] h-[125px] rounded-full flex justify-center items-center">

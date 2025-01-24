@@ -19,7 +19,7 @@ export default function Home() {
         // console.log("responseData", responseData);
         userContext.setFeedbacks(responseData.feedbacks.reverse());
         console.log("responseData.feedbacks", responseData.feedbacks.reverse());
-        
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching feedbacks:", error);
@@ -107,25 +107,25 @@ const FeedbackCardSkeleton = () => {
               <Skeleton
                 className=""
                 containerClassName="flex-1"
-                height={50}
+                height={45}
                 width={150}
               ></Skeleton>
               <Skeleton
                 className=""
                 containerClassName="flex-1"
-                height={50}
+                height={45}
                 width={150}
               ></Skeleton>
               <Skeleton
                 className=""
                 containerClassName="flex-1"
-                height={50}
+                height={45}
                 width={150}
               ></Skeleton>
               <Skeleton
                 className=""
                 containerClassName="flex-1"
-                height={50}
+                height={45}
                 width={150}
               ></Skeleton>
             </div>

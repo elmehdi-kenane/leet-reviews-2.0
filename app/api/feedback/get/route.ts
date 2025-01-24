@@ -21,11 +21,13 @@ export async function GET() {
         },
       },
       comments: {
+        orderBy: { createdAt: "desc" },
         include: {
           author: {
             select: {
               id: true,
               username: true,
+              name: true,
               avatar: true,
             },
           },
@@ -53,20 +55,28 @@ export async function GET() {
     const intraProfileUrl = `https://profile.intra.42.fr/users/${
       feedback.author.accounts.find(
         (account) =>
-          account.provider === "fortyTwo" && account.account_type === "AUTH"
+          account.provider === "fortyTwo" && account.account_type === "AUTH",
       )?.username
     }`;
-    
+    const discordProfileUrl = `${
+      feedback.author.accounts.find(
+        (account) =>
+          account.provider === "discord" &&
+          account.account_type === "CONNECTED",
+      )?.username
+    }`;
+
     return {
       ...feedback,
-      authorAvatar: feedback.author.avatar,
-      authorName: feedback.author.name,
-      authorUsername: feedback.author.username,
-      authorIntraProfile: intraProfileUrl || null,
+      author: {
+        ...feedback.author,
+        intraProfileUrl: intraProfileUrl,
+        discordProfileUrl: discordProfileUrl,
+      },
     };
   });
 
   console.log("updatedFeedbacks", updatedFeedbacks);
-    
+
   return NextResponse.json({ feedbacks: updatedFeedbacks });
 }

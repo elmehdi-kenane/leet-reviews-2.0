@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       isUp: isUp,
     },
   });
-  if (votes.length !== 0)
+  if (votes.length > 0)
     return NextResponse.json({ message: "vote already exist" });
 
   await prismaClient.vote.create({
