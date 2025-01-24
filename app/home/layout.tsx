@@ -41,7 +41,7 @@ export default async function RootLayout({
       >
         <UserProvider>
           <Navbar />
-          <div className={`flex overflow-y-auto overflow-x-hidden home-scroll`}>
+          <div className={`flex overflow-y-auto overflow-x-hidden dark-scroll`}>
             <SideBar />
             <BottomBar />
             {children}

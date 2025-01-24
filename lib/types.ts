@@ -5,6 +5,7 @@ import {
   UseFormWatch,
 } from "react-hook-form";
 import { Dispatch, SetStateAction } from "react";
+import { account_type, provider } from "@prisma/client";
 
 // company information's
 // company name
@@ -197,6 +198,21 @@ export interface voteInterface {
   isUp: boolean;
 }
 
+
+export interface feedbackAuthorAccountInterface {
+  provider: provider;
+  username: string;
+  account_type: account_type;
+}
+
+export interface feedbackAuthorInterface {
+  id: string;
+  username: string;
+  name: string;
+  avatar: string;
+  accounts: feedbackAuthorAccountInterface[];
+}
+
 export interface FeedbackInterface {
   experienceRate: number;
   trustScore: number;
@@ -208,10 +224,7 @@ export interface FeedbackInterface {
   jobStatus: string;
   userId: string;
   authorComment: string;
-  authorAvatar: string;
-  authorName: string;
-  authorDiscordProfile: string;
-  authorIntraProfile: string;
+  author: feedbackAuthorInterface;
   createdAt: string;
   workingType: string;
   contractType: string;

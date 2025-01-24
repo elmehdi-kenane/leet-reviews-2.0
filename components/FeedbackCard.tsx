@@ -22,6 +22,7 @@ import arrowDownFilled from "@/public/arrow-down-filled.svg";
 import arrowUp from "@/public/arrow-up.svg";
 import arrowUpFilled from "@/public/arrow-up-filled.svg";
 import { UserContext } from "@/context/UserContext";
+import { tooltipClasses } from "@mui/material/Tooltip";
 
 const getExperienceRateIcon = (experienceRate: number) => {
   const icons = [
@@ -56,7 +57,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   const feedbackId = searchParams.get("feedbackId");
 
   const [isExpandFeedbackCard, setIsExpandFeedbackCard] = useState(
-    feedbackId === feedback.id ? true : false,
+    feedbackId === feedback.id ? true : false
   );
 
   let upVotesLength = 0;
@@ -64,10 +65,10 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
 
   if (feedback.votes) {
     upVotesLength = feedback.votes.filter(
-      (vote: voteInterface) => vote.isUp === true,
+      (vote: voteInterface) => vote.isUp === true
     ).length;
     downVotesLength = feedback.votes.filter(
-      (vote: voteInterface) => vote.isUp === false,
+      (vote: voteInterface) => vote.isUp === false
     ).length;
   }
 
@@ -86,14 +87,14 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   useEffect(() => {
     if (feedback.votes) {
       const userVote = feedback.votes.find(
-        (vote: voteInterface) => vote.userId === userContext.userInfo?.id,
+        (vote: voteInterface) => vote.userId === userContext.userInfo?.id
       );
       setSelectedVote(
         userVote === undefined
           ? vote.NONE
           : userVote.isUp === true
             ? vote.UP
-            : vote.DOWN,
+            : vote.DOWN
       );
     }
   }, [userContext.userInfo?.id]);
@@ -165,7 +166,6 @@ const PreviewFeedbackCard = ({
   PreviewFeedbackCardRef: RefObject<HTMLDivElement>;
 }) => {
   const [isCommentBtnHovered, setIsCommentBtnHovered] = useState(false);
-  const [commentText, setCommentText] = useState("");
 
   const [isVoteBtnClicked, setIsVoteBtnClicked] = useState({
     up: false,
@@ -206,7 +206,7 @@ const PreviewFeedbackCard = ({
   }, []);
 
   const closeExpandedFeedbackCard = (
-    e: MouseEvent | React.MouseEvent<HTMLButtonElement>,
+    e: MouseEvent | React.MouseEvent<HTMLButtonElement>
   ) => {
     if (isExpandFeedbackCard === false) return;
     router.push(`/home`);
@@ -220,10 +220,10 @@ const PreviewFeedbackCard = ({
   const createVote = async (feedbackId: string, isUp: boolean) => {
     try {
       const response = await fetch(
-        `/api/feedback-vote/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
+        `/api/feedback/vote/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
         {
           method: "POST",
-        },
+        }
       );
       const data = await response.json();
       console.log(data);
@@ -235,10 +235,10 @@ const PreviewFeedbackCard = ({
   const deleteVote = async (feedbackId: string, isUp: boolean) => {
     try {
       const response = await fetch(
-        `/api/feedback-vote/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
+        `/api/feedback/vote/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
         {
           method: "POST",
-        },
+        }
       );
       const data = await response.json();
       console.log(data);
@@ -259,8 +259,6 @@ const PreviewFeedbackCard = ({
         setIsExpandFeedbackCard(true);
         if (PreviewFeedbackCardRef.current) {
           const rect = PreviewFeedbackCardRef.current.getBoundingClientRect();
-          console.log("rect.top", rect.top);
-          console.log("rect.left", rect.left);
 
           setPreviewFeedbackCardPosition({
             top: rect.top,
@@ -361,7 +359,7 @@ const PreviewFeedbackCard = ({
                   <p className="font-semibold">{employmentDetail.text}</p>
                 </div>
               );
-            },
+            }
           )}
         </div>
       </div>
@@ -374,12 +372,12 @@ const PreviewFeedbackCard = ({
               <Image
                 src={
                   feedback.feedbackType === "Publicly"
-                    ? feedback.authorAvatar
+                    ? feedback.author.avatar
                     : AnonymousIcon
                 }
                 alt={
                   feedback.feedbackType === "Publicly"
-                    ? feedback.authorAvatar
+                    ? feedback.author.avatar
                     : AnonymousIcon
                 }
                 width={feedback.feedbackType === "Publicly" ? 40 : 30}
@@ -394,7 +392,7 @@ const PreviewFeedbackCard = ({
             </p>
           </div>
           <div className="border-2 border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
-            <p className="overflow-x-auto w-full font-Inter dark-scrollbar">
+            <p className="overflow-x-auto w-full font-Inter">
               {feedback.authorComment}
             </p>
             {feedback.authorIntraProfile !== "" &&
@@ -427,12 +425,12 @@ const PreviewFeedbackCard = ({
               <Image
                 src={
                   feedback.feedbackType === "Publicly"
-                    ? feedback.authorAvatar
+                    ? feedback.author.avatar
                     : AnonymousIcon
                 }
                 alt={
                   feedback.feedbackType === "Publicly"
-                    ? feedback.authorAvatar
+                    ? feedback.author.avatar
                     : AnonymousIcon
                 }
                 width={feedback.feedbackType === "Publicly" ? 40 : 30}
@@ -471,12 +469,34 @@ const PreviewFeedbackCard = ({
       )}
       <div className="flex justify-between items-center">
         <CustomizedTooltip
-          placement="bottom"
+          placement="top"
           title={`[ ${feedback.trustScore / 2}/5 ]`}
+          slotProps={{
+            popper: {
+              sx: {
+                [`&.${tooltipClasses.popper}[data-popper-placement*="bottom"] .${tooltipClasses.tooltip}`]:
+                  {
+                    marginTop: "0px",
+                  },
+                [`&.${tooltipClasses.popper}[data-popper-placement*="top"] .${tooltipClasses.tooltip}`]:
+                  {
+                    marginBottom: "0px",
+                  },
+                [`&.${tooltipClasses.popper}[data-popper-placement*="right"] .${tooltipClasses.tooltip}`]:
+                  {
+                    marginLeft: "0px",
+                  },
+                [`&.${tooltipClasses.popper}[data-popper-placement*="left"] .${tooltipClasses.tooltip}`]:
+                  {
+                    marginRight: "0px",
+                  },
+              },
+            },
+          }}
           arrow
         >
-          <div className="h-[44px] cursor-pointer select-none flex flex-col justify-center items-center w-[100px]">
-            <p>trust score</p>
+          <div className="h-[44px] cursor-pointer select-none flex flex-col justify-center w-[100px]">
+            <p className="text-sm">trust score</p>
             <div className="h-[8px] w-full border border-secondary rounded-full flex items-center py-1">
               <div
                 className={`h-[8px] bg-secondary rounded-full`}
@@ -603,53 +623,14 @@ const PreviewFeedbackCard = ({
       </div>
       {isExpandFeedbackCard && (
         <>
-          <div className="w-full border-2 border-secondary h-full p-3 rounded-xl">
-            <div className="flex flex-col gap-2">
-              <textarea
-                className="bg-transparent border border-secondary w-full p-2 rounded-lg border-tl-0 focus:outline-primary min-h-[70px] max-h-[70px]"
-                placeholder="type your comment"
-                onChange={(e) => setCommentText(e.target.value)}
-              ></textarea>
-              <button
-                className={`${commentText === "" ? "bg-gray cursor-not-allowed" : "bg-primary"} p-2 text-neutral rounded-md ml-auto text-[12px]`}
-              >
-                comment
-              </button>
+          <div className="w-full border-2 border-secondary h-[530px] p-3 rounded-xl flex flex-col">
+            <CommentTextArea feedback={feedback}></CommentTextArea>
+            <div className="flex flex-col w-full overflow-y-auto mt-3 light-scroll">
+              {/* No comments yet! Be the first to share your thoughts and start the conversation. */}
+              {/* <Comment feedback={feedback}></Comment>
+              <Comment feedback={feedback}></Comment>
+              <Comment feedback={feedback}></Comment> */}
             </div>
-            <div className="flex justify-between items-start flex-col">
-              <div className="flex items-center gap-1">
-                <div
-                  className={`border-2 border-[#00224D] flex justify-center items-center mb-1 rounded-full w-[33px] h-[33px] relative z-[9] bg-neutral`}
-                >
-                  <Image
-                    src={
-                      feedback.feedbackType === "Publicly"
-                        ? feedback.authorAvatar
-                        : AnonymousIcon
-                    }
-                    alt={
-                      feedback.feedbackType === "Publicly"
-                        ? feedback.authorAvatar
-                        : AnonymousIcon
-                    }
-                    width={feedback.feedbackType === "Publicly" ? 30 : 20}
-                    height={feedback.feedbackType === "Publicly" ? 30 : 20}
-                    className={`rounded-full select-none max-w-[${feedback.feedbackType === "Publicly" ? 30 : 20}px] max-h-[${feedback.feedbackType === "Publicly" ? 30 : 20}px] w-[${feedback.feedbackType === "Publicly" ? 30 : 20}] h-[${feedback.feedbackType === "Publicly" ? 30 : 20}]`}
-                  />
-                </div>
-                <p className="mb-[20px] font-semibold text-sm">
-                  {feedback.feedbackType === "Publicly"
-                    ? feedback.authorName
-                    : "Anonymous Author"}
-                </p>
-              </div>
-              <div className="border border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
-                <p className="overflow-x-auto w-full font-Inter dark-scrollbar">
-                  text comment
-                </p>
-              </div>
-            </div>
-            <p>5/10/2025</p>
           </div>
         </>
       )}
@@ -676,6 +657,83 @@ const PreviewFeedbackCard = ({
           </button>
         </div>
       )}
+    </div>
+  );
+};
+
+const Comment = ({ feedback }: { feedback: FeedbackInterface }) => {
+  return (
+    <div className="flex justify-between items-start flex-col w-[99%]">
+      <div className="flex items-center gap-1">
+        <div
+          className={`border-2 border-[#00224D] flex justify-center items-center mb-1 rounded-full w-[33px] h-[33px] relative z-[9] bg-neutral`}
+        >
+          <Image
+            src={
+              feedback.feedbackType === "Publicly"
+                ? feedback.author.avatar
+                : AnonymousIcon
+            }
+            alt={
+              feedback.feedbackType === "Publicly"
+                ? feedback.author.avatar
+                : AnonymousIcon
+            }
+            width={feedback.feedbackType === "Publicly" ? 30 : 20}
+            height={feedback.feedbackType === "Publicly" ? 30 : 20}
+            className={`rounded-full select-none max-w-[${feedback.feedbackType === "Publicly" ? 30 : 20}px] max-h-[${feedback.feedbackType === "Publicly" ? 30 : 20}px] w-[${feedback.feedbackType === "Publicly" ? 30 : 20}] h-[${feedback.feedbackType === "Publicly" ? 30 : 20}]`}
+          />
+        </div>
+        <p className="mb-[20px] font-semibold text-sm">
+          {feedback.feedbackType === "Publicly"
+            ? feedback.authorName
+            : "Anonymous Author"}
+        </p>
+      </div>
+      <div className="border border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
+        <p className="overflow-x-auto w-full font-Inter text-sm">
+          text comment
+        </p>
+      </div>
+      <p className="text-[10px] ml-auto italic">5/10/2025</p>
+    </div>
+  );
+};
+
+const CommentTextArea = ({ feedback }: { feedback: FeedbackInterface }) => {
+  const [commentText, setCommentText] = useState("");
+  const userContext = useContext(UserContext);
+
+  const createComment = async (feedbackId: string, text: string) => {
+    try {
+      const response = await fetch(
+        `/api/feedback/comment/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&text=${text}`,
+        {
+          method: "POST",
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <textarea
+        className="bg-transparent border border-secondary w-full p-2 rounded-lg border-tl-0 focus:outline-primary min-h-[70px] max-h-[70px] font-Inter"
+        placeholder="type your comment"
+        onChange={(e) => setCommentText(e.target.value)}
+      ></textarea>
+      <button
+        className={`${commentText === "" ? "bg-gray cursor-not-allowed" : "bg-primary"} p-2 text-neutral rounded-md ml-auto text-[12px]`}
+        onClick={() => {
+          if (commentText !== "") createComment(feedback.id, commentText);
+        }}
+      >
+        comment
+      </button>
     </div>
   );
 };

@@ -67,6 +67,7 @@ model User {
     sessions      Session[]
     feedbacks     Feedback[]
     votes         Vote[]
+    comments      Comment[]
 
 }
 
@@ -92,23 +93,31 @@ model Feedback {
     jobProgressType      String
     experienceRate       Int
     authorComment        String
-    authorAvatar         String
-    authorName           String
-    authorIntraProfile   String
-    authorDiscordProfile String
     createdAt            DateTime
-    votes              Vote[]
+    votes                Vote[]
+    comments             Comment[]
+    authorId             String
 
-    authorId           String
-    user             User     @relation(fields: [authorId], references: [id])
+    author               User     @relation(fields: [authorId], references: [id])
 }
 
 model Vote {
     id                   String    @id @default(uuid())
     feedbackId           String
-    userId               String
+    authorId             String
     isUp                 Boolean
 
-    user             User     @relation(fields: [userId], references: [id])
-    feedback         Feedback @relation(fields: [feedbackId], references: [id])
+    author               User     @relation(fields: [authorId], references: [id])
+    feedback             Feedback @relation(fields: [feedbackId], references: [id])
+}
+
+model Comment {
+    id                   String    @id @default(uuid())
+    feedbackId           String
+    authorId             String
+    text                 String
+    createdAt            DateTime
+
+    author               User     @relation(fields: [authorId], references: [id])
+    feedback             Feedback @relation(fields: [feedbackId], references: [id])
 }

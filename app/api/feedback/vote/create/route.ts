@@ -14,12 +14,9 @@ export async function POST(request: NextRequest) {
   const feedbackId = requestUrl.searchParams.get("feedbackId");
   const isUpParam = requestUrl.searchParams.get("isUp");
   const isUp = isUpParam === "true" ? true : false;
-  console.log("feedbackId", feedbackId);
-  console.log("isUp", isUp);
-  console.log("userId", userId);
   const votes = await prismaClient.vote.findMany({
     where: {
-      userId: userId,
+      authorId: userId,
       feedbackId: feedbackId ? feedbackId : "",
       isUp: isUp,
     },
@@ -29,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   await prismaClient.vote.create({
     data: {
-      userId: userId,
+      authorId: userId,
       feedbackId: feedbackId ? feedbackId : "",
       isUp: isUp,
     },

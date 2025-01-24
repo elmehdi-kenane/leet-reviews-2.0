@@ -18,6 +18,8 @@ export default function Home() {
         const responseData = await response.json();
         // console.log("responseData", responseData);
         userContext.setFeedbacks(responseData.feedbacks.reverse());
+        console.log("responseData.feedbacks", responseData.feedbacks.reverse());
+        
         setLoading(false);
       } catch (error) {
         console.error("Error fetching feedbacks:", error);

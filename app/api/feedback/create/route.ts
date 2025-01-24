@@ -53,10 +53,6 @@ export async function POST(request: NextRequest) {
     jobProgressType: "",
     experienceRate: 0,
     authorComment: "",
-    authorIntraProfile: authorIntraProfile,
-    authorDiscordProfile: authorDiscordProfile,
-    authorAvatar: authorAvatar,
-    authorName: authorName,
     createdAt: createAt,
     authorId: userId,
   };
@@ -78,7 +74,7 @@ export async function POST(request: NextRequest) {
                 } else {
                   resolve(result as CloudinaryUploadResult);
                 }
-              },
+              }
             );
             uploadStream.end(fileBuffer);
           });
@@ -93,6 +89,45 @@ export async function POST(request: NextRequest) {
 
   const newFeedback = await prismaClient.feedback.create({
     data: data,
+    include: {
+      votes: {
+        include: {
+          author: {
+            select: {
+              id: true,
+              username: true,
+              avatar: true,
+            },
+          },
+        },
+      },
+      comments: {
+        include: {
+          author: {
+            select: {
+              id: true,
+              username: true,
+              avatar: true,
+            },
+          },
+        },
+      },
+      author: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          avatar: true,
+          accounts: {
+            select: {
+              provider: true,
+              username: true,
+              account_type: true,
+            },
+          },
+        },
+      },
+    },
   });
   console.log("newFeedback", newFeedback);
   return NextResponse.json({ newFeedback: newFeedback });

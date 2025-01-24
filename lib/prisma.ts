@@ -30,10 +30,6 @@ export interface FeedbackCreateInput {
   jobProgressType: string;
   experienceRate: number;
   authorComment: string;
-  authorAvatar: string;
-  authorName: string;
-  authorIntraProfile: string;
-  authorDiscordProfile: string;
   createdAt: Date;
   authorId: string;
 }
