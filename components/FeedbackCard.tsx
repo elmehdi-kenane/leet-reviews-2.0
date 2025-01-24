@@ -7,7 +7,6 @@ import WorkLocationIcon from "@/public/WorkLocationIcon.svg";
 import ProgressCheckIcon from "@/public/ProgressCheckIcon.svg";
 import { useEffect } from "react";
 import { useState, useRef, useContext } from "react";
-import { usePathname } from "next/navigation";
 import {
   FeedbackInterface,
   employmentDetailInterface,

@@ -194,10 +194,24 @@ export interface employmentDetailInterface {
 export interface voteInterface {
   id: string;
   feedbackId: string;
-  userId: string;
+  authorId: string;
   isUp: boolean;
 }
 
+export interface commentAuthorInterface {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
+export interface commentInterface {
+  id: string;
+  feedbackId: string;
+  authorId: string;
+  text: string;
+  createdAt: string;
+  author: commentAuthorInterface;
+}
 
 export interface feedbackAuthorAccountInterface {
   provider: provider;
@@ -210,7 +224,7 @@ export interface feedbackAuthorInterface {
   username: string;
   name: string;
   avatar: string;
-  accounts: feedbackAuthorAccountInterface[];
+  intraProfileUrl: string;
 }
 
 export interface FeedbackInterface {
@@ -232,4 +246,5 @@ export interface FeedbackInterface {
   jobProgressType: string;
   employmentDetail: employmentDetailInterface[];
   votes: voteInterface[];
+  comments: commentInterface[];
 }

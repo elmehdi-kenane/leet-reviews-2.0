@@ -229,7 +229,7 @@ const Navbar = () => {
           ></Image>
         </button>
         <button
-          className="font-SpaceGrotesk select-none max-md:text-sm h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold text-neutral"
+          className={`font-SpaceGrotesk ${isFeedbackFormOpen === true ? "" : ""} select-none max-md:text-sm h-[50px] bg-primary px-4 max-md:px-2 rounded-xl font-semibold text-neutral`}
           ref={buttonCreateFeedbackRef}
           onClick={handleOpenFeedbackForm}
         >
