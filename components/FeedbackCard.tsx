@@ -671,7 +671,7 @@ const PreviewFeedbackCard = ({
                     </button>
                   </div>
                 </div>
-                <div className="flex flex-col w-full overflow-y-auto mt-3 light-scroll">
+                <div className="flex flex-col w-full overflow-y-auto mt-3 dark-scroll">
                   {isOrderByRecent === true
                     ? feedback.comments.map((comment) => {
                         return (

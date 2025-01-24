@@ -76,7 +76,5 @@ export async function GET() {
     };
   });
 
-  console.log("updatedFeedbacks", updatedFeedbacks);
-
   return NextResponse.json({ feedbacks: updatedFeedbacks });
 }

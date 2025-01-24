@@ -10,7 +10,8 @@ import notificationFilledIcon from "@/public/notificationsFilled.svg";
 import profileFilledIcon from "@/public/profileFilled.svg";
 import homeFilledIcon from "@/public/homeFilled.svg";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const SideBar = () => {
   const Buttons = [
@@ -39,7 +40,18 @@ const SideBar = () => {
       link: "/profile",
     },
   ];
-  const [selected, setSelected] = useState(Buttons[0].text);
+  const pathname = usePathname();
+  console.log("pathname", pathname);
+
+  const [selected, setSelected] = useState("");
+
+  useEffect(() => {
+    const activeButton = Buttons.find((button) => button.link === pathname);
+    if (activeButton) {
+      setSelected(activeButton.text);
+    }
+  }, [pathname]);
+
   return (
     <div className="max-lg:hidden select-none flex flex-col items-center gap-3 fixed z-[100] w-[60px] py-2 mt-[100px] bg-neutral rounded-xl rounded-l-none border border-quaternary border-l-0">
       {Buttons.map((item, index) => {
