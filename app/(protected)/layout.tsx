@@ -6,6 +6,7 @@ import BottomBar from "@/components/BottomBar";
 // import { validateRequest } from "@/lib/auth";
 // import { redirect } from "next/navigation";
 import { UserProvider } from "@/context/UserContext";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -46,9 +47,20 @@ export default async function RootLayout({
           >
             <SideBar />
             <BottomBar />
-            {children}
+            <div className="h-max w-full mt-[100px] max-md:mt-[150px]">
+              {children}
+            </div>
           </div>
         </UserProvider>
+        <Toaster
+          toastOptions={{
+            className: "",
+            style: {
+              color: "#FFF5E0",
+              backgroundColor: "#141E46",
+            },
+          }}
+        />
       </body>
     </html>
   );

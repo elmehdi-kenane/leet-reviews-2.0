@@ -12,8 +12,11 @@ import homeFilledIcon from "@/public/homeFilled.svg";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useContext } from "react";
+import { UserContext } from "@/context/UserContext";
 
 const SideBar = () => {
+  const { userInfo } = useContext(UserContext);
   const Buttons = [
     {
       icon: homeIcon,
@@ -37,7 +40,7 @@ const SideBar = () => {
       icon: profileIcon,
       iconFilled: profileFilledIcon,
       text: "Profile",
-      link: "/profile",
+      link: `/profile?userId=${userInfo?.id}`,
     },
   ];
   const pathname = usePathname();

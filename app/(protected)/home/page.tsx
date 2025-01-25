@@ -5,7 +5,6 @@
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "@/context/UserContext";
 import { FeedbackCard } from "@/components/FeedbackCard";
-import { Toaster } from "react-hot-toast";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 export default function Home() {
@@ -29,14 +28,14 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={`w-full`}>
+    <div className={`w-full h-max`}>
       {/* <h1>Welcome, {userInfo?.username}</h1>
       <Link href={"/api/auth/connect/discord"}>
         <button>connect with discord</button>
       </Link>
       <DisplayAccounts></DisplayAccounts> */}
       {loading ? (
-        <div className="w-full flex flex-col items-center my-[100px] pl-[5px]">
+        <div className="w-full flex flex-col items-center pl-[5px] h-max">
           <FeedbackCardSkeleton></FeedbackCardSkeleton>
           <FeedbackCardSkeleton></FeedbackCardSkeleton>
           <FeedbackCardSkeleton></FeedbackCardSkeleton>
@@ -46,7 +45,7 @@ export default function Home() {
           <FeedbackCardSkeleton></FeedbackCardSkeleton>
         </div>
       ) : (
-        <div className="w-full flex flex-col items-center my-[100px] pl-[5px]">
+        <div className="w-full flex flex-col items-center pl-[5px] h-max">
           {userContext.feedbacks.map((feedback) => {
             return (
               <FeedbackCard
@@ -57,15 +56,6 @@ export default function Home() {
           })}
         </div>
       )}
-      <Toaster
-        toastOptions={{
-          className: "",
-          style: {
-            color: "#FFF5E0",
-            backgroundColor: "#141E46",
-          },
-        }}
-      />
     </div>
   );
 }

@@ -81,7 +81,7 @@ const Navbar = () => {
       id: 1,
       text: "Profile",
       icon: "user-circle.svg",
-      path: "/PageUnderConstruction",
+      path: `/profile?userId=${userInfo?.id}`,
     },
     {
       id: 2,
