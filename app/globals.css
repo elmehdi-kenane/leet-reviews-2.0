@@ -62,22 +62,28 @@ body {
 .light-scroll::-webkit-scrollbar-thumb {
   background: #fff5e0;
   border-radius: 15px;
+  width: 2px;
 }
 
 .dark-scroll::-webkit-scrollbar {
-  width: 7px;
+  width: 12px;
   /* margin: 0 100px; */
   margin: 0 0px;
 }
 .dark-scroll::-webkit-scrollbar-track {
   background: #fff5e0;
+  /* background: yellow; */
   /* margin-top: 100px; */
   margin-top: 0px;
 }
 
 .dark-scroll::-webkit-scrollbar-thumb {
   background: #141e46;
-  border-radius: 15px;
+  /* background: red; */
+  border-radius: 5px;
+  border: 3px solid transparent;
+  border-radius: 9px;
+  background-clip: content-box;
 }
 
 .scroll-bar-width::-webkit-scrollbar-track {

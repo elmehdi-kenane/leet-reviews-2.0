@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const requestUrl = new URL(
     request.nextUrl,
-    `http://${request.headers.get("host")}`
+    `http://${request.headers.get("host")}`,
   );
   const userIdParam = requestUrl.searchParams.get("userId");
   if (userIdParam === null)
@@ -54,13 +54,14 @@ export async function GET(request: NextRequest) {
     where: {
       authorId: userIdParam,
     },
+    orderBy: { createdAt: "desc" },
     include: {
-      author: {
+      feedback: {
         select: {
           id: true,
-          username: true,
-          name: true,
-          avatar: true,
+          companyLogo: true,
+          companyName: true,
+          experienceRate: true,
         },
       },
     },
@@ -71,17 +72,16 @@ export async function GET(request: NextRequest) {
     comments: comments,
   };
 
-  const votes = await prismaClient.comment.findMany({
+  const votes = await prismaClient.vote.findMany({
     where: {
       authorId: userIdParam,
     },
     include: {
-      author: {
+      feedback: {
         select: {
           id: true,
-          username: true,
-          name: true,
-          avatar: true,
+          companyLogo: true,
+          experienceRate: true,
         },
       },
     },

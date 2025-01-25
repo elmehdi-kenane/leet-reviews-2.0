@@ -59,7 +59,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   const feedbackId = searchParams.get("feedbackId");
 
   const [isExpandFeedbackCard, setIsExpandFeedbackCard] = useState(
-    feedbackId === feedback.id ? true : false
+    feedbackId === feedback.id ? true : false,
   );
 
   let upVotesLength = 0;
@@ -67,10 +67,10 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
 
   if (feedback.votes) {
     upVotesLength = feedback.votes.filter(
-      (vote: voteInterface) => vote.isUp === true
+      (vote: voteInterface) => vote.isUp === true,
     ).length;
     downVotesLength = feedback.votes.filter(
-      (vote: voteInterface) => vote.isUp === false
+      (vote: voteInterface) => vote.isUp === false,
     ).length;
   }
 
@@ -89,7 +89,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   useEffect(() => {
     if (feedback.votes) {
       const userVote = feedback.votes.find(
-        (vote: voteInterface) => vote.authorId === userContext.userInfo?.id
+        (vote: voteInterface) => vote.authorId === userContext.userInfo?.id,
       );
 
       setSelectedVote(
@@ -97,7 +97,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
           ? vote.NONE
           : userVote.isUp === true
             ? vote.UP
-            : vote.DOWN
+            : vote.DOWN,
       );
     }
   }, [userContext.userInfo?.id]);
@@ -210,7 +210,7 @@ const PreviewFeedbackCard = ({
   }, []);
 
   const closeExpandedFeedbackCard = (
-    e: MouseEvent | React.MouseEvent<HTMLButtonElement>
+    e: MouseEvent | React.MouseEvent<HTMLButtonElement>,
   ) => {
     if (isExpandFeedbackCard === false) return;
     router.push(`/home`);
@@ -227,10 +227,10 @@ const PreviewFeedbackCard = ({
       | MouseEvent
       | React.MouseEvent<HTMLButtonElement>
       | React.MouseEvent<HTMLDivElement>,
-    isCommentAreaFocused: boolean
+    isCommentAreaFocused: boolean,
   ) => {
     router.push(
-      `/home?feedbackId=${feedback.id}&isCommentAreaFocused=${isCommentAreaFocused}`
+      `/home?feedbackId=${feedback.id}&isCommentAreaFocused=${isCommentAreaFocused}`,
     );
     setIsExpandFeedbackCard(true);
     if (PreviewFeedbackCardRef.current) {
@@ -249,7 +249,7 @@ const PreviewFeedbackCard = ({
         `/api/feedback/vote/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
         {
           method: "POST",
-        }
+        },
       );
       const data = await response.json();
       console.log(data);
@@ -264,7 +264,7 @@ const PreviewFeedbackCard = ({
         `/api/feedback/vote/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
         {
           method: "POST",
-        }
+        },
       );
       const data = await response.json();
       console.log(data);
@@ -374,7 +374,7 @@ const PreviewFeedbackCard = ({
                   <p className="font-semibold">{employmentDetail.text}</p>
                 </div>
               );
-            }
+            },
           )}
         </div>
       </div>
