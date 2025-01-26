@@ -19,6 +19,14 @@ export async function GET(request: NextRequest) {
   let profileData = {};
 
   const user = await prismaClient.user.findUnique({
+    include: {
+      accounts: {
+        select: {
+          provider: true,
+          username: true,
+        },
+      },
+    },
     where: {
       id: userIdParam ? userIdParam : "",
     },
@@ -37,7 +45,6 @@ export async function GET(request: NextRequest) {
       author: {
         select: {
           id: true,
-          username: true,
           name: true,
           avatar: true,
         },
@@ -62,6 +69,13 @@ export async function GET(request: NextRequest) {
           companyLogo: true,
           companyName: true,
           experienceRate: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+            },
+          },
         },
       },
     },
@@ -70,6 +84,35 @@ export async function GET(request: NextRequest) {
   profileData = {
     ...profileData,
     comments: comments,
+  };
+
+  const saves = await prismaClient.save.findMany({
+    where: {
+      authorId: userIdParam,
+    },
+    orderBy: { createdAt: "desc" },
+    include: {
+      feedback: {
+        select: {
+          id: true,
+          companyLogo: true,
+          companyName: true,
+          experienceRate: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  profileData = {
+    ...profileData,
+    saves: saves,
   };
 
   const votes = await prismaClient.vote.findMany({
@@ -81,7 +124,16 @@ export async function GET(request: NextRequest) {
         select: {
           id: true,
           companyLogo: true,
+          companyName: true,
+          jobStatus: true,
           experienceRate: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+            },
+          },
         },
       },
     },

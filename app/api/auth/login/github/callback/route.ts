@@ -45,13 +45,15 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-
+    const createAt = new Date();
     await prismaClient.user.create({
       data: {
         id: githubUserId,
         username: githubUsername,
         avatar: githubUser.avatar_url,
         name: githubFullName,
+        bio: "1337 student",
+        createdAt: createAt,
       },
     });
 

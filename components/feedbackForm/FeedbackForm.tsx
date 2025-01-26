@@ -73,6 +73,7 @@ const FeedbackForm = ({
     jobProgressType: "",
     employmentDetail: [{ icon: "", text: "" }],
     votes: [],
+    saves: [],
     comments: [],
   };
 

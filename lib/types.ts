@@ -227,6 +227,13 @@ export interface feedbackAuthorInterface {
   intraProfileUrl: string;
 }
 
+export interface saveInterface {
+  id: string;
+  authorId: string;
+  feedbackId: string;
+  createdAt: string;
+}
+
 export interface FeedbackInterface {
   experienceRate: number;
   trustScore: number;
@@ -245,6 +252,7 @@ export interface FeedbackInterface {
   companyLocation: string;
   jobProgressType: string;
   employmentDetail: employmentDetailInterface[];
+  saves: saveInterface[];
   votes: voteInterface[];
   comments: commentInterface[];
 }

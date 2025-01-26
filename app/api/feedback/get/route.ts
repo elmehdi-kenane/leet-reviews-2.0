@@ -9,6 +9,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const feedbacks = await prismaClient.feedback.findMany({
     include: {
+      saves: true,
       votes: {
         include: {
           author: {

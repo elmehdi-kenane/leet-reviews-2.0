@@ -1,11 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import heartIcon from "@/public/heart.svg";
 import notificationIcon from "@/public/bell.svg";
 import profileIcon from "@/public/profile.svg";
 import homeIcon from "@/public/home.svg";
-import heartFilledIcon from "@/public/heartFilled.svg";
 import notificationFilledIcon from "@/public/notificationsFilled.svg";
 import profileFilledIcon from "@/public/profileFilled.svg";
 import homeFilledIcon from "@/public/homeFilled.svg";
@@ -24,12 +22,12 @@ const SideBar = () => {
       text: "Home",
       link: "/home",
     },
-    {
-      icon: heartIcon,
-      iconFilled: heartFilledIcon,
-      text: "Favorites",
-      link: "/favorites",
-    },
+    // {
+    //   icon: heartIcon,
+    //   iconFilled: heartFilledIcon,
+    //   text: "Favorites",
+    //   link: "/favorites",
+    // },
     {
       icon: notificationIcon,
       iconFilled: notificationFilledIcon,
@@ -40,11 +38,11 @@ const SideBar = () => {
       icon: profileIcon,
       iconFilled: profileFilledIcon,
       text: "Profile",
-      link: `/profile?userId=${userInfo?.id}`,
+      link: `/profile`,
     },
   ];
   const pathname = usePathname();
-  console.log("pathname", pathname);
+  console.log("pathname in sidebar", pathname);
 
   const [selected, setSelected] = useState("");
 
@@ -61,7 +59,11 @@ const SideBar = () => {
         return (
           <Link
             key={index}
-            href={item.link}
+            href={
+              item.link === "/profile"
+                ? `/profile?userId=${userInfo?.id}`
+                : item.link
+            }
             className="w-full flex items-center justify-center"
           >
             <button

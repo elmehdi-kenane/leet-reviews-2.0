@@ -62,13 +62,16 @@ model User {
     name	      String
     email         String?   @unique
     emailVerified DateTime?
-    avatar        String?
+    createdAt     DateTime
+    avatar        String
+    bio           String
     accounts      Account[]
     sessions      Session[]
     feedbacks     Feedback[]
     votes         Vote[]
     comments      Comment[]
 
+    saves         Save[]
 }
 
 model VerificationToken {
@@ -98,7 +101,8 @@ model Feedback {
     comments             Comment[]
     authorId             String
 
-    author               User     @relation(fields: [authorId], references: [id])
+    author               User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    saves                Save[]
 }
 
 model Vote {
@@ -107,8 +111,8 @@ model Vote {
     authorId             String
     isUp                 Boolean
 
-    author               User     @relation(fields: [authorId], references: [id])
-    feedback             Feedback @relation(fields: [feedbackId], references: [id])
+    author               User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    feedback             Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
 }
 
 model Comment {
@@ -118,6 +122,19 @@ model Comment {
     text                 String
     createdAt            DateTime
 
-    author               User     @relation(fields: [authorId], references: [id])
-    feedback             Feedback @relation(fields: [feedbackId], references: [id])
+    author               User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    feedback             Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+
+}
+
+model Save {
+    id         String    @id @default(uuid())
+    authorId   String
+    feedbackId String
+    createdAt  DateTime  @default(now())
+
+    author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    feedback   Feedback  @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+
+    @@unique([authorId, feedbackId])
 }

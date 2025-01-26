@@ -5,6 +5,9 @@ import CompanyCityIcon from "@/public/CompanyCityIcon.svg";
 import ContractTypeIcon from "@/public/ContractTypeIcon.svg";
 import WorkLocationIcon from "@/public/WorkLocationIcon.svg";
 import ProgressCheckIcon from "@/public/ProgressCheckIcon.svg";
+import saveIcon from "@/public/save-icon.svg";
+import saveFilledIcon from "@/public/save-filled-icon.svg";
+// import unSaveIcon from "@/public/un-save-icon.svg";
 import { useEffect } from "react";
 import { useState, useRef, useContext } from "react";
 import {
@@ -12,6 +15,7 @@ import {
   employmentDetailInterface,
   commentInterface,
   voteInterface,
+  saveInterface,
 } from "@/lib/types";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -79,6 +83,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
     down: downVotesLength,
   });
   const [SelectedVote, setSelectedVote] = useState(vote.NONE);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     if (feedbackId === feedback.id) setIsExpandFeedbackCard(true);
@@ -87,6 +92,13 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   const userContext = useContext(UserContext);
 
   useEffect(() => {
+    if (feedback.saves) {
+      const userSave = feedback.saves.find(
+        (save: saveInterface) => save.authorId === userContext.userInfo?.id,
+      );
+
+      setIsSaved(userSave === undefined ? false : true);
+    }
     if (feedback.votes) {
       const userVote = feedback.votes.find(
         (vote: voteInterface) => vote.authorId === userContext.userInfo?.id,
@@ -112,6 +124,8 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
         <div className="absolute font-SpaceGrotesk h-full min-w-[100%] top-0 z-[151] bg-white/50 backdrop-blur-xl flex justify-center">
           <div className="max-w-[860px] w-full flex justify-center h-full items-start overflow-auto">
             <PreviewFeedbackCard
+              isSaved={isSaved}
+              setIsSaved={setIsSaved}
               setVotesCounter={setVotesCounter}
               votesCounter={votesCounter}
               setSelectedVote={setSelectedVote}
@@ -127,6 +141,8 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
         </div>
       )}
       <PreviewFeedbackCard
+        isSaved={isSaved}
+        setIsSaved={setIsSaved}
         setVotesCounter={setVotesCounter}
         votesCounter={votesCounter}
         setSelectedVote={setSelectedVote}
@@ -146,7 +162,9 @@ const PreviewFeedbackCard = ({
   setPreviewFeedbackCardPosition,
   setVotesCounter,
   setSelectedVote,
+  setIsSaved,
   SelectedVote,
+  isSaved,
   setIsExpandFeedbackCard,
   feedback,
   isExpandFeedbackCard,
@@ -161,7 +179,9 @@ const PreviewFeedbackCard = ({
   setVotesCounter: React.Dispatch<React.SetStateAction<votesCounterType>>;
   setIsExpandFeedbackCard: (value: boolean) => void;
   setSelectedVote: (value: vote) => void;
+  setIsSaved: (value: boolean) => void;
   SelectedVote: vote;
+  isSaved: boolean;
   isExpandFeedbackCard: boolean;
   PreviewFeedbackCardPosition: { top: number; left: number };
   votesCounter: { up: number; down: number };
@@ -172,6 +192,7 @@ const PreviewFeedbackCard = ({
   const [isOrderByRecent, setIsOrderByRecent] = useState(true);
 
   const [isVoteBtnClicked, setIsVoteBtnClicked] = useState({
+    save: false,
     up: false,
     down: false,
   });
@@ -247,6 +268,36 @@ const PreviewFeedbackCard = ({
     try {
       const response = await fetch(
         `/api/feedback/vote/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
+        {
+          method: "POST",
+        },
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
+  const createSave = async (feedbackId: string) => {
+    try {
+      const response = await fetch(
+        `/api/feedback/save/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
+        {
+          method: "POST",
+        },
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
+  const deleteSave = async (feedbackId: string) => {
+    try {
+      const response = await fetch(
+        `/api/feedback/save/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
         {
           method: "POST",
         },
@@ -528,14 +579,48 @@ const PreviewFeedbackCard = ({
           </p>
         </div>
         <div className="flex gap-2">
+          {isExpandFeedbackCard === true && (
+            <button
+              className={`rounded-xl h-[38px] px-2 w-[38px] select-none border-[2px] border-[#41B06E] flex justify-center items-center`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsSaved(!isSaved);
+                if (isSaved === false) {
+                  toast.dismiss();
+                  toast.success("feedback saved!");
+                  createSave(feedback.id);
+                } else deleteSave(feedback.id);
+                setIsVoteBtnClicked({ save: true, up: false, down: false });
+                setTimeout(() => {
+                  setIsVoteBtnClicked({
+                    save: false,
+                    up: false,
+                    down: false,
+                  });
+                }, 500);
+              }}
+            >
+              <Image
+                src={isSaved === true ? saveFilledIcon : saveIcon}
+                alt={isSaved === true ? saveFilledIcon : saveIcon}
+                width={11}
+                height={11}
+                className={`${isVoteBtnClicked.save === true ? "click-animation" : ""}`}
+              />
+            </button>
+          )}
           <div className="flex border-[2px] border-[#41B06E] gap-2 px-2 rounded-xl h-[38px] items-center">
             <button
               className={`h-[38px] flex justify-center items-center `}
               onClick={(e) => {
                 e.stopPropagation();
-                setIsVoteBtnClicked({ up: true, down: false });
+                setIsVoteBtnClicked({ save: false, up: true, down: false });
                 setTimeout(() => {
-                  setIsVoteBtnClicked({ up: false, down: false });
+                  setIsVoteBtnClicked({
+                    save: false,
+                    up: false,
+                    down: false,
+                  });
                 }, 500);
                 if (SelectedVote === vote.UP) {
                   setVotesCounter((prev: votesCounterType) => ({
@@ -571,15 +656,18 @@ const PreviewFeedbackCard = ({
               {isExpandFeedbackCard === true && (
                 <p className="text-primary">{votesCounter.up}</p>
               )}
-              {/* <p>{votesCounter.up}</p> */}
             </button>
             <button
               className={`h-[38px] flex justify-center items-center `}
               onClick={(e) => {
                 e.stopPropagation();
-                setIsVoteBtnClicked({ up: false, down: true });
+                setIsVoteBtnClicked({ save: false, up: false, down: true });
                 setTimeout(() => {
-                  setIsVoteBtnClicked({ up: false, down: false });
+                  setIsVoteBtnClicked({
+                    save: false,
+                    up: false,
+                    down: false,
+                  });
                 }, 500);
                 if (SelectedVote === vote.DOWN) {
                   setVotesCounter((prev: votesCounterType) => ({
@@ -615,7 +703,6 @@ const PreviewFeedbackCard = ({
               {isExpandFeedbackCard === true && (
                 <p className="text-primary">{votesCounter.down}</p>
               )}
-              {/* <p>{votesCounter.down}</p> */}
             </button>
           </div>
           {!isExpandFeedbackCard && (

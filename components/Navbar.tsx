@@ -256,26 +256,24 @@ const Navbar = () => {
               <div className="flex flex-col justify-start bg-secondary w-[120px] min-w-max rounded-xl gap-1 py-2 px-2">
                 {dropDownButtons.map((item) => {
                   return (
-                    <Link
-                      href={item.path}
-                      className="w-full flex items-center justify-center"
+                    <button
                       key={item.id}
+                      className="flex gap-1 items-center text-white hover:bg-primary rounded-lg w-full h-full py-1 px-1 pr-3"
+                      onClick={() => {
+                        setIsDropDownOpen(false);
+                        item.onClick !== undefined && item.onClick();
+                        router.push(item.path);
+                      }}
                     >
-                      <button
-                        key={item.id}
-                        className="flex gap-1 items-center text-white hover:bg-primary rounded-lg w-full h-full py-1 px-1 pr-3"
-                        onClick={item.onClick}
-                      >
-                        <Image
-                          src={item.icon}
-                          alt={item.icon}
-                          width={30}
-                          height={30}
-                          className="rounded-full"
-                        ></Image>
-                        {item.text}
-                      </button>
-                    </Link>
+                      <Image
+                        src={item.icon}
+                        alt={item.icon}
+                        width={30}
+                        height={30}
+                        className="rounded-full"
+                      ></Image>
+                      {item.text}
+                    </button>
                   );
                 })}
               </div>

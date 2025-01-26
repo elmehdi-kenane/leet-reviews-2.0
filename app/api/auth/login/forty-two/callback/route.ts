@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-
+    const createAt = new Date();
     await prismaClient.user.create({
       data: {
         id: userId,
@@ -57,6 +57,8 @@ export async function GET(request: NextRequest) {
         name: fortyTwoFullName,
         email: fortyTwoUser.email,
         avatar: fortyTwoUser.image.link,
+        bio: "1337 student",
+        createdAt: createAt,
       },
     });
 
