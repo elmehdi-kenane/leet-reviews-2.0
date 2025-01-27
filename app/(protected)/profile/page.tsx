@@ -8,6 +8,8 @@ import { FeedbackInterface, saveInterface } from "@/lib/types";
 import dots from "@/public/three-dots.svg";
 import deleteFeedbackIcon from "@/public/delete.svg";
 import editFeedbackIcon from "@/public/edit-feedback.svg";
+import FeedbackIcon from "@/public/feedback-icon.svg";
+import FeedbackSelectedIcon from "@/public/feedback-selected-icon.svg";
 import shareFeedbackIcon from "@/public/share.svg";
 import dotsCross from "@/public/cross.svg";
 import { useRouter } from "next/navigation";
@@ -185,16 +187,22 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
   return (
     <div className="gap-3 border-2 border-neutral p-8 rounded-3xl w-full">
       <div className="flex items-center gap-3">
-        <Image
-          src={user.avatar || "/default.jpeg"}
-          alt={user.avatar || "/default.jpeg"}
-          width={125}
-          height={125}
-          className="rounded-full select-none min-w-[125px] min-h-[125px] max-w-[125px] max-h-[125px] border-2 border-neutral"
-        />
-        <div className="flex flex-col">
-          <p className="font-SpaceGrotesk text-[25px]">{user.name}</p>
-          <p className="font-SpaceGrotesk text-[15px]">{user.bio}</p>
+        <div className="flex max-sm:flex-col max-sm:items-start items-center gap-3">
+          <Image
+            src={user.avatar || "/default.jpeg"}
+            alt={user.avatar || "/default.jpeg"}
+            width={125}
+            height={125}
+            className="rounded-full select-none min-w-[125px] min-h-[125px] max-sm:min-w-[70px] max-sm:min-h-[70px] max-w-[125px] max-h-[125px] max-sm:max-w-[70px] max-sm:max-h-[70px] border-2 border-neutral"
+          />
+          <div className="flex flex-col">
+            <p className="font-SpaceGrotesk text-[25px] max-sm:text-[18px]">
+              {user.name}
+            </p>
+            <p className="font-SpaceGrotesk text-[15px] max-sm:text-[14px]">
+              {user.bio}
+            </p>
+          </div>
         </div>
         <div className="flex flex-col gap-2 mb-auto ml-auto">
           {user.accounts.map((account) => {
@@ -222,7 +230,7 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
         </div>
       </div>
       <div className="flex items-center justify-between">
-        <p className="font-SpaceGrotesk text-[12px] mt-auto italic">
+        <p className="font-SpaceGrotesk text-[12px] max-sm:text-[9px] mt-auto italic">
           Joined • {format(new Date(user.createdAt), "dd MMMM yyyy")}
         </p>
         <button
@@ -278,15 +286,39 @@ const MyFeedbacksAndSavedWrapper = ({
       <div className="bg-neutral w-max p-2 flex gap-2 rounded-2xl font-SpaceGrotesk font-semibold select-none">
         <button
           onClick={() => setSelectedBtn(1)}
-          className={`rounded-lg w-[140px] ${selectedBtn === 1 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
+          className={`rounded-lg max-sm:hidden w-[140px] ${selectedBtn === 1 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
         >
           my feedbacks
         </button>
         <button
+          onClick={() => setSelectedBtn(1)}
+          className={`rounded-xl sm:hidden w-[47px] h-[47px] flex justify-center items-center ${selectedBtn === 1 ? "text-neutral bg-secondary border-2 border-secondary" : "text-secondary border-2 border-secondary"} p-2`}
+        >
+          <Image
+            src={selectedBtn === 1 ? FeedbackSelectedIcon : FeedbackIcon}
+            alt={selectedBtn === 1 ? FeedbackSelectedIcon : FeedbackIcon}
+            width={25}
+            height={25}
+            className=""
+          />
+        </button>
+        <button
           onClick={() => setSelectedBtn(2)}
-          className={`rounded-lg w-[140px] ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
+          className={`rounded-lg max-sm:hidden w-[140px] ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
         >
           my saved
+        </button>
+        <button
+          onClick={() => setSelectedBtn(2)}
+          className={`rounded-xl sm:hidden w-[47px] h-[47px] flex justify-center items-center ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"}`}
+        >
+          <Image
+            src={selectedBtn === 2 ? saveFilledIcon : saveIcon}
+            alt={selectedBtn === 2 ? saveFilledIcon : saveIcon}
+            width={25}
+            height={25}
+            className=""
+          />
         </button>
       </div>
       <div
