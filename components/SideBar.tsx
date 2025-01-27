@@ -11,11 +11,40 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const SideBar = () => {
   const { userInfo } = useContext(UserContext);
   const [fullPath, setFullPath] = useState("");
-  const [buttons, setButtons] = useState<button[] | []>([]);
+
+  const Buttons: button[] = [
+    {
+      icon: homeIcon,
+      iconFilled: homeFilledIcon,
+      text: "Home",
+      link: "/home",
+    },
+    // {
+    //   icon: heartIcon,
+    //   iconFilled: heartFilledIcon,
+    //   text: "Favorites",
+    //   link: "/favorites",
+    // },
+    {
+      icon: notificationIcon,
+      iconFilled: notificationFilledIcon,
+      text: "Notifications",
+      link: "/notifications",
+    },
+    {
+      icon: profileIcon,
+      iconFilled: profileFilledIcon,
+      text: "Profile",
+      link: `/profile?userId=${userInfo?.id}`,
+    },
+  ];
+
+  const [buttons, setButtons] = useState<button[]>(Buttons);
 
   interface button {
     icon: string;
@@ -24,8 +53,11 @@ const SideBar = () => {
     link: string;
   }
 
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   useEffect(() => {
-    setButtons([
+    const Buttons: button[] = [
       {
         icon: homeIcon,
         iconFilled: homeFilledIcon,
@@ -50,23 +82,25 @@ const SideBar = () => {
         text: "Profile",
         link: `/profile?userId=${userInfo?.id}`,
       },
-    ]);
+    ];
+    setButtons(Buttons);
     const path = window.location.pathname + window.location.search;
     setFullPath(path);
-  }, [userInfo?.id]);
+  }, [userInfo?.id, pathname, searchParams]);
 
   const [selected, setSelected] = useState("");
 
   useEffect(() => {
-    console.log("fullPath", fullPath);
-    console.log("userInfo?.id", userInfo?.id);
-    console.log("buttons", buttons);
+    // console.log("fullPath", fullPath);
+    // console.log("userInfo?.id", userInfo?.id);
+    // console.log("buttons", buttons);
 
     const activeButton = buttons.find((button) => button.link === fullPath);
     if (activeButton) {
-      console.log("activeButton", activeButton);
       setSelected(activeButton.text);
-    } else console.log("button not found");
+    } else {
+      setSelected("");
+    }
   }, [fullPath, userInfo?.id, buttons]);
 
   return (

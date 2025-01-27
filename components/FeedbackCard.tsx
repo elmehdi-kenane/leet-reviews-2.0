@@ -913,6 +913,7 @@ const Comment = ({
 
 const CommentTextArea = ({ feedback }: { feedback: FeedbackInterface }) => {
   const [commentText, setCommentText] = useState("");
+  const [isCommentAdding, setIsCommentAdding] = useState(false);
   const userContext = useContext(UserContext);
 
   const searchParams = useSearchParams();
@@ -928,6 +929,8 @@ const CommentTextArea = ({ feedback }: { feedback: FeedbackInterface }) => {
   const createComment = async (feedbackId: string, text: string) => {
     try {
       toast.loading("Posting...");
+      setIsCommentAdding(true);
+      setCommentText("");
       const response = await fetch(
         `/api/feedback/comment/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&text=${text}`,
         {
@@ -937,7 +940,7 @@ const CommentTextArea = ({ feedback }: { feedback: FeedbackInterface }) => {
       const data = await response.json();
       toast.dismiss();
       toast.success("comment added!");
-      setCommentText("");
+      setIsCommentAdding(false);
       userContext.setFeedbacks((prevFeedbacks: FeedbackInterface[]) => {
         const updatedFeedbacks: FeedbackInterface[] = prevFeedbacks.map(
           (feedback) => {
@@ -959,6 +962,7 @@ const CommentTextArea = ({ feedback }: { feedback: FeedbackInterface }) => {
   return (
     <div className="flex flex-col gap-2">
       <textarea
+        disabled={isCommentAdding}
         ref={textareaRef}
         className="bg-transparent border border-secondary w-full p-2 rounded-lg border-tl-0 focus:outline-primary min-h-[70px] max-h-[70px] font-Inter"
         placeholder={`type your comment`}

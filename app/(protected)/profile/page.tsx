@@ -137,9 +137,15 @@ export default function Profile() {
               ></MyCommentsAndVotesWrapper>
             </>
           ) : (
-            <FeedbackAsVisitorWrapper
-              feedbacks={profile.feedbacks}
-            ></FeedbackAsVisitorWrapper>
+            <>
+              <FeedbackAsVisitorWrapper
+                feedbacks={profile.feedbacks}
+              ></FeedbackAsVisitorWrapper>
+              <MyCommentsAndVotesWrapper
+                comments={profile.comments}
+                votes={profile.votes}
+              ></MyCommentsAndVotesWrapper>
+            </>
           )}
         </>
       ) : (
@@ -365,7 +371,7 @@ const FeedbackAsVisitorWrapper = ({
         <button
           className={`rounded-lg w-[140px] text-neutral bg-secondary p-2`}
         >
-          feedbacks of
+          feedbacks
         </button>
       </div>
       <div
@@ -722,30 +728,7 @@ const FeedbackAsVisitorCard = ({
         </svg>
       </div>
       <p className="text-xl font-SpaceGrotesk">{feedback.companyName}</p>
-      <div className="w-full border rounded-xl p-1 mb-1 flex text-sm my-auto items-center gap-[2px]">
-        {/* <p className="text-sm">by</p> */}
-        <Image
-          src={
-            feedback.feedbackType === "Publicly"
-              ? feedback.author.avatar
-              : AnonymousIcon
-          }
-          alt={
-            feedback.feedbackType === "Publicly"
-              ? feedback.author.avatar
-              : AnonymousIcon
-          }
-          width={50}
-          height={50}
-          className="rounded-full min-w-[30px] min-h-[30px] max-w-[30px] max-h-[30px] bg-neutral border border-neutral"
-          onClick={() => {}}
-        />
-        <p className="truncate">
-          {feedback.feedbackType === "Publicly"
-            ? feedback.author.name
-            : "Anonymous Author"}
-        </p>
-      </div>
+      <p className="text-lg font-SpaceGrotesk">{feedback.jobStatus}</p>
       <div className="mt-auto flex w-full gap-1 select-none">
         <button
           onClick={() => router.push(`/home?feedbackId=${feedback.id}`)}
