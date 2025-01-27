@@ -82,7 +82,6 @@ const FeedbackForm = ({
   const userContext = useContext(UserContext);
 
   const onSubmit = async (data: FormDataRhf) => {
-    await handleStepValidation();
     const finalFormDataRhf = { trustScore: totalTrustScore, ...data };
     const finalFormData = new FormData();
 
@@ -209,9 +208,10 @@ const FeedbackForm = ({
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        handleSubmit(onSubmit)();
+        await handleStepValidation();
+        handleSubmit(onSubmit)(e);
       }}
       className={`relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}

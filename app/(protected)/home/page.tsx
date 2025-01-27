@@ -35,7 +35,7 @@ export default function Home() {
       </Link>
       <DisplayAccounts></DisplayAccounts> */}
       {loading ? (
-        <div className="w-full flex flex-col items-center pl-[5px] h-max">
+        <div className="w-full flex flex-col items-center pl-[6px] h-max">
           <FeedbackCardSkeleton></FeedbackCardSkeleton>
           <FeedbackCardSkeleton></FeedbackCardSkeleton>
           <FeedbackCardSkeleton></FeedbackCardSkeleton>
@@ -45,7 +45,7 @@ export default function Home() {
           <FeedbackCardSkeleton></FeedbackCardSkeleton>
         </div>
       ) : (
-        <div className="w-full flex flex-col items-center pl-[0px] h-max">
+        <div className="w-full flex flex-col items-center pl-[6px] h-max">
           {userContext.feedbacks.map((feedback) => {
             return (
               <FeedbackCard
