@@ -121,7 +121,7 @@ export default function Profile() {
   }, [userId]);
 
   return (
-    <div className="text-neutral w-full h-full flex flex-col max-w-[850px] mx-auto gap-16">
+    <div className="text-neutral max-lg:w-[90%] w-full h-full flex flex-col max-w-[850px] mx-auto max-lg:mb-24 gap-16">
       {profile ? (
         <>
           <ProfileHeader user={profile.user}></ProfileHeader>

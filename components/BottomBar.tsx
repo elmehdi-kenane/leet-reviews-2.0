@@ -8,10 +8,16 @@ import homeIcon from "@/public/home.svg";
 import notificationFilledIcon from "@/public/notificationsFilled.svg";
 import profileFilledIcon from "@/public/profileFilled.svg";
 import homeFilledIcon from "@/public/homeFilled.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { UserContext } from "@/context/UserContext";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const BottomBar = () => {
-  const Buttons = [
+  const { userInfo } = useContext(UserContext);
+  const [fullPath, setFullPath] = useState("");
+
+  const Buttons: button[] = [
     {
       icon: homeIcon,
       iconFilled: homeFilledIcon,
@@ -34,13 +40,71 @@ const BottomBar = () => {
       icon: profileIcon,
       iconFilled: profileFilledIcon,
       text: "Profile",
-      link: "/profile",
+      link: `/profile?userId=${userInfo?.id}`,
     },
   ];
-  const [selected, setSelected] = useState(Buttons[0].text);
+
+  const [buttons, setButtons] = useState<button[]>(Buttons);
+
+  interface button {
+    icon: string;
+    iconFilled: string;
+    text: string;
+    link: string;
+  }
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const Buttons: button[] = [
+      {
+        icon: homeIcon,
+        iconFilled: homeFilledIcon,
+        text: "Home",
+        link: "/home",
+      },
+      // {
+      //   icon: heartIcon,
+      //   iconFilled: heartFilledIcon,
+      //   text: "Favorites",
+      //   link: "/favorites",
+      // },
+      {
+        icon: notificationIcon,
+        iconFilled: notificationFilledIcon,
+        text: "Notifications",
+        link: "/notifications",
+      },
+      {
+        icon: profileIcon,
+        iconFilled: profileFilledIcon,
+        text: "Profile",
+        link: `/profile?userId=${userInfo?.id}`,
+      },
+    ];
+    setButtons(Buttons);
+    const path = window.location.pathname + window.location.search;
+    setFullPath(path);
+  }, [userInfo?.id, pathname, searchParams]);
+
+  const [selected, setSelected] = useState("");
+
+  useEffect(() => {
+    // console.log("fullPath", fullPath);
+    // console.log("userInfo?.id", userInfo?.id);
+    // console.log("buttons", buttons);
+
+    const activeButton = buttons.find((button) => button.link === fullPath);
+    if (activeButton) {
+      setSelected(activeButton.text);
+    } else {
+      setSelected("");
+    }
+  }, [fullPath, userInfo?.id, buttons]);
   return (
     <>
-      <div
+      {/* <div
         className="w-full lg:hidden fixed h-[30px] bottom-[89px] bg-neutral z-[100]"
         style={{
           maskImage:
@@ -48,9 +112,9 @@ const BottomBar = () => {
           WebkitMaskImage:
             "linear-gradient(to top, rgba(255, 0, 0, 1), rgba(255, 0, 0, 0.5), rgba(255, 0, 0, 0))",
         }}
-      ></div>
-      <div className="w-full lg:hidden fixed h-[89px] bottom-0 bg-neutral z-[99]"></div>
-      <div className="lg:hidden fixed border border-quaternary bg-neutral left-0 right-0 bottom-[1%] max-w-[340px] w-[95%] h-[75px] mx-auto flex items-center justify-between p-3 rounded-2xl z-[100]">
+      ></div> */}
+      <div className="w-full lg:hidden fixed h-[97px] bottom-0 bg-white/30 backdrop-blur-sm z-[99]"></div>
+      <div className="lg:hidden fixed border border-quaternary bg-neutral left-0 right-0 bottom-[1%] max-w-[250px] w-[95%] h-[75px] mx-auto flex items-center justify-between p-3 rounded-2xl z-[100]">
         {Buttons.map((item, index) => {
           return (
             // <CustomizedTooltip
