@@ -132,6 +132,7 @@ export default function Profile() {
                 saves={profile.saves}
               ></MyFeedbacksAndSavedWrapper>
               <MyCommentsAndVotesWrapper
+                isOwn={true}
                 comments={profile.comments}
                 votes={profile.votes}
               ></MyCommentsAndVotesWrapper>
@@ -142,6 +143,7 @@ export default function Profile() {
                 feedbacks={profile.feedbacks}
               ></FeedbackAsVisitorWrapper>
               <MyCommentsAndVotesWrapper
+                isOwn={false}
                 comments={profile.comments}
                 votes={profile.votes}
               ></MyCommentsAndVotesWrapper>
@@ -901,9 +903,11 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
 };
 
 const MyCommentsAndVotesWrapper = ({
+  isOwn,
   comments,
   votes,
 }: {
+  isOwn: boolean;
   comments: commentInterface[];
   votes: voteProfileInterface[];
 }) => {
@@ -936,13 +940,13 @@ const MyCommentsAndVotesWrapper = ({
           onClick={() => setSelectedBtn(1)}
           className={`rounded-lg w-[140px] ${selectedBtn === 1 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
         >
-          my comments
+          {isOwn === true && "my"} comments
         </button>
         <button
           onClick={() => setSelectedBtn(2)}
           className={`rounded-lg w-[140px] ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
         >
-          my votes
+          {isOwn === true && "my"} votes
         </button>
       </div>
       <div className="h-[280px] w-full bg-neutral rounded-xl flex justify-center">
