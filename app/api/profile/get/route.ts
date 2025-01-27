@@ -49,6 +49,12 @@ export async function GET(request: NextRequest) {
           avatar: true,
         },
       },
+      saves: {
+        select: {
+          authorId: true,
+          id: true,
+        },
+      },
     },
   });
 

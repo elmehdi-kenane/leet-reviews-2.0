@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useContext } from "react";
 import { UserContext } from "@/context/UserContext";
 import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
-import { FeedbackInterface } from "@/lib/types";
+import { FeedbackInterface, saveInterface } from "@/lib/types";
 import dots from "@/public/three-dots.svg";
 import deleteFeedbackIcon from "@/public/delete.svg";
 import editFeedbackIcon from "@/public/edit-feedback.svg";
@@ -127,17 +127,19 @@ export default function Profile() {
           <ProfileHeader user={profile.user}></ProfileHeader>
           {profile.isOwn === true ? (
             <>
-              <MyFeedbacksAndFavoritesWrapper
+              <MyFeedbacksAndSavedWrapper
                 feedbacks={profile.feedbacks}
                 saves={profile.saves}
-              ></MyFeedbacksAndFavoritesWrapper>
+              ></MyFeedbacksAndSavedWrapper>
               <MyCommentsAndVotesWrapper
                 comments={profile.comments}
                 votes={profile.votes}
               ></MyCommentsAndVotesWrapper>
             </>
           ) : (
-            <div>visitor</div>
+            <FeedbackAsVisitorWrapper
+              feedbacks={profile.feedbacks}
+            ></FeedbackAsVisitorWrapper>
           )}
         </>
       ) : (
@@ -213,7 +215,7 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
       </div>
       <div className="flex items-center justify-between">
         <p className="font-SpaceGrotesk text-[12px] mt-auto italic">
-          Joined at {format(new Date(user.createdAt), "dd-MM-yyyy")}
+          Joined • {format(new Date(user.createdAt), "dd MMMM yyyy")}
         </p>
         <button
           className="font-SpaceGrotesk text-[12px] bg-primary p-2 rounded-lg transition-transform duration-500 transform hover:scale-[1.05] select-none"
@@ -234,7 +236,7 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
   );
 };
 
-const MyFeedbacksAndFavoritesWrapper = ({
+const MyFeedbacksAndSavedWrapper = ({
   feedbacks,
   saves,
 }: {
@@ -331,6 +333,82 @@ const MyFeedbacksAndFavoritesWrapper = ({
   );
 };
 
+const FeedbackAsVisitorWrapper = ({
+  feedbacks,
+}: {
+  feedbacks: FeedbackInterface[];
+}) => {
+  const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (containerRef.current) {
+        setIsOverflowing(
+          containerRef.current.scrollHeight > containerRef.current.clientHeight,
+        );
+      }
+    };
+
+    // Initial check
+    checkOverflow();
+
+    // Optional: Recheck on window resize
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="bg-neutral w-max p-2 flex gap-2 rounded-2xl font-SpaceGrotesk font-semibold select-none">
+        <button
+          className={`rounded-lg w-[140px] text-neutral bg-secondary p-2`}
+        >
+          feedbacks of
+        </button>
+      </div>
+      <div
+        className={`${isOverflowing === true ? "h-[280px]" : "h-[270px]"} w-full bg-neutral rounded-xl`}
+      >
+        {feedbacks.length === 0 && (
+          <div className="w-full h-full text-secondary font-SpaceGrotesk flex flex-col justify-center items-center font-semibold text-lg gap-3">
+            <p>No feedbacks available.</p>
+            <button
+              onClick={() => router.push(`/home`)}
+              className="bg-secondary text-neutral p-2 rounded-lg hover:bg-primary flex items-center gap-1 select-none transition-transform duration-500 transform hover:scale-[1.05]"
+            >
+              <p>explore feedbacks</p>
+              <Image
+                src={exploreArrow}
+                alt={exploreArrow}
+                width={25}
+                height={15}
+                className=""
+              />
+            </button>
+          </div>
+        )}
+        <div
+          className={`${isOverflowing === true ? "w-[99%] mx-auto" : ""} h-[270px] rounded-2xl text-secondary flex gap-5 py-5 px-[14px] overflow-x-auto dark-scroll font-SpaceGrotesk`}
+        >
+          {feedbacks.length > 0 &&
+            feedbacks
+              .filter((feedback) => feedback.feedbackType === "Publicly")
+              .map((feedback) => {
+                return (
+                  <FeedbackAsVisitorCard
+                    feedback={feedback}
+                    key={feedback.id}
+                  ></FeedbackAsVisitorCard>
+                );
+              })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const PopUpDeleteFeedback = ({
   setIsPopUpDeleteFeedbackOpen,
   feedbackId,
@@ -355,8 +433,8 @@ const PopUpDeleteFeedback = ({
     }
   };
   return (
-    <div className="flex justify-center items-center z-30 absolute inset-0 bg-red/30 backdrop-blur-sm rounded-[45px]">
-      <div className="flex justify-center items-center flex-col bg-secondary bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
+    <div className="flex justify-center items-center z-30 absolute inset-0 h-full backdrop-blur-sm rounded-[45px]">
+      <div className="flex justify-center items-center flex-col bg-secondary h-full bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
         <p className="font-semibold mb-4 text-white">
           Are you sure you want to delete feedback?
         </p>
@@ -412,8 +490,8 @@ const PopUpUnSaveFeedback = ({
     }
   };
   return (
-    <div className="flex justify-center items-center z-30 absolute inset-0 bg-red/30 backdrop-blur-sm rounded-[45px]">
-      <div className="flex justify-center items-center flex-col bg-secondary bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
+    <div className="flex justify-center items-center z-30 absolute inset-0 h-full backdrop-blur-sm rounded-[45px]">
+      <div className="flex justify-center items-center flex-col bg-secondary h-full bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
         <p className="font-semibold mb-4 text-white">
           Are you sure you want to un-save feedback?
         </p>
@@ -505,7 +583,7 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
         </svg>
       </div>
       <p className="text-xl font-SpaceGrotesk">{save.feedback.companyName}</p>
-      <div className="w-full border rounded-xl p-1 flex text-sm my-auto items-center gap-[2px]">
+      <div className="w-full border rounded-xl p-1 mb-1 flex text-sm my-auto items-center gap-[2px]">
         {/* <p className="text-sm">by</p> */}
         <Image
           src={
@@ -565,6 +643,145 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
           <PopUpUnSaveFeedback
             setIsSaved={setIsSaved}
             feedbackId={save.feedback.id}
+            setIsPopUpUnSaveFeedbackOpen={setIsPopUpUnSaveFeedbackOpen}
+          ></PopUpUnSaveFeedback>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const FeedbackAsVisitorCard = ({
+  feedback,
+}: {
+  feedback: FeedbackInterface;
+}) => {
+  const userContext = useContext(UserContext);
+  const userVote =
+    feedback.saves === undefined
+      ? undefined
+      : feedback.saves.find(
+          (save: saveInterface) => save.authorId === userContext.userInfo?.id,
+        );
+
+  const [isSaved, setIsSaved] = useState(userVote === undefined ? false : true);
+  const [isPopUpUnSaveFeedbackOpen, setIsPopUpUnSaveFeedbackOpen] =
+    useState(false);
+  const router = useRouter();
+  const createSave = async (feedbackId: string) => {
+    try {
+      const response = await fetch(
+        `/api/feedback/save/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
+        {
+          method: "POST",
+        },
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+  return (
+    <div
+      onClick={() => router.push(`/home?feedbackId=${feedback.id}`)}
+      className="bg-secondary cursor-pointer text-neutral min-w-[200px] max-w-[200px] flex rounded-lg flex-col items-center p-5 transition-transform duration-500 transform hover:scale-[1.05]"
+      key={feedback.id}
+    >
+      <Image
+        src={feedback.companyLogo}
+        alt={feedback.companyLogo}
+        width={70}
+        height={70}
+        className="rounded-full min-w-[70px] min-h-[70px] max-w-[70px] max-h-[70px] border-2 border-neutral"
+      />
+      <div
+        className={`w-[${circleRadius * 2}] h-[${
+          circleRadius * 2
+        }]  ml-[40px] mt-[-10px]`}
+      >
+        <Image
+          src={getExperienceRateIcon(feedback.experienceRate)}
+          alt={getExperienceRateIcon(feedback.experienceRate)}
+          width={15}
+          height={15}
+          className="ml-[2.5px] mb-[-18px] relative z-[9]"
+        />
+        <svg
+          width={circleRadius * 2}
+          height={circleRadius * 2}
+          xmlns="http://www.w3.org/2000/svg"
+          // className="border border-[blue]"
+        >
+          <circle
+            r={circleRadius}
+            cx={circleRadius}
+            cy={circleRadius}
+            fill="#FFF5E0"
+          />
+        </svg>
+      </div>
+      <p className="text-xl font-SpaceGrotesk">{feedback.companyName}</p>
+      <div className="w-full border rounded-xl p-1 mb-1 flex text-sm my-auto items-center gap-[2px]">
+        {/* <p className="text-sm">by</p> */}
+        <Image
+          src={
+            feedback.feedbackType === "Publicly"
+              ? feedback.author.avatar
+              : AnonymousIcon
+          }
+          alt={
+            feedback.feedbackType === "Publicly"
+              ? feedback.author.avatar
+              : AnonymousIcon
+          }
+          width={50}
+          height={50}
+          className="rounded-full min-w-[30px] min-h-[30px] max-w-[30px] max-h-[30px] bg-neutral border border-neutral"
+          onClick={() => {}}
+        />
+        <p className="truncate">
+          {feedback.feedbackType === "Publicly"
+            ? feedback.author.name
+            : "Anonymous Author"}
+        </p>
+      </div>
+      <div className="mt-auto flex w-full gap-1 select-none">
+        <button
+          onClick={() => router.push(`/home?feedbackId=${feedback.id}`)}
+          className={`bg-neutral text-secondary px-2 rounded-lg h-[30px] w-full`}
+        >
+          view
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (isSaved === true) {
+              setIsPopUpUnSaveFeedbackOpen(true);
+            } else {
+              toast.dismiss();
+              toast.success("feedback saved!", {
+                style: { background: "#fff5e0", color: "#141e46" },
+              });
+              setIsSaved(true);
+              createSave(feedback.id);
+            }
+          }}
+          className={`bg-neutral text-secondary px-2 rounded-lg h-[30px] w-[30px] flex justify-center items-center`}
+        >
+          <Image
+            src={isSaved === true ? saveFilledIcon : saveIcon}
+            alt={isSaved === true ? saveFilledIcon : saveIcon}
+            width={30}
+            height={30}
+            className="rounded-lg min-w-[28px] min-h-[28px] max-w-[28px] max-h-[28px] p-2"
+            onClick={() => {}}
+          />
+        </button>
+        {isPopUpUnSaveFeedbackOpen === true && (
+          <PopUpUnSaveFeedback
+            setIsSaved={setIsSaved}
+            feedbackId={feedback.id}
             setIsPopUpUnSaveFeedbackOpen={setIsPopUpUnSaveFeedbackOpen}
           ></PopUpUnSaveFeedback>
         )}

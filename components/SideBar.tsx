@@ -9,53 +9,69 @@ import profileFilledIcon from "@/public/profileFilled.svg";
 import homeFilledIcon from "@/public/homeFilled.svg";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
 
 const SideBar = () => {
   const { userInfo } = useContext(UserContext);
-  const Buttons = [
-    {
-      icon: homeIcon,
-      iconFilled: homeFilledIcon,
-      text: "Home",
-      link: "/home",
-    },
-    // {
-    //   icon: heartIcon,
-    //   iconFilled: heartFilledIcon,
-    //   text: "Favorites",
-    //   link: "/favorites",
-    // },
-    {
-      icon: notificationIcon,
-      iconFilled: notificationFilledIcon,
-      text: "Notifications",
-      link: "/notifications",
-    },
-    {
-      icon: profileIcon,
-      iconFilled: profileFilledIcon,
-      text: "Profile",
-      link: `/profile`,
-    },
-  ];
-  const pathname = usePathname();
-  console.log("pathname in sidebar", pathname);
+  const [fullPath, setFullPath] = useState("");
+  const [buttons, setButtons] = useState<button[] | []>([]);
+
+  interface button {
+    icon: string;
+    iconFilled: string;
+    text: string;
+    link: string;
+  }
+
+  useEffect(() => {
+    setButtons([
+      {
+        icon: homeIcon,
+        iconFilled: homeFilledIcon,
+        text: "Home",
+        link: "/home",
+      },
+      // {
+      //   icon: heartIcon,
+      //   iconFilled: heartFilledIcon,
+      //   text: "Favorites",
+      //   link: "/favorites",
+      // },
+      {
+        icon: notificationIcon,
+        iconFilled: notificationFilledIcon,
+        text: "Notifications",
+        link: "/notifications",
+      },
+      {
+        icon: profileIcon,
+        iconFilled: profileFilledIcon,
+        text: "Profile",
+        link: `/profile?userId=${userInfo?.id}`,
+      },
+    ]);
+    const path = window.location.pathname + window.location.search;
+    setFullPath(path);
+  }, [userInfo?.id]);
 
   const [selected, setSelected] = useState("");
 
   useEffect(() => {
-    const activeButton = Buttons.find((button) => button.link === pathname);
+    console.log("fullPath", fullPath);
+    console.log("userInfo?.id", userInfo?.id);
+    console.log("buttons", buttons);
+
+    const activeButton = buttons.find((button) => button.link === fullPath);
     if (activeButton) {
+      console.log("activeButton", activeButton);
       setSelected(activeButton.text);
-    }
-  }, [pathname]);
+    } else console.log("button not found");
+  }, [fullPath, userInfo?.id, buttons]);
 
   return (
     <div className="max-lg:hidden select-none flex flex-col items-center gap-3 fixed z-[100] w-[60px] py-2 mt-[100px] bg-neutral rounded-xl rounded-l-none border border-quaternary border-l-0">
-      {Buttons.map((item, index) => {
+      {buttons.map((item, index) => {
         return (
           <Link
             key={index}
