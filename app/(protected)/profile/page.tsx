@@ -17,11 +17,13 @@ import ArrowUpIcon from "@/public/arrow-up-profile.svg";
 import exploreArrow from "@/public/exploreArrow.svg";
 import saveIcon from "@/public/save-icon.svg";
 import saveFilledIcon from "@/public/save-filled-icon.svg";
+import AnonymousIcon from "@/public/AnonymousIcon.svg";
 
 export interface feedbackProfileInterface {
   id: string;
   companyLogo: string;
   companyName: string;
+  feedbackType: string;
   jobStatus: string;
   experienceRate: number;
   author: authorFeedbackProfileInterface;
@@ -48,6 +50,7 @@ export interface voteProfileInterface {
   feedback: feedbackProfileInterface;
   authorId: string;
   isUp: boolean;
+  createdAt: string;
 }
 
 export interface accountProfileInterface {
@@ -273,7 +276,7 @@ const MyFeedbacksAndFavoritesWrapper = ({
           onClick={() => setSelectedBtn(2)}
           className={`rounded-lg w-[140px] ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
         >
-          my favorites
+          my saved
         </button>
       </div>
       <div
@@ -282,7 +285,7 @@ const MyFeedbacksAndFavoritesWrapper = ({
         {((selectedBtn === 1 && feedbacks.length === 0) ||
           (selectedBtn === 2 && saves.length === 0)) && (
           <div className="w-full h-full text-secondary font-SpaceGrotesk flex flex-col justify-center items-center font-semibold text-lg gap-3">
-            <p>No {selectedBtn === 1 ? "feedbacks" : "favorites"} available.</p>
+            <p>No {selectedBtn === 1 ? "feedbacks" : "saved"} available.</p>
             {selectedBtn === 1 ? (
               <p>Do you have an experience to share? Create a feedback!</p>
             ) : (
@@ -505,14 +508,26 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
       <div className="w-full border rounded-xl p-1 flex text-sm my-auto items-center gap-[2px]">
         {/* <p className="text-sm">by</p> */}
         <Image
-          src={save.feedback.author.avatar}
-          alt={save.feedback.author.avatar}
+          src={
+            save.feedback.feedbackType === "Publicly"
+              ? save.feedback.author.avatar
+              : AnonymousIcon
+          }
+          alt={
+            save.feedback.feedbackType === "Publicly"
+              ? save.feedback.author.avatar
+              : AnonymousIcon
+          }
           width={50}
           height={50}
-          className="rounded-full min-w-[30px] min-h-[30px] max-w-[30px] max-h-[30px] bg-[red] border border-neutral"
+          className="rounded-full min-w-[30px] min-h-[30px] max-w-[30px] max-h-[30px] bg-neutral border border-neutral"
           onClick={() => {}}
         />
-        <p className="truncate">{save.feedback.author.name}</p>
+        <p className="truncate">
+          {save.feedback.feedbackType === "Publicly"
+            ? save.feedback.author.name
+            : "Anonymous Author"}
+        </p>
       </div>
       <div className="mt-auto flex w-full gap-1 select-none">
         <button
@@ -782,6 +797,7 @@ const MyCommentsAndVotesWrapper = ({
 
 const CommentProfileCard = ({ comment }: { comment: commentInterface }) => {
   const router = useRouter();
+  const size = comment.feedback.feedbackType === "Publicly" ? 30 : 30;
   return (
     <div
       onClick={() => router.push(`/home?feedbackId=${comment.feedback.id}`)}
@@ -833,14 +849,23 @@ const CommentProfileCard = ({ comment }: { comment: commentInterface }) => {
       </p>
       <div className="w-[1px] h-[55%] bg-neutral"></div>
       <Image
-        src={comment.feedback.author.avatar}
-        alt={comment.feedback.author.avatar}
-        width={30}
-        height={30}
-        className="rounded-full mr-[6px] min-w-[30px] min-h-[30px] max-w-[30px] max-h-[30px] border border-neutral"
+        src={
+          comment.feedback.feedbackType === "Publicly"
+            ? comment.feedback.author.avatar
+            : AnonymousIcon
+        }
+        alt={
+          comment.feedback.feedbackType === "Publicly"
+            ? comment.feedback.author.avatar
+            : AnonymousIcon
+        }
+        width={size}
+        height={size}
+        className={`rounded-full mr-[6px] min-w-[${size}px] min-h-[${size}px] ${comment.feedback.feedbackType != "Publicly" ? "p-[2px]" : ""} max-w-[${size}px] max-h-[${size}px] bg-neutral border border-neutral`}
         onClick={(e) => {
           e.stopPropagation();
-          router.push(`/profile?userId=${comment.feedback.author.id}`);
+          comment.feedback.feedbackType === "Publicly" &&
+            router.push(`/profile?userId=${comment.feedback.author.id}`);
         }}
       />
     </div>
@@ -849,6 +874,7 @@ const CommentProfileCard = ({ comment }: { comment: commentInterface }) => {
 
 const VoteProfileCard = ({ vote }: { vote: voteProfileInterface }) => {
   const router = useRouter();
+  const size = vote.feedback.feedbackType === "Publicly" ? 30 : 30;
   return (
     <div
       onClick={() => router.push(`/home?feedbackId=${vote.feedback.id}`)}
@@ -911,14 +937,23 @@ const VoteProfileCard = ({ vote }: { vote: voteProfileInterface }) => {
       </p>
       <div className="w-[1px] h-[55%] bg-neutral"></div>
       <Image
-        src={vote.feedback.author.avatar}
-        alt={vote.feedback.author.avatar}
-        width={30}
-        height={30}
-        className="rounded-full mr-[6px] min-w-[30px] min-h-[30px] max-w-[30px] max-h-[30px] border border-neutral"
+        src={
+          vote.feedback.feedbackType === "Publicly"
+            ? vote.feedback.author.avatar
+            : AnonymousIcon
+        }
+        alt={
+          vote.feedback.feedbackType === "Publicly"
+            ? vote.feedback.author.avatar
+            : AnonymousIcon
+        }
+        width={size}
+        height={size}
+        className={`rounded-full mr-[6px] min-w-[${size}px] min-h-[${size}px] ${vote.feedback.feedbackType != "Publicly" ? "p-[2px]" : ""} max-w-[${size}px] max-h-[${size}px] bg-neutral border border-neutral`}
         onClick={(e) => {
           e.stopPropagation();
-          router.push(`/profile?userId=${vote.feedback.author.id}`);
+          vote.feedback.feedbackType === "Publicly" &&
+            router.push(`/profile?userId=${vote.feedback.author.id}`);
         }}
       />
     </div>

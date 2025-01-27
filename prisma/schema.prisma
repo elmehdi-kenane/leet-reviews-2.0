@@ -110,6 +110,7 @@ model Vote {
     feedbackId           String
     authorId             String
     isUp                 Boolean
+    createdAt  DateTime  @default(now())
 
     author               User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
     feedback             Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)

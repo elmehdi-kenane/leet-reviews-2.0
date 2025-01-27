@@ -45,7 +45,7 @@ export default function Home() {
           <FeedbackCardSkeleton></FeedbackCardSkeleton>
         </div>
       ) : (
-        <div className="w-full flex flex-col items-center pl-[5px] h-max">
+        <div className="w-full flex flex-col items-center pl-[0px] h-max">
           {userContext.feedbacks.map((feedback) => {
             return (
               <FeedbackCard

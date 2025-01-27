@@ -2,11 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import heartIcon from "@/public/heart.svg";
 import notificationIcon from "@/public/bell.svg";
 import profileIcon from "@/public/profile.svg";
 import homeIcon from "@/public/home.svg";
-import heartFilledIcon from "@/public/heartFilled.svg";
 import notificationFilledIcon from "@/public/notificationsFilled.svg";
 import profileFilledIcon from "@/public/profileFilled.svg";
 import homeFilledIcon from "@/public/homeFilled.svg";
@@ -20,12 +18,12 @@ const BottomBar = () => {
       text: "Home",
       link: "/home",
     },
-    {
-      icon: heartIcon,
-      iconFilled: heartFilledIcon,
-      text: "Favorites",
-      link: "/favorites",
-    },
+    // {
+    //   icon: heartIcon,
+    //   iconFilled: heartFilledIcon,
+    //   text: "Favorites",
+    //   link: "/favorites",
+    // },
     {
       icon: notificationIcon,
       iconFilled: notificationFilledIcon,

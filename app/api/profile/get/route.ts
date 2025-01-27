@@ -69,6 +69,7 @@ export async function GET(request: NextRequest) {
           companyLogo: true,
           companyName: true,
           experienceRate: true,
+          feedbackType: true,
           author: {
             select: {
               id: true,
@@ -98,6 +99,7 @@ export async function GET(request: NextRequest) {
           companyLogo: true,
           companyName: true,
           experienceRate: true,
+          feedbackType: true,
           author: {
             select: {
               id: true,
@@ -127,6 +129,7 @@ export async function GET(request: NextRequest) {
           companyName: true,
           jobStatus: true,
           experienceRate: true,
+          feedbackType: true,
           author: {
             select: {
               id: true,

@@ -26,6 +26,7 @@ import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import arrowDown from "@/public/arrow-down.svg";
 import arrowDownFilled from "@/public/arrow-down-filled.svg";
 import arrowUp from "@/public/arrow-up.svg";
+import link from "@/public/link-green.svg";
 import arrowUpFilled from "@/public/arrow-up-filled.svg";
 import { UserContext } from "@/context/UserContext";
 import { tooltipClasses } from "@mui/material/Tooltip";
@@ -580,34 +581,49 @@ const PreviewFeedbackCard = ({
         </div>
         <div className="flex gap-2">
           {isExpandFeedbackCard === true && (
-            <button
-              className={`rounded-xl h-[38px] px-2 w-[38px] select-none border-[2px] border-[#41B06E] flex justify-center items-center`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsSaved(!isSaved);
-                if (isSaved === false) {
+            <div className="flex gap-2">
+              <button
+                className={`rounded-xl h-[38px] px-2 w-[38px] select-none border-[2px] border-[#41B06E] flex justify-center items-center`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsSaved(!isSaved);
+                  if (isSaved === false) {
+                    toast.dismiss();
+                    toast.success("feedback saved!");
+                    createSave(feedback.id);
+                  } else deleteSave(feedback.id);
+                  setIsVoteBtnClicked({ save: true, up: false, down: false });
+                  setTimeout(() => {
+                    setIsVoteBtnClicked({
+                      save: false,
+                      up: false,
+                      down: false,
+                    });
+                  }, 500);
+                }}
+              >
+                <Image
+                  src={isSaved === true ? saveFilledIcon : saveIcon}
+                  alt={isSaved === true ? saveFilledIcon : saveIcon}
+                  width={11}
+                  height={11}
+                  className={`${isVoteBtnClicked.save === true ? "click-animation" : ""}`}
+                />
+              </button>
+              <button
+                className={`rounded-xl h-[38px] px-2 w-[38px] select-none border-[2px] border-[#41B06E] flex justify-center items-center`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(
+                    `http://localhost:3000/home?feedbackId=${feedback.id}`,
+                  );
                   toast.dismiss();
-                  toast.success("feedback saved!");
-                  createSave(feedback.id);
-                } else deleteSave(feedback.id);
-                setIsVoteBtnClicked({ save: true, up: false, down: false });
-                setTimeout(() => {
-                  setIsVoteBtnClicked({
-                    save: false,
-                    up: false,
-                    down: false,
-                  });
-                }, 500);
-              }}
-            >
-              <Image
-                src={isSaved === true ? saveFilledIcon : saveIcon}
-                alt={isSaved === true ? saveFilledIcon : saveIcon}
-                width={11}
-                height={11}
-                className={`${isVoteBtnClicked.save === true ? "click-animation" : ""}`}
-              />
-            </button>
+                  toast.success("feedback link copied!");
+                }}
+              >
+                <Image src={link} alt={link} width={20} height={20} />
+              </button>
+            </div>
           )}
           <div className="flex border-[2px] border-[#41B06E] gap-2 px-2 rounded-xl h-[38px] items-center">
             <button
@@ -821,7 +837,7 @@ const Comment = ({ comment }: { comment: commentInterface }) => {
         <p className="mb-[20px] font-semibold text-sm">{comment.author.name}</p>
       </div>
       <div className="border border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
-        <p className="overflow-x-auto w-full font-Inter text-sm">
+        <p className="overflow-auto w-full h-full font-Inter text-sm">
           {comment.text}
         </p>
       </div>
@@ -878,7 +894,7 @@ const CommentTextArea = ({ feedback }: { feedback: FeedbackInterface }) => {
       console.error("Error", error);
     }
   };
-
+  const textareaMaxLength = 300;
   return (
     <div className="flex flex-col gap-2">
       <textarea
@@ -886,6 +902,7 @@ const CommentTextArea = ({ feedback }: { feedback: FeedbackInterface }) => {
         className="bg-transparent border border-secondary w-full p-2 rounded-lg border-tl-0 focus:outline-primary min-h-[70px] max-h-[70px] font-Inter"
         placeholder={`type your comment`}
         onChange={(e) => setCommentText(e.target.value)}
+        maxLength={textareaMaxLength}
         value={commentText}
       ></textarea>
       <button
