@@ -434,7 +434,13 @@ const PreviewFeedbackCard = ({
         <div className="flex justify-between items-start flex-col">
           <div className="flex items-center gap-1">
             <div
-              className={`border-2 border-[#00224D] flex justify-center items-center mb-1 rounded-full w-[44px] h-[44px] relative z-[9] bg-neutral`}
+              className={`border-2 border-[#00224D] hover:border-primary flex justify-center items-center mb-[5px] ml-[-14px] rounded-full w-[44px] h-[44px] relative z-[9] bg-neutral`}
+              onClick={(e) => {
+                if (feedback.feedbackType === "Publicly") {
+                  e.stopPropagation();
+                  router.push(`/profile?userId=${feedback.author.id}`);
+                }
+              }}
             >
               <Image
                 src={
@@ -452,14 +458,22 @@ const PreviewFeedbackCard = ({
                 className={`rounded-full select-none max-w-[${feedback.feedbackType === "Publicly" ? 40 : 30}px] max-h-[${feedback.feedbackType === "Publicly" ? 40 : 30}px] w-[${feedback.feedbackType === "Publicly" ? 40 : 30}] h-[${feedback.feedbackType === "Publicly" ? 40 : 30}]`}
               />
             </div>
-            <p className="mb-[15px] font-semibold">
+            <p
+              className={`mb-[15px] font-semibold ${feedback.feedbackType === "Publicly" ? "hover:text-primary cursor-pointer" : ""}`}
+              onClick={(e) => {
+                if (feedback.feedbackType === "Publicly") {
+                  e.stopPropagation();
+                  router.push(`/profile?userId=${feedback.author.id}`);
+                }
+              }}
+            >
               {feedback.feedbackType === "Publicly"
                 ? feedback.author.name
                 : "Anonymous Author"}
             </p>
           </div>
           <div className="border-2 border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
-            <p className="overflow-x-auto w-full font-Inter">
+            <p className="w-full font-Inter leading-4 max-sm:leading-3">
               {feedback.authorComment}
             </p>
             {feedback.author.intraProfileUrl !== "" &&
@@ -488,7 +502,15 @@ const PreviewFeedbackCard = ({
       ) : (
         <div className="flex border-2 border-[#00224D] rounded-2xl justify-between items-center mt-[24px] p-2 gap-[5px]">
           <div className="flex items-center gap-2">
-            <div className="border-2 border-[#00224D] w-[44px] h-[44px] flex justify-center items-center rounded-full">
+            <div
+              className="border-2 border-secondary hover:border-primary w-[44px] h-[44px] flex justify-center items-center rounded-full"
+              onClick={(e) => {
+                if (feedback.feedbackType === "Publicly") {
+                  e.stopPropagation();
+                  router.push(`/profile?userId=${feedback.author.id}`);
+                }
+              }}
+            >
               <Image
                 src={
                   feedback.feedbackType === "Publicly"
@@ -505,7 +527,15 @@ const PreviewFeedbackCard = ({
                 className={`rounded-full select-none max-w-[${feedback.feedbackType === "Publicly" ? 40 : 30}px] max-h-[${feedback.feedbackType === "Publicly" ? 40 : 30}px] w-[${feedback.feedbackType === "Publicly" ? 40 : 30}] h-[${feedback.feedbackType === "Publicly" ? 40 : 30}]`}
               />
             </div>
-            <p className="font-semibold">
+            <p
+              className="font-semibold hover:text-primary"
+              onClick={(e) => {
+                if (feedback.feedbackType === "Publicly") {
+                  e.stopPropagation();
+                  router.push(`/profile?userId=${feedback.author.id}`);
+                }
+              }}
+            >
               {feedback.feedbackType === "Publicly"
                 ? feedback.author.name
                 : "Anonymous Author"}
@@ -778,12 +808,20 @@ const PreviewFeedbackCard = ({
                   {isOrderByRecent === true
                     ? feedback.comments.map((comment) => {
                         return (
-                          <Comment comment={comment} key={comment.id}></Comment>
+                          <Comment
+                            feedbackType={feedback.feedbackType}
+                            comment={comment}
+                            key={comment.id}
+                          ></Comment>
                         );
                       })
                     : [...feedback.comments].reverse().map((comment) => {
                         return (
-                          <Comment comment={comment} key={comment.id}></Comment>
+                          <Comment
+                            feedbackType={feedback.feedbackType}
+                            comment={comment}
+                            key={comment.id}
+                          ></Comment>
                         );
                       })}
                 </div>
@@ -819,12 +857,25 @@ const PreviewFeedbackCard = ({
   );
 };
 
-const Comment = ({ comment }: { comment: commentInterface }) => {
+const Comment = ({
+  comment,
+  feedbackType,
+}: {
+  comment: commentInterface;
+  feedbackType: string;
+}) => {
+  const router = useRouter();
   return (
     <div className="flex justify-between items-start flex-col w-[99%]">
       <div className="flex items-center gap-1">
         <div
-          className={`border-2 border-[#00224D] flex justify-center items-center mb-1 rounded-full w-[33px] h-[33px] relative z-[9] bg-neutral`}
+          className={`border-2 border-[#00224D] hover:border-primary cursor-pointer flex justify-center items-center mb-1 rounded-full w-[33px] h-[33px] relative z-[9] bg-neutral`}
+          onClick={(e) => {
+            if (feedbackType === "Publicly") {
+              e.stopPropagation();
+              router.push(`/profile?userId=${comment.authorId}`);
+            }
+          }}
         >
           <Image
             src={comment.author.avatar}
@@ -834,7 +885,17 @@ const Comment = ({ comment }: { comment: commentInterface }) => {
             className={`rounded-full select-none max-w-[${30}px] max-h-[${30}px] w-[${30}] h-[${30}]`}
           />
         </div>
-        <p className="mb-[20px] font-semibold text-sm">{comment.author.name}</p>
+        <p
+          onClick={(e) => {
+            if (feedbackType === "Publicly") {
+              e.stopPropagation();
+              router.push(`/profile?userId=${comment.authorId}`);
+            }
+          }}
+          className="mb-[20px] hover:text-primary cursor-pointer font-semibold text-sm"
+        >
+          {comment.author.name}
+        </p>
       </div>
       <div className="border border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
         <p className="overflow-auto w-full h-full font-Inter text-sm">
