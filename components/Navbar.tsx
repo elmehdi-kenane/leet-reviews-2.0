@@ -87,7 +87,7 @@ const Navbar = () => {
       id: 2,
       text: "Settings",
       icon: "settings.svg",
-      path: "/PageUnderConstruction",
+      path: "/settings",
     },
     {
       id: 3,
@@ -237,7 +237,6 @@ const Navbar = () => {
           <button
             className={`border-[3px] ${isDropDownOpen === true ? "border-primary" : "border-neutral"} w-[53px] h-[53px] rounded-full flex justify-center items-center`}
             onClick={() => {
-              console.log("setIsDropDownOpen", isDropDownOpen);
               setIsDropDownOpen(!isDropDownOpen);
             }}
           >
@@ -289,7 +288,6 @@ const Navbar = () => {
                 <a
                   className="w-[30%] h-[80%] flex items-center justify-center p-1 hover:bg-primary mx-auto rounded-md"
                   href="https://github.com/yel-aziz/Reviews-Leet"
-                  target="_blank"
                 >
                   <Image
                     src={"/brand-github.svg"}

@@ -54,19 +54,20 @@ export async function GET() {
   });
 
   const updatedFeedbacks = feedbacks.map((feedback) => {
-    const intraProfileUrl = `https://profile.intra.42.fr/users/${
-      feedback.author.accounts.find(
-        (account) =>
-          account.provider === "fortyTwo" && account.account_type === "AUTH",
-      )?.username
-    }`;
-    const discordProfileUrl = `${
-      feedback.author.accounts.find(
-        (account) =>
-          account.provider === "discord" &&
-          account.account_type === "CONNECTED",
-      )?.username
-    }`;
+    const intraProfileUsername = feedback.author.accounts.find(
+      (account) =>
+        account.provider === "fortyTwo" && account.account_type === "AUTH",
+    )?.username;
+    const intraProfileUrl = intraProfileUsername
+      ? `https://profile.intra.42.fr/users/${intraProfileUsername}`
+      : "";
+    const discordProfileUsername = feedback.author.accounts.find(
+      (account) =>
+        account.provider === "discord" && account.account_type === "CONNECTED",
+    )?.username;
+    const discordProfileUrl = discordProfileUsername
+      ? `${discordProfileUsername}`
+      : "";
 
     return {
       ...feedback,

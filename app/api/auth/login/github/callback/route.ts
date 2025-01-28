@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         username: githubUsername,
         avatar: githubUser.avatar_url,
         name: githubFullName,
-        bio: "1337 student",
+        bio: "i'm just a chill guy",
         createdAt: createAt,
       },
     });

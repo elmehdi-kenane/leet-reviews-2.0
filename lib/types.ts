@@ -23,6 +23,7 @@ import { account_type, provider } from "@prisma/client";
 // experience rate
 // feedback comment
 
+// Rhf = React Hook Form :)
 export type FormDataRhf = {
   feedbackType: validFeedbackType;
   companyName: string;

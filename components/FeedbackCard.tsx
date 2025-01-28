@@ -556,10 +556,10 @@ const PreviewFeedbackCard = ({
               <div className="h-max w-[40px] flex justify-end items-center ">
                 <a
                   href={feedback.author.intraProfileUrl}
-                  target="_blank"
                   className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
                   onClick={(e) => {
                     e.stopPropagation();
+                    router.push(``);
                   }}
                 >
                   <Image

@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
         name: fortyTwoFullName,
         email: fortyTwoUser.email,
         avatar: fortyTwoUser.image.link,
-        bio: "1337 student",
+        bio: "i'm just a chill guy",
         createdAt: createAt,
       },
     });

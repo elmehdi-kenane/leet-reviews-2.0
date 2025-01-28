@@ -131,7 +131,7 @@ export default function Profile() {
   }, [userId]);
 
   return (
-    <div className="text-neutral max-lg:w-[90%] w-full h-full flex flex-col max-w-[850px] mx-auto max-lg:mb-24 gap-16">
+    <div className="text-neutral max-lg:w-[90%] w-full h-full flex flex-col max-w-[850px] mx-auto max-lg:mb-24 mt-8 gap-10">
       {profile ? (
         <>
           <ProfileHeader user={profile.user}></ProfileHeader>
@@ -168,29 +168,52 @@ export default function Profile() {
 }
 
 const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
-  const accountIcons = [
-    {
-      icon: "42-logo.svg",
-      provider: "fortyTwo",
-      onclick: () => {
-        console.log("42-logo.svg");
+  const router = useRouter();
+  type accountType = {
+    icon: string;
+    provider: string;
+    onclick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  };
+  const [accounts, setAccounts] = useState<accountType[] | []>([]);
+
+  useEffect(() => {
+    if (!router) return;
+
+    const createClickHandler = (provider: string) => {
+      //   return (e: React.MouseEvent<HTMLButtonElement>) => {
+      return () => {
+        // router.push(
+        //   `https://youtube.com`
+        // );
+        const account = user.accounts.find((acc) => acc.provider === provider);
+        console.log(`${provider} account:`, account);
+        // this is working :/ !!!!!!!!!!!!!!!!!!!!!!!
+        // if (account) {
+        //   router.push(
+        //     `https://profile.intra.42.fr/users/${account.username}`
+        //   );
+        // }
+      };
+    };
+
+    setAccounts([
+      {
+        icon: "42-logo.svg",
+        provider: "fortyTwo",
+        onclick: createClickHandler("fortyTwo"),
       },
-    },
-    {
-      icon: "discord.svg",
-      provider: "discord",
-      onclick: () => {
-        console.log("discord.svg");
+      {
+        icon: "discord.svg",
+        provider: "discord",
+        onclick: createClickHandler("discord"),
       },
-    },
-    {
-      icon: "brand-github.svg",
-      provider: "github",
-      onclick: () => {
-        console.log("brand-github.svg");
+      {
+        icon: "brand-github.svg",
+        provider: "github",
+        onclick: createClickHandler("github"),
       },
-    },
-  ];
+    ]);
+  }, [router, user.accounts]);
 
   return (
     <div className="gap-3 border-2 border-neutral p-8 rounded-3xl w-full">
@@ -214,14 +237,16 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
         </div>
         <div className="flex flex-col gap-2 mb-auto ml-auto">
           {user.accounts.map((account) => {
-            const selectedIcon = accountIcons.find(
+            const selectedIcon = accounts.find(
               (icon) => icon.provider === account.provider,
             );
             if (selectedIcon === undefined)
               return <div key={account.provider}>account not found!</div>;
             return (
               <button
-                onClick={selectedIcon.onclick}
+                onClick={(e) => {
+                  selectedIcon.onclick(e);
+                }}
                 key={account.provider}
                 className="flex justify-center items-center border p-2 border-neutral hover:bg-primary rounded-full min-w-[36px] min-h-[36px]"
               >
