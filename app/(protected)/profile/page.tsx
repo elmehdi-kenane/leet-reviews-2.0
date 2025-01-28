@@ -15,10 +15,18 @@ import dotsCross from "@/public/cross.svg";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow, format } from "date-fns";
 import ArrowDownIcon from "@/public/arrow-down-profile.svg";
+import ArrowDownBlueIcon from "@/public/arrow-down-blue.svg";
+import ArrowUpBlueIcon from "@/public/arrow-up-blue.svg";
+import ArrowDownBlueFilledIcon from "@/public/arrow-down-blue-filled.svg";
+import ArrowUpBlueFilledIcon from "@/public/arrow-up-blue-filled.svg";
 import ArrowUpIcon from "@/public/arrow-up-profile.svg";
 import exploreArrow from "@/public/exploreArrow.svg";
 import saveIcon from "@/public/save-icon.svg";
 import saveFilledIcon from "@/public/save-filled-icon.svg";
+import saveBlueIcon from "@/public/save-icon-blue.svg";
+import commentIcon from "@/public/CommentIconBlue.svg";
+import commentFilledIcon from "@/public/CommentIconFilledBlue.svg";
+import saveFilledBlueIcon from "@/public/save-filled-icon-blue.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 
 export interface feedbackProfileInterface {
@@ -133,22 +141,22 @@ export default function Profile() {
                 feedbacks={profile.feedbacks}
                 saves={profile.saves}
               ></MyFeedbacksAndSavedWrapper>
-              <MyCommentsAndVotesWrapper
+              <CommentsAndVotesWrapper
                 isOwn={true}
                 comments={profile.comments}
                 votes={profile.votes}
-              ></MyCommentsAndVotesWrapper>
+              ></CommentsAndVotesWrapper>
             </>
           ) : (
             <>
               <FeedbackAsVisitorWrapper
                 feedbacks={profile.feedbacks}
               ></FeedbackAsVisitorWrapper>
-              <MyCommentsAndVotesWrapper
+              <CommentsAndVotesWrapper
                 isOwn={false}
                 comments={profile.comments}
                 votes={profile.votes}
-              ></MyCommentsAndVotesWrapper>
+              ></CommentsAndVotesWrapper>
             </>
           )}
         </>
@@ -297,8 +305,8 @@ const MyFeedbacksAndSavedWrapper = ({
           <Image
             src={selectedBtn === 1 ? FeedbackSelectedIcon : FeedbackIcon}
             alt={selectedBtn === 1 ? FeedbackSelectedIcon : FeedbackIcon}
-            width={25}
-            height={25}
+            width={18}
+            height={18}
             className=""
           />
         </button>
@@ -313,10 +321,10 @@ const MyFeedbacksAndSavedWrapper = ({
           className={`rounded-xl sm:hidden w-[47px] h-[47px] flex justify-center items-center ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"}`}
         >
           <Image
-            src={selectedBtn === 2 ? saveFilledIcon : saveIcon}
-            alt={selectedBtn === 2 ? saveFilledIcon : saveIcon}
-            width={25}
-            height={25}
+            src={selectedBtn === 2 ? saveFilledBlueIcon : saveBlueIcon}
+            alt={selectedBtn === 2 ? saveFilledBlueIcon : saveBlueIcon}
+            width={13}
+            height={13}
             className=""
           />
         </button>
@@ -934,7 +942,7 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   );
 };
 
-const MyCommentsAndVotesWrapper = ({
+const CommentsAndVotesWrapper = ({
   isOwn,
   comments,
   votes,
@@ -970,15 +978,50 @@ const MyCommentsAndVotesWrapper = ({
       <div className="bg-neutral w-max p-2 flex gap-2 rounded-2xl font-SpaceGrotesk font-semibold select-none">
         <button
           onClick={() => setSelectedBtn(1)}
-          className={`rounded-lg w-[140px] ${selectedBtn === 1 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
+          className={`rounded-lg max-sm:hidden w-[140px] ${selectedBtn === 1 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
         >
           {isOwn === true && "my"} comments
         </button>
         <button
+          onClick={() => setSelectedBtn(1)}
+          className={`rounded-xl sm:hidden w-[47px] h-[47px] flex justify-center items-center ${selectedBtn === 1 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"}`}
+        >
+          <Image
+            src={selectedBtn === 1 ? commentFilledIcon : commentIcon}
+            alt={selectedBtn === 1 ? commentFilledIcon : commentIcon}
+            width={20}
+            height={20}
+            className=""
+          />
+        </button>
+        <button
           onClick={() => setSelectedBtn(2)}
-          className={`rounded-lg w-[140px] ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
+          className={`rounded-lg max-sm:hidden w-[140px] ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"} p-2`}
         >
           {isOwn === true && "my"} votes
+        </button>
+        <button
+          onClick={() => setSelectedBtn(2)}
+          className={`rounded-xl sm:hidden w-[47px] h-[47px] flex justify-center items-center ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"}`}
+        >
+          <Image
+            src={selectedBtn === 2 ? ArrowUpBlueFilledIcon : ArrowUpBlueIcon}
+            alt={selectedBtn === 2 ? ArrowUpBlueFilledIcon : ArrowUpBlueIcon}
+            width={20}
+            height={20}
+            className="mr-[-8px] mb-1"
+          />
+          <Image
+            src={
+              selectedBtn === 2 ? ArrowDownBlueFilledIcon : ArrowDownBlueIcon
+            }
+            alt={
+              selectedBtn === 2 ? ArrowDownBlueFilledIcon : ArrowDownBlueIcon
+            }
+            width={20}
+            height={20}
+            className="mt-1"
+          />
         </button>
       </div>
       <div className="h-[280px] w-full bg-neutral rounded-xl flex justify-center">
@@ -1004,7 +1047,7 @@ const MyCommentsAndVotesWrapper = ({
         {((selectedBtn === 1 && comments.length > 0) ||
           (selectedBtn === 2 && votes.length > 0)) && (
           <div
-            className={`${isOverflowing === true ? "w-[97.5%] pl-0 pr-[9px]" : "w-full"} mx-auto text-secondary flex flex-col gap-2 p-2 overflow-y-auto dark-scroll font-SpaceGrotesk`}
+            className={`${isOverflowing === true ? "w-[97.5%] pl-0 pr-[9px]" : "w-full"} mx-auto h-[95%] my-auto text-secondary flex flex-col gap-2 p-2 overflow-y-auto dark-scroll font-SpaceGrotesk`}
             ref={containerRef}
           >
             {selectedBtn === 1
@@ -1038,7 +1081,7 @@ const CommentProfileCard = ({ comment }: { comment: commentInterface }) => {
     <div
       onClick={() => router.push(`/home?feedbackId=${comment.feedback.id}`)}
       key={comment.id}
-      className="w-[100%] cursor-pointer text-neutral bg-secondary flex gap-2 items-center font-SpaceGrotesk p-1 rounded-lg"
+      className="w-[100%] max-w-full cursor-pointer text-neutral bg-secondary flex gap-2 items-center font-SpaceGrotesk p-1 rounded-lg"
     >
       <Image
         src={comment.feedback.companyLogo}
@@ -1076,14 +1119,22 @@ const CommentProfileCard = ({ comment }: { comment: commentInterface }) => {
       {/* <p className="font-Inter font-semibold text-lg">
                       {comment.feedback.companyName}
                     </p> */}
-      <div className="w-[1px] h-[55%] bg-neutral"></div>
-      <p className="font-Inter italic truncate w-full">{comment.text}</p>
-      <p className="font-Inter italic min-w-max text-[12px] mt-8 ml-auto mr-3">
+      <div className="min-w-[1px] w-[1px] h-[55%] bg-neutral"></div>
+      <div className="flex sm:hidden max-w-full flex-1 w-[40%] flex-col">
+        <p className="font-Inter min-w-0 w-full truncate">{comment.text}</p>
+        <p className="font-Inter italic min-w-max text-[8px]">
+          {formatDistanceToNow(new Date(comment.createdAt), {
+            addSuffix: true,
+          })}
+        </p>
+      </div>
+      <p className="font-Inter max-sm:hidden w-full truncate">{comment.text}</p>
+      <p className="font-Inter italic min-w-max text-[12px] max-sm:hidden mt-8 ml-auto mr-3">
         {formatDistanceToNow(new Date(comment.createdAt), {
           addSuffix: true,
         })}
       </p>
-      <div className="w-[1px] h-[55%] bg-neutral"></div>
+      <div className="min-w-[1px] w-[1px] h-[55%] bg-neutral"></div>
       <Image
         src={
           comment.feedback.feedbackType === "Publicly"
@@ -1124,7 +1175,7 @@ const VoteProfileCard = ({ vote }: { vote: voteProfileInterface }) => {
         height={35}
         className="rounded-full min-w-[35px] min-h-[35px] bg-neutral max-w-[35px] max-h-[35px] p-2 ml-[6px]"
       />
-      <div className="w-[1px] h-[55%] bg-neutral"></div>
+      <div className="min-w-[1px] w-[1px] h-[55%] bg-neutral"></div>
       <Image
         src={vote.feedback.companyLogo}
         alt={vote.feedback.companyLogo}
@@ -1158,20 +1209,31 @@ const VoteProfileCard = ({ vote }: { vote: voteProfileInterface }) => {
           />
         </svg>
       </div>
-      <p className="font-semibold font-SpaceGrotesk text-lg">
+      <p className="font-semibold max-sm:hidden truncate font-SpaceGrotesk text-lg">
         {vote.feedback.companyName}
       </p>
-      •
-      <p className="font-medium font-SpaceGrotesk text-md">
+      <p className="max-sm:hidden">•</p>
+      <p className="font-medium font-SpaceGrotesk text-md max-sm:hidden">
         {vote.feedback.jobStatus}
       </p>
-      <p className="font-Inter italic min-w-max text-[12px] mt-8 ml-auto mr-3">
+      <div className="flex sm:hidden max-w-full flex-1 w-[40%] flex-col">
+        <p className="font-semibold font-SpaceGrotesk truncate text-lg">
+          {vote.feedback.companyName}
+        </p>
+        <p className="font-Inter italic min-w-max text-[8px]">
+          time
+          {/* {formatDistanceToNow(new Date(vote.createdAt), {
+            addSuffix: true,
+          })} */}
+        </p>
+      </div>
+      <p className="font-Inter italic min-w-max text-[12px] max-sm:hidden mt-8 ml-auto mr-3">
         time
-        {/* {formatDistanceToNow(new Date("vote.createdAt"), {
+        {/* {formatDistanceToNow(new Date(vote.createdAt), {
           addSuffix: true,
         })} */}
       </p>
-      <div className="w-[1px] h-[55%] bg-neutral"></div>
+      <div className="min-w-[1px] w-[1px] h-[55%] bg-neutral"></div>
       <Image
         src={
           vote.feedback.feedbackType === "Publicly"
