@@ -190,6 +190,7 @@ const PreviewFeedbackCard = ({
   PreviewFeedbackCardRef: RefObject<HTMLDivElement>;
 }) => {
   const [isCommentBtnHovered, setIsCommentBtnHovered] = useState(false);
+  const [isProfileHovering, setIsProfileHovering] = useState(false);
   const [isOrderByRecent, setIsOrderByRecent] = useState(true);
 
   const [isVoteBtnClicked, setIsVoteBtnClicked] = useState({
@@ -324,6 +325,7 @@ const PreviewFeedbackCard = ({
       console.error("Error", error);
     }
   };
+  console.log("isProfileHovering", isProfileHovering);
 
   return (
     <div
@@ -434,13 +436,15 @@ const PreviewFeedbackCard = ({
         <div className="flex justify-between items-start flex-col">
           <div className="flex items-center gap-1">
             <div
-              className={`border-2 border-[#00224D] hover:border-primary flex justify-center items-center mb-[5px] ml-[-14px] rounded-full w-[44px] h-[44px] relative z-[9] bg-neutral`}
+              className={`border-2 ${feedback.feedbackType === "Publicly" && isProfileHovering === true ? "border-primary cursor-pointer" : "border-secondary"} flex justify-center items-center mb-[5px] ml-[-14px] rounded-full w-[44px] h-[44px] relative z-[9] bg-neutral`}
               onClick={(e) => {
                 if (feedback.feedbackType === "Publicly") {
                   e.stopPropagation();
                   router.push(`/profile?userId=${feedback.author.id}`);
                 }
               }}
+              onMouseEnter={() => setIsProfileHovering(true)}
+              onMouseLeave={() => setIsProfileHovering(false)}
             >
               <Image
                 src={
@@ -459,7 +463,9 @@ const PreviewFeedbackCard = ({
               />
             </div>
             <p
-              className={`mb-[15px] font-semibold ${feedback.feedbackType === "Publicly" ? "hover:text-primary cursor-pointer" : ""}`}
+              className={`mb-[15px] font-semibold ${feedback.feedbackType === "Publicly" && isProfileHovering === true ? "text-primary cursor-pointer" : ""}`}
+              onMouseEnter={() => setIsProfileHovering(true)}
+              onMouseLeave={() => setIsProfileHovering(false)}
               onClick={(e) => {
                 if (feedback.feedbackType === "Publicly") {
                   e.stopPropagation();
@@ -503,13 +509,15 @@ const PreviewFeedbackCard = ({
         <div className="flex border-2 border-[#00224D] rounded-2xl justify-between items-center mt-[24px] p-2 gap-[5px]">
           <div className="flex items-center gap-2">
             <div
-              className="border-2 border-secondary hover:border-primary w-[44px] h-[44px] flex justify-center items-center rounded-full"
+              className={`border-2 ${feedback.feedbackType === "Publicly" && isProfileHovering === true ? "border-primary cursor-pointer" : "border-secondary"} w-[44px] h-[44px] flex justify-center items-center rounded-full`}
               onClick={(e) => {
                 if (feedback.feedbackType === "Publicly") {
                   e.stopPropagation();
                   router.push(`/profile?userId=${feedback.author.id}`);
                 }
               }}
+              onMouseEnter={() => setIsProfileHovering(true)}
+              onMouseLeave={() => setIsProfileHovering(false)}
             >
               <Image
                 src={
@@ -528,13 +536,15 @@ const PreviewFeedbackCard = ({
               />
             </div>
             <p
-              className="font-semibold hover:text-primary"
+              className={`font-semibold ${feedback.feedbackType === "Publicly" && isProfileHovering === true ? "text-primary cursor-pointer" : ""}`}
               onClick={(e) => {
                 if (feedback.feedbackType === "Publicly") {
                   e.stopPropagation();
                   router.push(`/profile?userId=${feedback.author.id}`);
                 }
               }}
+              onMouseEnter={() => setIsProfileHovering(true)}
+              onMouseLeave={() => setIsProfileHovering(false)}
             >
               {feedback.feedbackType === "Publicly"
                 ? feedback.author.name
@@ -865,11 +875,14 @@ const Comment = ({
   feedbackType: string;
 }) => {
   const router = useRouter();
+  const [isProfileHovering, setIsProfileHovering] = useState(false);
   return (
     <div className="flex justify-between items-start flex-col w-[99%]">
       <div className="flex items-center gap-1">
         <div
-          className={`border-2 border-[#00224D] hover:border-primary cursor-pointer flex justify-center items-center mb-1 rounded-full w-[33px] h-[33px] relative z-[9] bg-neutral`}
+          onMouseEnter={() => setIsProfileHovering(true)}
+          onMouseLeave={() => setIsProfileHovering(false)}
+          className={`border-2 ${feedbackType === "Publicly" && isProfileHovering === true ? "border-primary cursor-pointer" : "border-secondary"} flex justify-center items-center mb-1 rounded-full w-[33px] h-[33px] relative z-[9] bg-neutral`}
           onClick={(e) => {
             if (feedbackType === "Publicly") {
               e.stopPropagation();
@@ -892,7 +905,9 @@ const Comment = ({
               router.push(`/profile?userId=${comment.authorId}`);
             }
           }}
-          className="mb-[20px] hover:text-primary cursor-pointer font-semibold text-sm"
+          className={`mb-[20px] ${feedbackType === "Publicly" && isProfileHovering === true ? "text-primary cursor-pointer" : "text-secondary"} font-semibold text-sm`}
+          onMouseEnter={() => setIsProfileHovering(true)}
+          onMouseLeave={() => setIsProfileHovering(false)}
         >
           {comment.author.name}
         </p>
