@@ -114,7 +114,7 @@ const BottomBar = () => {
         }}
       ></div> */}
       <div className="w-full lg:hidden fixed h-[97px] bottom-0 bg-white/30 backdrop-blur-sm z-[99]"></div>
-      <div className="lg:hidden fixed border border-quaternary bg-neutral left-0 right-0 bottom-[1%] max-w-[250px] w-[95%] h-[75px] mx-auto flex items-center justify-between p-3 rounded-2xl z-[100]">
+      <div className="lg:hidden fixed border border-quaternary drop-shadow-xl bg-neutral left-0 right-0 bottom-[1%] max-w-[250px] w-[95%] h-[75px] mx-auto flex items-center justify-between p-3 rounded-2xl z-[100]">
         {Buttons.map((item, index) => {
           return (
             // <CustomizedTooltip

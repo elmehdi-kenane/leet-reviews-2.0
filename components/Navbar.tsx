@@ -100,8 +100,6 @@ const Navbar = () => {
 
   const handleFocusInput = (inputRef: React.RefObject<HTMLInputElement>) => {
     if (inputRef.current) {
-      console.log("ref valid so activate focus");
-      console.log(inputRef.current);
       inputRef.current.focus();
     } else console.log("inputRef.current invalid");
   };

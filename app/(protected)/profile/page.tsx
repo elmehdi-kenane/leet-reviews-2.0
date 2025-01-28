@@ -630,7 +630,9 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
           />
         </svg>
       </div>
-      <p className="text-xl font-SpaceGrotesk">{save.feedback.companyName}</p>
+      <p className="text-xl font-SpaceGrotesk w-full text-center truncate">
+        {save.feedback.companyName}
+      </p>
       <div className="w-full border rounded-xl p-1 mb-1 flex text-sm my-auto items-center gap-[2px]">
         {/* <p className="text-sm">by</p> */}
         <Image
@@ -769,8 +771,12 @@ const FeedbackAsVisitorCard = ({
           />
         </svg>
       </div>
-      <p className="text-xl font-SpaceGrotesk">{feedback.companyName}</p>
-      <p className="text-lg font-SpaceGrotesk">{feedback.jobStatus}</p>
+      <p className="text-xl font-SpaceGrotesk w-full text-center truncate">
+        {feedback.companyName}
+      </p>
+      <p className="text-lg font-SpaceGrotesk w-full text-center truncate">
+        {feedback.jobStatus}
+      </p>
       <div className="mt-auto flex w-full gap-1 select-none">
         <button
           onClick={() => router.push(`/home?feedbackId=${feedback.id}`)}
@@ -859,8 +865,12 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
           />
         </svg>
       </div>
-      <p className="text-xl font-SpaceGrotesk">{feedback.companyName}</p>
-      <p className="text-lg font-SpaceGrotesk">{feedback.jobStatus}</p>
+      <p className="text-xl font-SpaceGrotesk w-full text-center truncate">
+        {feedback.companyName}
+      </p>
+      <p className="text-lg font-SpaceGrotesk w-full text-center truncate">
+        {feedback.jobStatus}
+      </p>
       <div className="mt-auto flex w-full gap-1 select-none">
         <button
           onClick={() => router.push(`/home?feedbackId=${feedback.id}`)}
@@ -1213,7 +1223,7 @@ const VoteProfileCard = ({ vote }: { vote: voteProfileInterface }) => {
         {vote.feedback.companyName}
       </p>
       <p className="max-sm:hidden">•</p>
-      <p className="font-medium font-SpaceGrotesk text-md max-sm:hidden">
+      <p className="font-medium font-SpaceGrotesk w-full text-center truncate text-md max-sm:hidden">
         {vote.feedback.jobStatus}
       </p>
       <div className="flex sm:hidden max-w-full flex-1 w-[40%] flex-col">
