@@ -70,7 +70,6 @@ model User {
     feedbacks     Feedback[]
     votes         Vote[]
     comments      Comment[]
-
     saves         Save[]
 }
 

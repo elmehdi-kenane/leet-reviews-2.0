@@ -265,6 +265,44 @@ body {
   }
 }
 
+.display-unsaved-changes-pop-up {
+  animation: displayUnsavedChangesPopUp 0.3s ease-in forwards;
+}
+
+@keyframes displayUnsavedChangesPopUp {
+  0% {
+    scale: 0;
+    top: 0;
+  }
+  50% {
+    top: 100px;
+    scale: 1;
+  }
+  100% {
+    top: 75px;
+    scale: 1;
+  }
+}
+
+.un-display-unsaved-changes-pop-up {
+  animation: unDisplayUnsavedChangesPopUp 0.3s ease-in forwards;
+}
+
+@keyframes unDisplayUnsavedChangesPopUp {
+  0% {
+    top: 75px;
+    scale: 1;
+  }
+  50% {
+    top: 100px;
+    scale: 1;
+  }
+  100% {
+    scale: 0;
+    top: 0;
+  }
+}
+
 .click-animation {
   animation: clickAnimation 0.5s ease-in forwards;
 }

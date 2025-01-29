@@ -50,14 +50,16 @@ export async function GET(request: NextRequest) {
       });
     }
     const createAt = new Date();
+    const userEmail =
+      fortyTwoUser.email !== undefined ? fortyTwoUser.email : "";
     await prismaClient.user.create({
       data: {
         id: userId,
         username: fortyTwoUsername,
         name: fortyTwoFullName,
-        email: fortyTwoUser.email,
+        email: userEmail,
         avatar: fortyTwoUser.image.link,
-        bio: "i'm just a chill guy",
+        bio: "I'm just a chill guy",
         createdAt: createAt,
       },
     });

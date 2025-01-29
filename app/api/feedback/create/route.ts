@@ -4,7 +4,7 @@ import { FeedbackCreateInput } from "@/lib/prisma";
 import { validateRequest } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary";
 
-interface CloudinaryUploadResult {
+export interface CloudinaryUploadResult {
   secure_url: string;
   public_id: string;
 }

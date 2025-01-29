@@ -46,13 +46,15 @@ export async function GET(request: NextRequest) {
       });
     }
     const createAt = new Date();
+    const userEmail = githubUser.email !== undefined ? githubUser.email : "";
     await prismaClient.user.create({
       data: {
         id: githubUserId,
         username: githubUsername,
         avatar: githubUser.avatar_url,
+        email: userEmail,
         name: githubFullName,
-        bio: "i'm just a chill guy",
+        bio: "I'm just a chill guy",
         createdAt: createAt,
       },
     });
@@ -122,4 +124,5 @@ interface GitHubUser {
   login: string;
   avatar_url: string;
   name: string;
+  email: string;
 }
