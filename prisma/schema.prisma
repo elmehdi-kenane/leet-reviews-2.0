@@ -57,20 +57,23 @@ model Session {
 }
 
 model User {
-    id            String    @id
-    username	  String
-    name	      String
-    email         String?   @unique
-    emailVerified DateTime?
-    createdAt     DateTime
-    avatar        String
-    bio           String
-    accounts      Account[]
-    sessions      Session[]
-    feedbacks     Feedback[]
-    votes         Vote[]
-    comments      Comment[]
-    saves         Save[]
+    id                            String    @id
+    username	                  String
+    name	                      String
+    hideFeedbacks                 Boolean
+    hideCommentsAndVotes          Boolean
+    accountDisplayedWithFeedbacks Boolean
+    email                         String   @unique
+    emailVerified                 DateTime?
+    createdAt                     DateTime
+    avatar                        String
+    bio                           String
+    accounts                      Account[]
+    sessions                      Session[]
+    feedbacks                     Feedback[]
+    votes                         Vote[]
+    comments                      Comment[]
+    saves                         Save[]
 }
 
 model VerificationToken {
