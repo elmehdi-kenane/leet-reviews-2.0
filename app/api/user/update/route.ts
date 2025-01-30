@@ -11,7 +11,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const formData = await request.formData();
-  const formDataValues = Object.fromEntries(formData.entries());
+  interface FormDataWithBooleans {
+    [key: string]: FormDataEntryValue | boolean;
+  }
+  const formDataValues: FormDataWithBooleans = Object.fromEntries(
+    formData.entries(),
+  );
   console.log("formDataValues", formDataValues);
   if (formDataValues.avatar && formDataValues.avatar instanceof File) {
     const fileBuffer = Buffer.from(await formDataValues.avatar.arrayBuffer());
@@ -31,7 +36,14 @@ export async function POST(request: NextRequest) {
       });
     formDataValues["avatar"] = uploadResult.secure_url;
   }
-
+  if (formDataValues["hideFeedbacks"])
+    formDataValues["hideFeedbacks"] === "on"
+      ? (formDataValues["hideFeedbacks"] = true)
+      : (formDataValues["hideFeedbacks"] = false);
+  if (formDataValues["hideCommentsAndVotes"])
+    formDataValues["hideCommentsAndVotes"] === "on"
+      ? (formDataValues["hideCommentsAndVotes"] = true)
+      : (formDataValues["hideCommentsAndVotes"] = false);
   // If there are changes, apply them to the database
   await prismaClient.user.update({
     where: { id: userId },

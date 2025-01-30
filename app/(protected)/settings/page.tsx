@@ -2,60 +2,32 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { styled } from "@mui/material/styles";
-import Switch, { SwitchProps } from "@mui/material/Switch";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import {
+  SwitchCard,
+  UnSavedChangesPopUp,
+  HeaderSection,
+  SelectCard,
+  AccountCard,
+} from "@/app/(protected)/settings/utils";
 
-type formDataType = {
+export type formDataType = {
   name: string;
   email: string;
   bio: string;
   avatar: string | File;
-  //   hideFeedbacks: boolean;
-  //   hideCommentsAndVotes: boolean;
-  //   accountDisplayedWithFeedbacks: string;
-  [key: string]: string | File | undefined; // Index signature
+  hideFeedbacks: boolean;
+  hideCommentsAndVotes: boolean;
+  // accountDisplayedWithFeedbacks: string;
+  [key: string]: boolean | string | File | undefined; // Index signature
 };
 
-const UnSavedChangesPopUp = ({
-  originalDetails,
-  setUpdatedDetails,
-  setIsDetailsChanged,
-}: {
-  originalDetails: formDataType;
-  setUpdatedDetails: React.Dispatch<React.SetStateAction<formDataType>>;
-  setIsDetailsChanged: (value: boolean) => void;
-}) => {
-  return (
-    <div
-      className={`bg-neutral p-4 z-[300] rounded-xl font-semibold font-SpaceGrotesk text-secondary absolute flex flex-col mx-auto top-[5px] left-0 right-0 w-max`}
-    >
-      You have unsaved changes
-      <div className="flex w-full gap-2 justify-center mt-3">
-        <button
-          className="w-[45%] border-2 border-secondary rounded-lg p-1"
-          type="button"
-          onClick={() => {
-            setUpdatedDetails(originalDetails);
-            setIsDetailsChanged(false);
-          }}
-        >
-          reset
-        </button>
-        <button
-          className="w-[45%] border-2 border-primary bg-primary rounded-lg p-1 text-neutral"
-          type="submit"
-        >
-          save
-        </button>
-      </div>
-    </div>
-  );
-};
+export enum UnSavedChangesPopUpState {
+  OPENING,
+  CLOSING,
+  CLOSED, // only for the first render
+}
 
 const Settings = () => {
   const defaultDetails: formDataType = {
@@ -63,12 +35,16 @@ const Settings = () => {
     email: "",
     bio: "",
     avatar: "",
+    hideFeedbacks: false,
+    hideCommentsAndVotes: false,
   };
   const [originalDetails, setOriginalDetails] =
     useState<formDataType>(defaultDetails);
   const [updatedDetails, setUpdatedDetails] =
     useState<formDataType>(defaultDetails);
-  const [isDetailsChanged, setIsDetailsChanged] = useState(false);
+  const [isDetailsChanged, setIsDetailsChanged] = useState(
+    UnSavedChangesPopUpState.CLOSED,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   useEffect(() => {
@@ -98,13 +74,18 @@ const Settings = () => {
 
   useEffect(() => {
     if (JSON.stringify(updatedDetails) !== JSON.stringify(originalDetails)) {
-      setIsDetailsChanged(true);
-    } else setIsDetailsChanged(false);
+      setIsDetailsChanged(UnSavedChangesPopUpState.OPENING);
+    } else if (isDetailsChanged === UnSavedChangesPopUpState.OPENING) {
+      setIsDetailsChanged(UnSavedChangesPopUpState.CLOSING);
+    }
   }, [updatedDetails]);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsDetailsChanged(false);
+    setIsDetailsChanged(UnSavedChangesPopUpState.CLOSING);
+    toast.loading("update informations...", {
+      style: { background: "#fff5e0", color: "#141e46" },
+    });
     const formData = new FormData(event.currentTarget);
     const formDataValues = Object.fromEntries(formData);
     if (formDataValues.name === "") {
@@ -130,9 +111,17 @@ const Settings = () => {
       method: "POST",
       body: formData,
     });
-    const data = await res.json();
-    console.log("data", data);
+    if (res.ok) {
+      const data = await res.json();
+      console.log("data", data);
+      toast.dismiss();
+      toast.success("informations updated successfully 👍", {
+        style: { background: "#fff5e0", color: "#141e46" },
+      });
+      setOriginalDetails(updatedDetails);
+    }
   };
+
   return (
     <div className="text-neutral max-lg:w-[90%] w-full h-full flex flex-col max-w-[850px] mx-auto max-lg:mb-24 gap-12 md:mt-8">
       {!isLoading ? (
@@ -143,8 +132,12 @@ const Settings = () => {
               updatedDetails={updatedDetails}
               setUpdatedDetails={setUpdatedDetails}
             ></Profile>
+            <Visibility
+              updatedDetails={updatedDetails}
+              setUpdatedDetails={setUpdatedDetails}
+            ></Visibility>
             <div
-              className={`w-full absolute top-0 right-0 left-0 flex ${isDetailsChanged ? "display-unsaved-changes-pop-up" : "un-display-unsaved-changes-pop-up"}`}
+              className={`w-full absolute top-0 right-0 left-0 flex ${isDetailsChanged === UnSavedChangesPopUpState.OPENING ? "display-unsaved-changes-pop-up" : isDetailsChanged === UnSavedChangesPopUpState.CLOSING ? "un-display-unsaved-changes-pop-up" : "hidden"}`}
             >
               <UnSavedChangesPopUp
                 originalDetails={originalDetails}
@@ -153,22 +146,12 @@ const Settings = () => {
               ></UnSavedChangesPopUp>
             </div>
           </form>
-          <Visibility></Visibility>
           <AccountConnections></AccountConnections>
           <AccountDeletion></AccountDeletion>
         </>
       ) : (
         <div>loading...</div>
       )}
-    </div>
-  );
-};
-
-const HeaderSection = ({ headerText }: { headerText: string }) => {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="w-[5px] h-[5px] rounded-full bg-neutral"></div>
-      <p className="text-3xl font-SpaceGrotesk font-bold ">{headerText}</p>
     </div>
   );
 };
@@ -286,100 +269,30 @@ const Profile = ({
   );
 };
 
-const SelectCard = ({ text }: { text: string }) => {
-  return (
-    <div className="flex w-full items-center justify-between">
-      <p className="font-Inter text-lg max-sm:text-sm font-semibold">{text}</p>
-      {/* <IOSSwitch checked={checked} onChange={handleChange}></IOSSwitch> */}
-      <ControlledOpenSelect></ControlledOpenSelect>
-    </div>
-  );
-};
-
-const SwitchCard = ({ text }: { text: string }) => {
-  return (
-    <div className="flex w-full items-center justify-between">
-      <p className="font-Inter text-lg max-sm:text-sm font-semibold">{text}</p>
-      {/* <IOSSwitch checked={checked} onChange={handleChange}></IOSSwitch> */}
-      <IOSSwitch></IOSSwitch>
-    </div>
-  );
-};
-
-function ControlledOpenSelect() {
-  const [age, setAge] = useState("github");
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
-  };
-
-  return (
-    <div className="h-[28px] ControlledOpenSelect">
-      <FormControl
-        sx={{
-          m: 0,
-          minWidth: 120,
-          maxHeight: 20,
-          padding: 0,
-          //   border: "1px solid red",
-        }}
-        size="small"
-      >
-        <Select
-          //   labelId="demo-select-small-label"
-          id="demo-select-small"
-          value={age}
-          onChange={handleChange}
-          sx={{
-            m: 0,
-            minWidth: 120,
-            maxHeight: 28,
-            padding: 0,
-            backgroundColor: "#fff5e0",
-            color: "#141e46",
-          }}
-        >
-          <MenuItem
-            sx={{
-              backgroundColor: "#fff5e0",
-              color: "#141e46",
-            }}
-            value={0}
-          >
-            <em>None</em>
-          </MenuItem>
-          <MenuItem
-            sx={{
-              backgroundColor: "#fff5e0",
-              color: "#141e46",
-            }}
-            value={"github"}
-          >
-            <div className="flex items-center">
-              <Image
-                src={"/brand-github.svg"}
-                alt={"/brand-github.svg"}
-                width={20}
-                height={20}
-                className="bg-[red] select-none min-w-[20px] min-h-[20px] max-sm:min-w-[20px] max-sm:min-h-[20px] max-w-[20px] max-h-[20px] max-sm:max-w-[20px] max-sm:max-h-[20px] border border-neutral"
-              />
-              <p className="font-[600]">Github</p>
-            </div>
-          </MenuItem>
-        </Select>
-      </FormControl>
-    </div>
-  );
-}
-
-const Visibility = () => {
+const Visibility = ({
+  setUpdatedDetails,
+  updatedDetails,
+}: {
+  setUpdatedDetails: React.Dispatch<React.SetStateAction<formDataType>>;
+  updatedDetails: formDataType;
+}) => {
   return (
     <div className="flex flex-col gap-5">
       <HeaderSection headerText="Visibility"></HeaderSection>
       <div className="border border-neutral p-3 flex flex-col rounded-xl">
-        <SwitchCard text={"Hide Feedbacks From Profile"}></SwitchCard>
+        <SwitchCard
+          name="hideFeedbacks"
+          updatedDetails={updatedDetails}
+          setUpdatedDetails={setUpdatedDetails}
+          text={"Hide Feedbacks From Profile"}
+        ></SwitchCard>
         <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
-        <SwitchCard text={"Hide Comments and Votes From Profile"}></SwitchCard>
+        <SwitchCard
+          name="hideCommentsAndVotes"
+          updatedDetails={updatedDetails}
+          setUpdatedDetails={setUpdatedDetails}
+          text={"Hide Comments and Votes From Profile"}
+        ></SwitchCard>
         <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
         <SelectCard
           text={"The account appears with your feedbacks"}
@@ -389,34 +302,14 @@ const Visibility = () => {
   );
 };
 
-const Account = ({ isLinked }: { isLinked: boolean }) => {
-  return (
-    <div className="flex items-center gap-2">
-      <Image
-        src={"/brand-github.svg"}
-        alt={"/brand-github.svg"}
-        width={40}
-        height={40}
-        className="rounded-full select-none min-w-[40px] p-2 min-h-[40px] max-sm:min-w-[40px] max-sm:min-h-[40px] max-w-[40px] max-h-[40px] max-sm:max-w-[40px] max-sm:max-h-[40px] border border-neutral"
-      />
-      <p className="font-semibold">Github</p>
-      <button
-        className={`${isLinked === true ? "border border-neutral" : "bg-primary"} w-20 p-2 rounded-md text-[12px] font-semibold ml-auto`}
-      >
-        {isLinked === true ? "remove" : "connect"}
-      </button>
-    </div>
-  );
-};
-
 const AccountConnections = () => {
   return (
     <div className="flex flex-col gap-5">
       <HeaderSection headerText="Linked Accounts"></HeaderSection>
       <div className="border border-neutral p-3 flex flex-col rounded-xl">
-        <Account isLinked={true}></Account>
+        <AccountCard isLinked={true}></AccountCard>
         <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
-        <Account isLinked={false}></Account>
+        <AccountCard isLinked={false}></AccountCard>
       </div>
     </div>
   );
@@ -450,70 +343,5 @@ const AccountDeletion = () => {
     </div>
   );
 };
-
-const IOSSwitch = styled((props: SwitchProps) => (
-  <Switch
-    focusVisibleClassName=".Mui-focusVisible"
-    name=""
-    disableRipple
-    {...props}
-  />
-))(({ theme }) => ({
-  width: 42,
-  height: 26,
-  padding: 0,
-  "& .MuiSwitch-switchBase": {
-    padding: 0,
-    margin: 2,
-    transitionDuration: "300ms",
-    "&.Mui-checked": {
-      transform: "translateX(16px)",
-      color: "#fff",
-      "& + .MuiSwitch-track": {
-        backgroundColor: "#41b06e",
-        opacity: 1,
-        border: 0,
-        ...theme.applyStyles("dark", {
-          backgroundColor: "#2ECA45",
-        }),
-      },
-      "&.Mui-disabled + .MuiSwitch-track": {
-        opacity: 0.5,
-      },
-    },
-    "&.Mui-focusVisible .MuiSwitch-thumb": {
-      color: "#33cf4d",
-      border: "6px solid #fff",
-    },
-    "&.Mui-disabled .MuiSwitch-thumb": {
-      color: theme.palette.grey[100],
-      ...theme.applyStyles("dark", {
-        color: theme.palette.grey[600],
-      }),
-    },
-    "&.Mui-disabled + .MuiSwitch-track": {
-      opacity: 0.7,
-      ...theme.applyStyles("dark", {
-        opacity: 0.3,
-      }),
-    },
-  },
-  "& .MuiSwitch-thumb": {
-    boxSizing: "border-box",
-    width: 22,
-    height: 22,
-  },
-  "& .MuiSwitch-track": {
-    borderRadius: 26 / 2,
-    backgroundColor: "#E9E9EA",
-    opacity: 1,
-    transition: theme.transitions.create(["background-color"], {
-      duration: 500,
-    }),
-    ...theme.applyStyles("dark", {
-      backgroundColor: "#39393D",
-    }),
-  },
-}));
 
 export default Settings;

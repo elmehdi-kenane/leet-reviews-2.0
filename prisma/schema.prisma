@@ -62,7 +62,7 @@ model User {
     name	                      String
     hideFeedbacks                 Boolean @default(false)
     hideCommentsAndVotes          Boolean @default(false)
-    accountDisplayedWithFeedbacks Boolean @default(false)
+    accountDisplayedWithFeedbacks String
     email                         String   @unique
     emailVerified                 DateTime?
     createdAt                     DateTime
