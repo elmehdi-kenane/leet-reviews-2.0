@@ -8,13 +8,20 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
+  const error = url.searchParams.get("error");
 
   // Validate the state cookie
   const storedState = cookies().get("state")?.value;
 
-  if (!code || !storedState || state !== storedState) {
-    // 400 Bad Request
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  if (
+    !code ||
+    !storedState ||
+    state !== storedState ||
+    error === "access_denied"
+  ) {
+    return NextResponse.redirect(
+      `http://localhost:3000/auth/sign-in/?error=auth-cancelled`,
+    );
   }
   try {
     const tokens = await fortyTwo.validateAuthorizationCode(code);

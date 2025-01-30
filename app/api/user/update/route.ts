@@ -36,14 +36,14 @@ export async function POST(request: NextRequest) {
       });
     formDataValues["avatar"] = uploadResult.secure_url;
   }
-  if (formDataValues["hideFeedbacks"])
-    formDataValues["hideFeedbacks"] === "on"
-      ? (formDataValues["hideFeedbacks"] = true)
-      : (formDataValues["hideFeedbacks"] = false);
-  if (formDataValues["hideCommentsAndVotes"])
-    formDataValues["hideCommentsAndVotes"] === "on"
-      ? (formDataValues["hideCommentsAndVotes"] = true)
-      : (formDataValues["hideCommentsAndVotes"] = false);
+  if (formDataValues["isFeedbacksHidden"])
+    formDataValues["isFeedbacksHidden"] === "true"
+      ? (formDataValues["isFeedbacksHidden"] = true)
+      : (formDataValues["isFeedbacksHidden"] = false);
+  if (formDataValues["isCommentsAndVotesHidden"])
+    formDataValues["isCommentsAndVotesHidden"] === "true"
+      ? (formDataValues["isCommentsAndVotesHidden"] = true)
+      : (formDataValues["isCommentsAndVotesHidden"] = false);
 
   await prismaClient.user.update({
     where: { id: userId },

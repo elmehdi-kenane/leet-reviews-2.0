@@ -1,5 +1,8 @@
 "use client";
 import Link from "next/link";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
 
 export interface providerInterface {
   id: string;
@@ -7,6 +10,20 @@ export interface providerInterface {
 }
 
 export default function SignIn() {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const error = searchParams.get("error");
+    console.log("error", error);
+    if (error === "auth-cancelled") {
+      setTimeout(() => {
+        toast.error("Authentication was cancelled or invalid.", {
+          id: "Authentication was cancelled or invalid.",
+          style: { background: "#fff5e0", color: "#141e46" },
+        });
+      }, 300);
+    } else console.log("unknown error");
+  }, [searchParams]);
+
   return (
     <>
       <div>

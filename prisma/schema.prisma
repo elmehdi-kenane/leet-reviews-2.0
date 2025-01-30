@@ -18,6 +18,7 @@ enum provider {
   fortyTwo
   github
   discord
+  none // for the accountDisplayedWithFeedbacks field if no account selected
 }
 
 
@@ -60,8 +61,8 @@ model User {
     id                            String    @id
     username	                  String
     name	                      String
-    hideFeedbacks                 Boolean @default(false)
-    hideCommentsAndVotes          Boolean @default(false)
+    isFeedbacksHidden                 Boolean @default(false)
+    isCommentsAndVotesHidden          Boolean @default(false)
     accountDisplayedWithFeedbacks provider
     email                         String   @unique
     emailVerified                 DateTime?

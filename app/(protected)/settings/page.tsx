@@ -12,14 +12,15 @@ import {
   AccountCard,
 } from "@/app/(protected)/settings/utils";
 import { UserContext, User } from "@/context/UserContext";
+import { useSearchParams } from "next/navigation";
 
 export type formDataType = {
   name: string;
   email: string;
   bio: string;
   avatar: string | File;
-  hideFeedbacks: boolean;
-  hideCommentsAndVotes: boolean;
+  isFeedbacksHidden: boolean;
+  isCommentsAndVotesHidden: boolean;
   accountDisplayedWithFeedbacks: string;
   [key: string]: boolean | string | File | undefined;
 };
@@ -46,6 +47,10 @@ export const allPossibleAccounts = [
     provider: "fortyTwo",
     icon: "/42-logo-black.svg",
   },
+  {
+    provider: "discord",
+    icon: "/discord-dark.svg",
+  },
 ];
 
 const Settings = () => {
@@ -54,8 +59,8 @@ const Settings = () => {
     email: "",
     bio: "",
     avatar: "",
-    hideFeedbacks: false,
-    hideCommentsAndVotes: false,
+    isFeedbacksHidden: false,
+    isCommentsAndVotesHidden: false,
     accountDisplayedWithFeedbacks: "",
   };
 
@@ -80,6 +85,21 @@ const Settings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const userContext = useContext(UserContext);
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const error = searchParams.get("error");
+    console.log("error", error);
+    if (error === "connect-cancelled") {
+      setTimeout(() => {
+        toast.error("Connection was cancelled or invalid.", {
+          id: "Connection was cancelled or invalid.",
+          style: { background: "#fff5e0", color: "#141e46" },
+        });
+      }, 300);
+    } else console.log("unknown error");
+  }, [searchParams]);
+
   useEffect(() => {
     const fetchUser = async () => {
       const response = await fetch("/api/user/settings");
@@ -197,7 +217,7 @@ const Settings = () => {
               ></UnSavedChangesPopUp>
             </div>
           </form>
-          <AccountConnections></AccountConnections>
+          <AccountConnections userAccounts={userAccounts}></AccountConnections>
           <AccountDeletion></AccountDeletion>
         </>
       ) : (
@@ -384,14 +404,14 @@ const Visibility = ({
       <HeaderSection headerText="Visibility"></HeaderSection>
       <div className="border border-neutral p-3 flex flex-col rounded-xl">
         <SwitchCard
-          name="hideFeedbacks"
+          name="isFeedbacksHidden"
           updatedDetails={updatedDetails}
           setUpdatedDetails={setUpdatedDetails}
           text={"Hide Feedbacks From Profile"}
         ></SwitchCard>
         <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
         <SwitchCard
-          name="hideCommentsAndVotes"
+          name="isCommentsAndVotesHidden"
           updatedDetails={updatedDetails}
           setUpdatedDetails={setUpdatedDetails}
           text={"Hide Comments and Votes From Profile"}
@@ -409,14 +429,80 @@ const Visibility = ({
   );
 };
 
-const AccountConnections = () => {
+const AccountConnections = ({
+  userAccounts,
+}: {
+  userAccounts: userAccountInterface[];
+}) => {
+  const accountsArr = [
+    {
+      provider: "github",
+      username: "",
+      isLinked: false,
+      icon: "/brand-github.svg",
+    },
+    {
+      provider: "discord",
+      username: "",
+      isLinked: false,
+      icon: "/discord.svg",
+    },
+    {
+      provider: "linkedIn",
+      username: "",
+      isLinked: false,
+      icon: "/LInkedInIconLight.svg",
+    },
+  ];
+  const [accounts, setAccounts] = useState(accountsArr);
+  useEffect(() => {
+    // remove the auth account from the list
+    setAccounts((prev) => {
+      const updatedAccounts = prev.filter((account) => {
+        const userAccount = userAccounts.find(
+          (userAccount) =>
+            userAccount.provider === account.provider &&
+            userAccount.account_type === "AUTH",
+        );
+        return (
+          userAccount === undefined || account.provider !== userAccount.provider
+        );
+      });
+      return updatedAccounts;
+    });
+    // update with already linked accounts
+    setAccounts((prev) => {
+      const updatedAccounts = prev.map((account) => {
+        const userAccount = userAccounts.find(
+          (userAccount) =>
+            userAccount.provider === account.provider &&
+            userAccount.account_type === "CONNECTED",
+        );
+        if (userAccount) {
+          account.isLinked = true;
+          account.username = userAccount.username;
+          account.icon = userAccount.avatar;
+        }
+        return account;
+      });
+      return updatedAccounts;
+    });
+  }, [userAccounts]);
+
   return (
     <div className="flex flex-col gap-5">
       <HeaderSection headerText="Linked Accounts"></HeaderSection>
       <div className="border border-neutral p-3 flex flex-col rounded-xl">
-        <AccountCard isLinked={true}></AccountCard>
-        <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
-        <AccountCard isLinked={false}></AccountCard>
+        {accounts.map((account, index) => {
+          return (
+            <div key={account.provider}>
+              <AccountCard account={account}></AccountCard>
+              {index + 1 < accounts.length && (
+                <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

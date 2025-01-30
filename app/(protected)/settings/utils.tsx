@@ -299,21 +299,51 @@ function ControlledOpenSelect({
   );
 }
 
-export const AccountCard = ({ isLinked }: { isLinked: boolean }) => {
+interface linkedAccountInterface {
+  provider: string;
+  username?: string;
+  avatar?: string;
+  isLinked: boolean;
+  icon: string;
+}
+
+export const AccountCard = ({
+  account,
+}: {
+  account: linkedAccountInterface;
+}) => {
   return (
     <div className="flex items-center gap-2">
-      <Image
-        src={"/brand-github.svg"}
-        alt={"/brand-github.svg"}
-        width={40}
-        height={40}
-        className="rounded-full select-none min-w-[40px] p-2 min-h-[40px] max-sm:min-w-[40px] max-sm:min-h-[40px] max-w-[40px] max-h-[40px] max-sm:max-w-[40px] max-sm:max-h-[40px] border border-neutral"
-      />
-      <p className="font-semibold">Github</p>
+      <div className="rounded-full border border-neutral">
+        <Image
+          src={account.icon}
+          alt={account.icon}
+          width={40}
+          height={40}
+          className={`select-none min-w-[40px] ${account.isLinked ? "rounded-full" : "p-2"} min-h-[40px] max-sm:min-w-[40px] max-sm:min-h-[40px] max-w-[40px] max-h-[40px] max-sm:max-w-[40px] max-sm:max-h-[40px]`}
+        />
+      </div>
+      {account.isLinked ? (
+        <div>
+          <p className="font-semibold">{account.username}</p>
+          <p className="font-semibold text-[10px]">
+            {account.provider.charAt(0).toUpperCase() +
+              account.provider.slice(1)}
+          </p>
+        </div>
+      ) : (
+        <p className="font-semibold bg-[red]">
+          {account.provider.charAt(0).toUpperCase() + account.provider.slice(1)}
+        </p>
+      )}
       <button
-        className={`${isLinked === true ? "border border-neutral" : "bg-primary"} w-20 p-2 rounded-md text-[12px] font-semibold ml-auto`}
+        className={`${account.isLinked === true ? "border border-neutral" : "bg-primary"} w-20 p-2 rounded-md text-[12px] font-semibold ml-auto`}
       >
-        {isLinked === true ? "remove" : "connect"}
+        <a
+          href={`/api/auth/${account.isLinked ? "disconnect" : "connect"}/${account.provider}`}
+        >
+          {account.isLinked === true ? "remove" : "connect"}
+        </a>
       </button>
     </div>
   );
