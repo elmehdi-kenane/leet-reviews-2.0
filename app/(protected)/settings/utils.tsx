@@ -1,9 +1,13 @@
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Switch, { SwitchProps } from "@mui/material/Switch";
 import { UnSavedChangesPopUpState } from "./page";
-import { formDataType } from "./page";
+import {
+  formDataType,
+  userAccountInterface,
+  allPossibleAccounts,
+} from "./page";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -84,19 +88,31 @@ interface IOSSwitchProps extends SwitchProps {
 }
 
 const IOSSwitch = styled(
-  ({ setUpdatedDetails, updatedDetails, ...props }: IOSSwitchProps) => (
-    <Switch
-      checked={updatedDetails[props.name] as boolean}
-      onChange={() => {
-        setUpdatedDetails((prev: formDataType) => {
-          return { ...prev, [props.name]: !prev[props.name] };
-        });
-      }}
-      focusVisibleClassName=".Mui-focusVisible"
-      disableRipple
-      {...props}
-    />
-  ),
+  ({ setUpdatedDetails, updatedDetails, name, ...props }: IOSSwitchProps) => {
+    const isChecked = Boolean(updatedDetails[name]);
+
+    return (
+      <>
+        <input
+          type="hidden"
+          name={name}
+          value={updatedDetails[name] ? "true" : "false"}
+        />
+
+        <Switch
+          checked={isChecked}
+          onChange={() => {
+            setUpdatedDetails((prev: formDataType) => {
+              return { ...prev, [name]: !prev[name] };
+            });
+          }}
+          focusVisibleClassName=".Mui-focusVisible"
+          disableRipple
+          {...props}
+        />
+      </>
+    );
+  },
 )(({ theme }) => ({
   width: 42,
   height: 26,
@@ -155,20 +171,58 @@ const IOSSwitch = styled(
   },
 }));
 
-export const SelectCard = ({ text }: { text: string }) => {
+export const SelectCard = ({
+  setUpdatedDetails,
+  updatedDetails,
+  userAccounts,
+  text,
+  name,
+}: {
+  setUpdatedDetails: React.Dispatch<React.SetStateAction<formDataType>>;
+  updatedDetails: formDataType;
+  userAccounts: userAccountInterface[];
+  text: string;
+  name: string;
+}) => {
   return (
     <div className="flex w-full items-center justify-between">
       <p className="font-Inter text-lg max-sm:text-sm font-semibold">{text}</p>
-      <ControlledOpenSelect></ControlledOpenSelect>
+      <ControlledOpenSelect
+        setUpdatedDetails={setUpdatedDetails}
+        updatedDetails={updatedDetails}
+        userAccounts={userAccounts}
+        name={name}
+      ></ControlledOpenSelect>
     </div>
   );
 };
 
-function ControlledOpenSelect() {
-  const [age, setAge] = useState("github");
+function ControlledOpenSelect({
+  setUpdatedDetails,
+  updatedDetails,
+  userAccounts,
+  name,
+}: {
+  setUpdatedDetails: React.Dispatch<React.SetStateAction<formDataType>>;
+  updatedDetails: formDataType;
+  userAccounts: userAccountInterface[];
+  name: string;
+}) {
+  const [account, setAccount] = useState(updatedDetails[name] as string);
+
+  useEffect(() => {
+    setAccount(updatedDetails[name] as string);
+  }, [updatedDetails]);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
+    setAccount(event.target.value);
+
+    setUpdatedDetails((prev: formDataType) => {
+      return {
+        ...prev,
+        [name]: event.target.value,
+      };
+    });
   };
 
   return (
@@ -184,9 +238,10 @@ function ControlledOpenSelect() {
         size="small"
       >
         <Select
+          name={name}
           //   labelId="demo-select-small-label"
           id="demo-select-small"
-          value={age}
+          value={account}
           onChange={handleChange}
           sx={{
             m: 0,
@@ -202,28 +257,42 @@ function ControlledOpenSelect() {
               backgroundColor: "#fff5e0",
               color: "#141e46",
             }}
-            value={0}
+            value={"none"}
           >
             <em>None</em>
           </MenuItem>
-          <MenuItem
-            sx={{
-              backgroundColor: "#fff5e0",
-              color: "#141e46",
-            }}
-            value={"github"}
-          >
-            <div className="flex items-center">
-              <Image
-                src={"/brand-github.svg"}
-                alt={"/brand-github.svg"}
-                width={20}
-                height={20}
-                className="bg-[red] select-none min-w-[20px] min-h-[20px] max-sm:min-w-[20px] max-sm:min-h-[20px] max-w-[20px] max-h-[20px] max-sm:max-w-[20px] max-sm:max-h-[20px] border border-neutral"
-              />
-              <p className="font-[600]">Github</p>
-            </div>
-          </MenuItem>
+          {userAccounts.map((account, index) => {
+            const selectedIcon =
+              allPossibleAccounts.find(
+                (possibleAccount) =>
+                  possibleAccount.provider === account.provider,
+              )?.icon || "";
+            return (
+              <MenuItem
+                key={index}
+                sx={{
+                  backgroundColor: "#fff5e0",
+                  color: "#141e46",
+                }}
+                value={account.provider}
+              >
+                <div className="flex items-center gap-1">
+                  <Image
+                    src={selectedIcon}
+                    alt={selectedIcon}
+                    width={15}
+                    height={15}
+                    className="select-none min-w-[15px] min-h-[15px] max-sm:min-w-[15px] max-sm:min-h-[15px] max-w-[15px] max-h-[15px] max-sm:max-w-[15px] max-sm:max-h-[15px]"
+                  />
+                  •
+                  <p className="font-[500]">
+                    {account.provider.charAt(0).toUpperCase() +
+                      account.provider.slice(1)}
+                  </p>
+                </div>
+              </MenuItem>
+            );
+          })}
         </Select>
       </FormControl>
     </div>

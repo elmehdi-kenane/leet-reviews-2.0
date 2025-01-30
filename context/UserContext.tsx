@@ -11,7 +11,7 @@ export interface User {
   email: string;
 }
 
-interface UserContextType {
+export interface UserContextType {
   userInfo: User | null;
   feedbacks: FeedbackInterface[];
   setFeedbacks: (
@@ -19,7 +19,7 @@ interface UserContextType {
       | FeedbackInterface[]
       | ((prevFeedbacks: FeedbackInterface[]) => FeedbackInterface[]),
   ) => void;
-  setUserInfo: (user: User | null) => void;
+  setUserInfo: (user: User | ((prevUser: User) => User)) => void;
 }
 
 const defaultUser: User = {
@@ -41,7 +41,7 @@ export const UserContext = createContext<UserContextType>(defaultUserContext);
 export const UserProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [userInfo, setUserInfo] = useState<User | null>(defaultUser);
+  const [userInfo, setUserInfo] = useState<User>(defaultUser);
   const [feedbacks, setFeedbacks] = useState<FeedbackInterface[] | []>([]);
   const pathname = usePathname();
   const router = useRouter();
@@ -56,7 +56,7 @@ export const UserProvider: React.FC<{
     }
 
     const fetchUser = async () => {
-      const response = await fetch("/api/user");
+      const response = await fetch("/api/user/get");
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error fetching user:", errorData.error);

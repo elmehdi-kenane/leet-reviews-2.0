@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     formDataValues["hideCommentsAndVotes"] === "on"
       ? (formDataValues["hideCommentsAndVotes"] = true)
       : (formDataValues["hideCommentsAndVotes"] = false);
-  // If there are changes, apply them to the database
+
   await prismaClient.user.update({
     where: { id: userId },
     data: formDataValues,

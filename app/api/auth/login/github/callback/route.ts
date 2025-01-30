@@ -56,6 +56,7 @@ export async function GET(request: NextRequest) {
         name: githubFullName,
         bio: "I'm just a chill guy",
         createdAt: createAt,
+        accountDisplayedWithFeedbacks: "github",
       },
     });
 
@@ -74,6 +75,7 @@ export async function GET(request: NextRequest) {
           account_type: "AUTH",
           type: "oauth2",
           username: githubUsername,
+          avatar: githubUser.avatar_url,
           provider: "github",
           provider_account_id: githubUserId,
           access_token: tokens.accessToken,

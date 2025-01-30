@@ -61,6 +61,7 @@ export async function GET(request: NextRequest) {
         avatar: fortyTwoUser.image.link,
         bio: "I'm just a chill guy",
         createdAt: createAt,
+        accountDisplayedWithFeedbacks: "fortyTwo",
       },
     });
 
@@ -79,6 +80,7 @@ export async function GET(request: NextRequest) {
           account_type: "AUTH",
           type: "oauth2",
           username: fortyTwoUsername,
+          avatar: fortyTwoUser.image.link,
           provider: "fortyTwo",
           provider_account_id: fortyTwoUser.id.toString(),
           access_token: tokens.accessToken,

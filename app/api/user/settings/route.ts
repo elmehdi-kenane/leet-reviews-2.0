@@ -8,7 +8,19 @@ export async function GET() {
   if (userId === undefined)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const user = await prismaClient.user.findUnique({ where: { id: userId } });
+  const user = await prismaClient.user.findUnique({
+    where: { id: userId },
+    include: {
+      accounts: {
+        select: {
+          provider: true,
+          account_type: true,
+          username: true,
+          avatar: true,
+        },
+      },
+    },
+  });
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }

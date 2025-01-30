@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -11,6 +11,7 @@ import {
   SelectCard,
   AccountCard,
 } from "@/app/(protected)/settings/utils";
+import { UserContext, User } from "@/context/UserContext";
 
 export type formDataType = {
   name: string;
@@ -19,8 +20,8 @@ export type formDataType = {
   avatar: string | File;
   hideFeedbacks: boolean;
   hideCommentsAndVotes: boolean;
-  // accountDisplayedWithFeedbacks: string;
-  [key: string]: boolean | string | File | undefined; // Index signature
+  accountDisplayedWithFeedbacks: string;
+  [key: string]: boolean | string | File | undefined;
 };
 
 export enum UnSavedChangesPopUpState {
@@ -28,6 +29,24 @@ export enum UnSavedChangesPopUpState {
   CLOSING,
   CLOSED, // only for the first render
 }
+
+export interface userAccountInterface {
+  provider: string;
+  account_type: string;
+  username: string;
+  avatar: string;
+}
+
+export const allPossibleAccounts = [
+  {
+    provider: "github",
+    icon: "/brand-github-black.svg",
+  },
+  {
+    provider: "fortyTwo",
+    icon: "/42-logo-black.svg",
+  },
+];
 
 const Settings = () => {
   const defaultDetails: formDataType = {
@@ -37,7 +56,20 @@ const Settings = () => {
     avatar: "",
     hideFeedbacks: false,
     hideCommentsAndVotes: false,
+    accountDisplayedWithFeedbacks: "",
   };
+
+  const defaultUserAccounts: userAccountInterface[] = [
+    {
+      provider: "",
+      account_type: "",
+      username: "",
+      avatar: "",
+    },
+  ];
+
+  const [userAccounts, setUserAccounts] =
+    useState<userAccountInterface[]>(defaultUserAccounts);
   const [originalDetails, setOriginalDetails] =
     useState<formDataType>(defaultDetails);
   const [updatedDetails, setUpdatedDetails] =
@@ -46,6 +78,7 @@ const Settings = () => {
     UnSavedChangesPopUpState.CLOSED,
   );
   const [isLoading, setIsLoading] = useState(true);
+  const userContext = useContext(UserContext);
   const router = useRouter();
   useEffect(() => {
     const fetchUser = async () => {
@@ -67,6 +100,7 @@ const Settings = () => {
 
       setOriginalDetails(data);
       setUpdatedDetails(data);
+      setUserAccounts(data.accounts);
       setIsLoading(false);
     };
     fetchUser();
@@ -88,6 +122,7 @@ const Settings = () => {
     });
     const formData = new FormData(event.currentTarget);
     const formDataValues = Object.fromEntries(formData);
+
     if (formDataValues.name === "") {
       toast.error("Name cannot be empty");
       return;
@@ -98,13 +133,27 @@ const Settings = () => {
       formData.delete("avatar"); // Remove empty file from FormData
     }
     if (updatedDetails.avatar !== originalDetails.avatar) {
+      userContext.setUserInfo((prev: User) => {
+        return {
+          ...prev,
+          ["avatar"]: URL.createObjectURL(updatedDetails.avatar as File),
+        };
+      }); // updated the user context so the avatar in the navbar looks updated
       formData.append("avatar", updatedDetails.avatar);
     }
     // set unchanged details to undefined will be used in the backend
     Object.keys(formDataValues).forEach((key) => {
-      if (formDataValues[key] === originalDetails[key]) {
+      if (updatedDetails[key] === originalDetails[key]) {
+        console.log("delete", key, "from the form");
         formData.delete(key); // Remove unchanged fields from FormData
-      }
+      } else
+        console.log(
+          "keep",
+          key,
+          "in the form",
+          formDataValues[key],
+          originalDetails[key],
+        );
     });
     console.log("onSubmit formDataValues", Object.fromEntries(formData));
     const res = await fetch("/api/user/update", {
@@ -128,12 +177,14 @@ const Settings = () => {
         <>
           <form onSubmit={(e) => onSubmit(e)} className="flex flex-col gap-12">
             <Profile
+              userAccounts={userAccounts}
               originalDetails={originalDetails}
               updatedDetails={updatedDetails}
               setUpdatedDetails={setUpdatedDetails}
             ></Profile>
             <Visibility
               updatedDetails={updatedDetails}
+              userAccounts={userAccounts}
               setUpdatedDetails={setUpdatedDetails}
             ></Visibility>
             <div
@@ -156,13 +207,57 @@ const Settings = () => {
   );
 };
 
+export const SignedAsCard = ({
+  authAccount,
+  top,
+  //   left,
+}: {
+  authAccount: userAccountInterface | undefined;
+  top: number;
+  //   left: number;
+}) => {
+  const selectedIcon =
+    allPossibleAccounts.find(
+      (possibleAccount) => possibleAccount.provider === authAccount?.provider,
+    )?.icon || "";
+  return (
+    <div
+      className={`absolute right-[0px] top-[${top}px] bg-neutral flex gap-1 p-[6px] rounded-lg font-SpaceGrotesk font-medium items-center text-secondary`}
+    >
+      <p className="italic text-[12px] max-sm:hidden">Signed</p>
+      <p className="italic text-[12px] max-sm:hidden">As</p>
+      <div className="border-2 border-primary rounded-full">
+        <Image
+          src={authAccount?.avatar || ""}
+          alt={authAccount?.avatar || ""}
+          width={20}
+          height={20}
+          className="select-none min-w-[20px] min-h-[20px] max-sm:min-w-[20px] max-sm:min-h-[20px] max-w-[20px] max-h-[20px] rounded-full max-sm:max-w-[20px] max-sm:max-h-[20px]"
+        />
+      </div>
+      <p className="italic font-bold text-[12px]">{authAccount?.username}</p>•
+      <div className="border-2 border-secondary rounded-full p-2 w-[24px] h-[24px] flex justify-center items-center">
+        <Image
+          src={selectedIcon}
+          alt={selectedIcon}
+          width={15}
+          height={15}
+          className="select-none min-w-[15px] min-h-[15px] max-sm:min-w-[15px] max-sm:min-h-[15px] max-w-[15px] max-h-[15px] max-sm:max-w-[15px] max-sm:max-h-[15px]"
+        />
+      </div>
+    </div>
+  );
+};
+
 const Profile = ({
   setUpdatedDetails,
   updatedDetails,
+  userAccounts,
   originalDetails,
 }: {
   setUpdatedDetails: React.Dispatch<React.SetStateAction<formDataType>>;
   updatedDetails: formDataType;
+  userAccounts: userAccountInterface[];
   originalDetails: formDataType;
 }) => {
   const inputs = [
@@ -182,9 +277,14 @@ const Profile = ({
     else return URL.createObjectURL(avatar);
   };
 
+  const authAccount = userAccounts.find(
+    (account) => account.account_type === "AUTH",
+  );
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 relative">
       <HeaderSection headerText="Profile"></HeaderSection>
+      <SignedAsCard top={-10} authAccount={authAccount}></SignedAsCard>
       <div className="flex max-sm:flex-col gap-4 w-full">
         <div className="flex flex-col gap-3 w-full">
           {inputs.map((item, index) => {
@@ -236,14 +336,15 @@ const Profile = ({
             className="rounded-full select-none min-w-[110px] min-h-[110px] max-sm:min-w-[70px] max-sm:min-h-[70px] max-w-[110px] max-h-[110px] max-sm:max-w-[70px] max-sm:max-h-[70px] border-2 border-neutral"
           />
           <button
-            className="bg-neutral hover:bg-primary rounded-md p-2 text-secondary font-SpaceGrotesk max-sm:ml-auto max-sm:flex-1 sm:w-full"
+            type="button"
+            className="bg-neutral hover:bg-primary rounded-md p-2 text-secondary font-SpaceGrotesk max-sm:ml-auto max-sm:flex-1 sm:w-full relative"
             onClick={() => console.log("file input button clicked")}
           >
             <input
               type="file"
               name="avatar"
               accept="image/png, image/jpeg"
-              className="opacity-0 absolute h-full bg-[red] top-0 left-0"
+              className="opacity-0 absolute h-full bg-[red] w-full top-0 left-0"
               onClick={() => console.log("file input clicked")}
               onChange={(e) => {
                 const files = e.target.files;
@@ -272,9 +373,11 @@ const Profile = ({
 const Visibility = ({
   setUpdatedDetails,
   updatedDetails,
+  userAccounts,
 }: {
   setUpdatedDetails: React.Dispatch<React.SetStateAction<formDataType>>;
   updatedDetails: formDataType;
+  userAccounts: userAccountInterface[];
 }) => {
   return (
     <div className="flex flex-col gap-5">
@@ -295,6 +398,10 @@ const Visibility = ({
         ></SwitchCard>
         <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
         <SelectCard
+          name="accountDisplayedWithFeedbacks"
+          updatedDetails={updatedDetails}
+          userAccounts={userAccounts}
+          setUpdatedDetails={setUpdatedDetails}
           text={"The account appears with your feedbacks"}
         ></SelectCard>
       </div>
