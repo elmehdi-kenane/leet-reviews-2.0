@@ -31,23 +31,23 @@ export default async function RootLayout({
   //   }
 
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary text-neutral w-full h-screen flex flex-col`}
-      >
-        <Suspense>
-          {children}
-          <Toaster
-            toastOptions={{
-              className: "",
-              style: {
-                color: "#FFF5E0",
-                backgroundColor: "#141E46",
-              },
-            }}
-          />
-        </Suspense>
-      </body>
-    </html>
+    // <html lang="en">
+    <div
+      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary text-neutral w-full h-screen flex flex-col`}
+    >
+      <Suspense>
+        {children}
+        <Toaster
+          toastOptions={{
+            className: "",
+            style: {
+              color: "#FFF5E0",
+              backgroundColor: "#141E46",
+            },
+          }}
+        />
+      </Suspense>
+    </div>
+    // </html>
   );
 }

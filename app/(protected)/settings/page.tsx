@@ -451,6 +451,11 @@ const AccountConnections = ({
 };
 
 const AccountDeletion = () => {
+  const router = useRouter();
+  const handleDeleteAccount = async () => {
+    const res = await fetch("/api/user/delete", { method: "POST" });
+    if (res.ok) router.push("http://localhost:3000/auth/sign-in");
+  };
   return (
     <div className="flex flex-col gap-5 mb-5">
       <HeaderSection headerText="Danger Zone"></HeaderSection>
@@ -470,7 +475,8 @@ const AccountDeletion = () => {
           </p>
         </div>
         <button
-          className={`w-20 select-none p-2 bg-red-500 rounded-md text-[12px] font-semibold ml-auto`}
+          onClick={handleDeleteAccount}
+          className={`w-20 select-none p-2 bg-red-500 hover:bg-neutral hover:text-red-500 rounded-md text-[12px] font-semibold ml-auto`}
         >
           delete
         </button>
