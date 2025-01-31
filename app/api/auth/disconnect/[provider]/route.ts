@@ -4,7 +4,9 @@ import { validateRequest } from "@/lib/auth";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { provider: "fortyTwo" | "github" | "discord" | "none" } }
+  {
+    params,
+  }: { params: { provider: "fortyTwo" | "github" | "discord" | "none" } },
 ) {
   const result = await validateRequest();
   const userId = result.user?.id;
