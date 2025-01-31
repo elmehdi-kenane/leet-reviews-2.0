@@ -2,14 +2,30 @@ import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Switch, { SwitchProps } from "@mui/material/Switch";
-import {
-  formDataType,
-  userAccountInterface,
-  allPossibleAccounts,
-} from "./page";
+import { formDataType, userAccountInterface } from "./page";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+
+interface Account {
+  provider: string;
+  icon: string;
+}
+
+export const allPossibleAccounts: Account[] = [
+  {
+    provider: "github",
+    icon: "/brand-github-black.svg",
+  },
+  {
+    provider: "fortyTwo",
+    icon: "/42-logo-black.svg",
+  },
+  {
+    provider: "discord",
+    icon: "/discord-dark.svg",
+  },
+];
 
 export enum UnSavedChangesPopUpState {
   OPENING,
@@ -350,6 +366,48 @@ export const AccountCard = ({
           {account.isLinked === true ? "remove" : "connect"}
         </a>
       </button>
+    </div>
+  );
+};
+
+export const SignedAsCard = ({
+  authAccount,
+  top,
+  //   left,
+}: {
+  authAccount: userAccountInterface | undefined;
+  top: number;
+  //   left: number;
+}) => {
+  const selectedIcon =
+    allPossibleAccounts.find(
+      (possibleAccount) => possibleAccount.provider === authAccount?.provider,
+    )?.icon || "";
+  return (
+    <div
+      className={`absolute right-[0px] top-[${top}px] bg-neutral flex gap-1 p-[6px] rounded-lg font-SpaceGrotesk font-medium items-center text-secondary`}
+    >
+      <p className="italic text-[12px] max-sm:hidden">Signed</p>
+      <p className="italic text-[12px] max-sm:hidden">As</p>
+      <div className="border-2 border-primary rounded-full">
+        <Image
+          src={authAccount?.avatar || ""}
+          alt={authAccount?.avatar || ""}
+          width={20}
+          height={20}
+          className="select-none min-w-[20px] min-h-[20px] max-sm:min-w-[20px] max-sm:min-h-[20px] max-w-[20px] max-h-[20px] rounded-full max-sm:max-w-[20px] max-sm:max-h-[20px]"
+        />
+      </div>
+      <p className="italic font-bold text-[12px]">{authAccount?.username}</p>•
+      <div className="border-2 border-secondary rounded-full p-2 w-[24px] h-[24px] flex justify-center items-center">
+        <Image
+          src={selectedIcon}
+          alt={selectedIcon}
+          width={15}
+          height={15}
+          className="select-none min-w-[15px] min-h-[15px] max-sm:min-w-[15px] max-sm:min-h-[15px] max-w-[15px] max-h-[15px] max-sm:max-w-[15px] max-sm:max-h-[15px]"
+        />
+      </div>
     </div>
   );
 };

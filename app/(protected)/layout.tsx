@@ -3,9 +3,8 @@ import "../globals.css";
 import Navbar from "@/components/Navbar";
 import SideBar from "@/components/SideBar";
 import BottomBar from "@/components/BottomBar";
-// import { validateRequest } from "@/lib/auth";
-// import { redirect } from "next/navigation";
 import { UserProvider } from "@/context/UserContext";
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -39,18 +38,20 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary text-neutral w-full h-screen flex flex-col`}
       >
-        <UserProvider>
-          <Navbar />
-          <div
-            className={`flex overflow-y-auto overflow-x-hidden light-scroll`}
-          >
-            <SideBar />
-            <BottomBar />
-            <div className="h-max w-full mt-[100px] max-md:mt-[150px]">
-              {children}
+        <Suspense>
+          <UserProvider>
+            <Navbar />
+            <div
+              className={`flex overflow-y-auto overflow-x-hidden light-scroll`}
+            >
+              <SideBar />
+              <BottomBar />
+              <div className="h-max w-full mt-[100px] max-md:mt-[150px]">
+                {children}
+              </div>
             </div>
-          </div>
-        </UserProvider>
+          </UserProvider>
+        </Suspense>
       </body>
     </html>
   );
