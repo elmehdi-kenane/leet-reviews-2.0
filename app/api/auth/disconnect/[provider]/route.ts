@@ -19,12 +19,12 @@ export async function POST(
   });
   if (account) {
     await prismaClient.account.delete({
-      where: { userId: userId },
+      where: { id: account.id },
     });
-    const updatedAccounts = await prismaClient.account.delete({
-      where: { userId: userId },
-    });
-    return NextResponse.json({ accounts: updatedAccounts });
+    // const updatedAccounts = await prismaClient.account.findMany({
+    //   where: { userId: userId },
+    // });
+    return NextResponse.json({ message: "account removed successfully" });
   }
   return NextResponse.json({ message: "account not found" });
 }

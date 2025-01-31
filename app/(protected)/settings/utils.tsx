@@ -320,19 +320,62 @@ function ControlledOpenSelect({
   );
 }
 
-interface linkedAccountInterface {
+export interface linkedAccountInterface {
   provider: string;
   username?: string;
-  avatar?: string;
   isLinked: boolean;
   icon: string;
 }
 
+export const accountsArr = [
+  {
+    provider: "github",
+    username: "",
+    isLinked: false,
+    icon: "/brand-github.svg",
+  },
+  {
+    provider: "discord",
+    username: "",
+    isLinked: false,
+    icon: "/discord.svg",
+  },
+  {
+    provider: "linkedIn",
+    username: "",
+    isLinked: false,
+    icon: "/LInkedInIconLight.svg",
+  },
+];
+
 export const AccountCard = ({
   account,
+  setAccounts,
 }: {
   account: linkedAccountInterface;
+  setAccounts: React.Dispatch<React.SetStateAction<linkedAccountInterface[]>>;
 }) => {
+  const handleRemoveLinkedAccount = async () => {
+    const res = await fetch(`/api/auth/disconnect/${account.provider}`, {
+      method: "POST",
+    });
+    if (res.ok) {
+      console.log("res.status", res.status);
+      setAccounts((prev: linkedAccountInterface[]) =>
+        prev.map((item) =>
+          item.provider === account.provider
+            ? {
+                ...item,
+                icon:
+                  accountsArr.find((acc) => acc.provider === item.provider)
+                    ?.icon || "",
+                isLinked: false,
+              }
+            : item,
+        ),
+      );
+    } else console.log("error ocurred with disconnect a linked account");
+  };
   return (
     <div className="flex items-center gap-2">
       <div className="rounded-full border border-neutral">
@@ -353,19 +396,25 @@ export const AccountCard = ({
           </p>
         </div>
       ) : (
-        <p className="font-semibold bg-[red]">
+        <p className="font-semibold">
           {account.provider.charAt(0).toUpperCase() + account.provider.slice(1)}
         </p>
       )}
-      <button
-        className={`${account.isLinked === true ? "border border-neutral" : "bg-primary"} w-20 p-2 rounded-md text-[12px] font-semibold ml-auto`}
-      >
-        <a
-          href={`/api/auth/${account.isLinked ? "disconnect" : "connect"}/${account.provider}`}
+      {account.isLinked ? (
+        <button
+          className={` w-20 p-2 border border-neutral rounded-md text-[12px] font-semibold ml-auto`}
+          onClick={handleRemoveLinkedAccount}
         >
-          {account.isLinked === true ? "remove" : "connect"}
+          remove
+        </button>
+      ) : (
+        <a
+          className="bg-primary w-20 p-2 rounded-md text-[12px] font-semibold ml-auto text-center"
+          href={`/api/auth/connect/${account.provider}`}
+        >
+          connect
         </a>
-      </button>
+      )}
     </div>
   );
 };

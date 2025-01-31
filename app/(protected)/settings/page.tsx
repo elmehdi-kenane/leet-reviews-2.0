@@ -11,10 +11,12 @@ import {
   SelectCard,
   AccountCard,
   SignedAsCard,
+  accountsArr,
 } from "@/app/(protected)/settings/utils";
 import { UserContext, User } from "@/context/UserContext";
 import { useSearchParams } from "next/navigation";
 import { UnSavedChangesPopUpState } from "./utils";
+import { linkedAccountInterface } from "@/app/(protected)/settings/utils";
 
 export type formDataType = {
   name: string;
@@ -303,7 +305,7 @@ const Profile = ({
               type="file"
               name="avatar"
               accept="image/png, image/jpeg"
-              className="opacity-0 absolute h-full bg-[red] w-full top-0 left-0"
+              className="opacity-0 absolute h-full w-full top-0 left-0"
               onClick={() => console.log("file input clicked")}
               onChange={(e) => {
                 const files = e.target.files;
@@ -373,27 +375,8 @@ const AccountConnections = ({
 }: {
   userAccounts: userAccountInterface[];
 }) => {
-  const accountsArr = [
-    {
-      provider: "github",
-      username: "",
-      isLinked: false,
-      icon: "/brand-github.svg",
-    },
-    {
-      provider: "discord",
-      username: "",
-      isLinked: false,
-      icon: "/discord.svg",
-    },
-    {
-      provider: "linkedIn",
-      username: "",
-      isLinked: false,
-      icon: "/LInkedInIconLight.svg",
-    },
-  ];
-  const [accounts, setAccounts] = useState(accountsArr);
+  const [accounts, setAccounts] =
+    useState<linkedAccountInterface[]>(accountsArr);
   useEffect(() => {
     // remove the auth account from the list
     setAccounts((prev) => {
@@ -435,7 +418,10 @@ const AccountConnections = ({
         {accounts.map((account, index) => {
           return (
             <div key={account.provider}>
-              <AccountCard account={account}></AccountCard>
+              <AccountCard
+                setAccounts={setAccounts}
+                account={account}
+              ></AccountCard>
               {index + 1 < accounts.length && (
                 <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
               )}
@@ -467,7 +453,7 @@ const AccountDeletion = () => {
           </p>
         </div>
         <button
-          className={`w-20 p-2 bg-red-400 rounded-md text-[12px] font-semibold ml-auto`}
+          className={`w-20 p-2 bg-red-500 rounded-md text-[12px] font-semibold ml-auto`}
         >
           delete
         </button>
