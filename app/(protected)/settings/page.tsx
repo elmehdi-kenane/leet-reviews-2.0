@@ -375,8 +375,10 @@ const AccountConnections = ({
 }: {
   userAccounts: userAccountInterface[];
 }) => {
-  const [accounts, setAccounts] =
-    useState<linkedAccountInterface[]>(accountsArr);
+  console.log("accountsArr", accountsArr);
+  const [accounts, setAccounts] = useState<linkedAccountInterface[]>(
+    accountsArr.map((acc) => ({ ...acc })),
+  );
   useEffect(() => {
     // remove the auth account from the list
     setAccounts((prev) => {
@@ -407,6 +409,9 @@ const AccountConnections = ({
         }
         return account;
       });
+      console.log("accountsArr", accountsArr);
+      console.log("updatedAccounts", updatedAccounts);
+
       return updatedAccounts;
     });
   }, [userAccounts]);

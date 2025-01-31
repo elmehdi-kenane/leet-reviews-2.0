@@ -360,10 +360,9 @@ export const AccountCard = ({
       method: "POST",
     });
     if (res.ok) {
-      console.log("res.status", res.status);
       setAccounts((prev: linkedAccountInterface[]) =>
-        prev.map((item) =>
-          item.provider === account.provider
+        prev.map((item) => {
+          return item.provider === account.provider
             ? {
                 ...item,
                 icon:
@@ -371,8 +370,9 @@ export const AccountCard = ({
                     ?.icon || "",
                 isLinked: false,
               }
-            : item,
-        ),
+            : item;
+          return item;
+        }),
       );
     } else console.log("error ocurred with disconnect a linked account");
   };
