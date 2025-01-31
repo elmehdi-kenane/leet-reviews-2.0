@@ -212,6 +212,11 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
         provider: "github",
         onclick: createClickHandler("github"),
       },
+      {
+        icon: "LInkedInIconLight.svg",
+        provider: "linkedIn",
+        onclick: createClickHandler("linkedIn"),
+      },
     ]);
   }, [router, user.accounts]);
 
@@ -235,7 +240,7 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
             </p>
           </div>
         </div>
-        <div className="flex flex-col gap-2 mb-auto ml-auto">
+        <div className="flex gap-2 mb-auto ml-auto w-[80px] flex-wrap justify-end">
           {user.accounts.map((account) => {
             const selectedIcon = accounts.find(
               (icon) => icon.provider === account.provider,
@@ -248,14 +253,14 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
                   selectedIcon.onclick(e);
                 }}
                 key={account.provider}
-                className="flex justify-center items-center border p-2 border-neutral hover:bg-primary rounded-full min-w-[36px] min-h-[36px]"
+                className="flex justify-center items-center border p-2 border-neutral hover:bg-primary rounded-full min-w-[36px] min-h-[36px] w-[36px] h-[36px]"
               >
                 <Image
                   src={selectedIcon?.icon}
                   className="select-none"
                   alt={selectedIcon?.icon}
-                  width={17}
-                  height={17}
+                  width={20}
+                  height={20}
                 />
               </button>
             );

@@ -14,9 +14,9 @@ import {
   accountsArr,
 } from "@/app/(protected)/settings/utils";
 import { UserContext, User } from "@/context/UserContext";
-import { useSearchParams } from "next/navigation";
 import { UnSavedChangesPopUpState } from "./utils";
 import { linkedAccountInterface } from "@/app/(protected)/settings/utils";
+import Cookies from "js-cookie";
 
 export type formDataType = {
   name: string;
@@ -69,21 +69,26 @@ const Settings = () => {
   const userContext = useContext(UserContext);
   const router = useRouter();
 
-  const searchParams = useSearchParams();
   useEffect(() => {
-    const error = searchParams.get("error");
-    console.log("error", error);
-    if (error === "connect-cancelled") {
+    const connectionStatus = Cookies.get("connection_status");
+    const provider = Cookies.get("provider");
+    if (connectionStatus === "success" || connectionStatus === "failure") {
       setTimeout(() => {
-        console.log(`toast.error("Connection was cancelled or invalid."`);
-
-        toast.error("Connection was cancelled or invalid.", {
-          id: "Connection was cancelled or invalid.",
-          style: { background: "#fff5e0", color: "#141e46" },
-        });
+        toast.dismiss();
+        if (connectionStatus === "success")
+          toast.success(`${provider} account connected successfully!`, {
+            style: { background: "#fff5e0", color: "#141e46" },
+          });
+        else
+          toast.error("Connection was cancelled or invalid.", {
+            id: "Connection was cancelled or invalid.",
+            style: { background: "#fff5e0", color: "#141e46" },
+          });
+        Cookies.remove("connection_status");
+        Cookies.remove("provider");
       }, 300);
-    } else console.log("unknown error");
-  }, [searchParams]);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -233,7 +238,6 @@ const Profile = ({
 
   const getAvatar = (avatar: string | File | undefined) => {
     if (avatar === undefined) {
-      console.log("originalDetails.avatar", originalDetails.avatar);
       return originalDetails.avatar as string;
     }
     if (typeof avatar === "string") return avatar;
@@ -325,7 +329,7 @@ const Profile = ({
                 // Reset input value so selecting the same file triggers onChange again
               }}
             />
-            <p className="">upload</p>
+            <p className="select-none">upload</p>
           </button>
         </div>
       </div>
@@ -377,11 +381,19 @@ const AccountConnections = ({
 }: {
   userAccounts: userAccountInterface[];
 }) => {
-  const [accounts, setAccounts] = useState<linkedAccountInterface[]>(
-    accountsArr.map((acc) => ({ ...acc })),
-  );
-  const [newAccountAdded, setNewAccountAdded] = useState({ provider: "" });
+  const [accounts, setAccounts] =
+    useState<linkedAccountInterface[]>(userAccounts);
   useEffect(() => {
+    // Find missing items from accountsArr that are not in the current state
+    setAccounts((prev) => {
+      const missingItems = accountsArr.filter(
+        (item) =>
+          !prev.some((acc) => {
+            if (acc.provider === item.provider) return { ...item };
+          }),
+      );
+      return missingItems.length > 0 ? [...prev, ...missingItems] : prev;
+    });
     // remove the auth account from the list
     setAccounts((prev) => {
       const updatedAccounts = prev.filter((account) => {
@@ -397,6 +409,7 @@ const AccountConnections = ({
       return updatedAccounts;
     });
     // update with already linked accounts
+    console.log("accounts", accounts);
     setAccounts((prev) => {
       const updatedAccounts = prev.map((account) => {
         const userAccount = userAccounts.find(
@@ -405,27 +418,14 @@ const AccountConnections = ({
             userAccount.account_type === "CONNECTED",
         );
         if (userAccount) {
-          if (!account.isLinked)
-            setNewAccountAdded({ provider: account.provider });
           account.isLinked = true;
           account.username = userAccount.username;
-          account.icon = userAccount.avatar;
+          account.avatar = userAccount.avatar;
         }
         return account;
       });
       return updatedAccounts;
     });
-    if (newAccountAdded) {
-      toast.dismiss();
-
-      toast.success(
-        `${newAccountAdded.provider} account connected successfully!`,
-        {
-          style: { background: "#fff5e0", color: "#141e46" },
-        },
-      );
-    }
-    console.log("newAccountAdded is empty");
   }, [userAccounts]);
 
   return (
@@ -470,7 +470,7 @@ const AccountDeletion = () => {
           </p>
         </div>
         <button
-          className={`w-20 p-2 bg-red-500 rounded-md text-[12px] font-semibold ml-auto`}
+          className={`w-20 select-none p-2 bg-red-500 rounded-md text-[12px] font-semibold ml-auto`}
         >
           delete
         </button>

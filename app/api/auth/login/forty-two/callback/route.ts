@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { fortyTwo } from "@/lib/providers";
 import { cookies } from "next/headers";
 import { lucia, prismaClient } from "@/lib/auth";
@@ -19,9 +19,16 @@ export async function GET(request: NextRequest) {
     state !== storedState ||
     error === "access_denied"
   ) {
-    return NextResponse.redirect(
-      `http://localhost:3000/auth/sign-in/?error=auth-cancelled`,
-    );
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: "http://localhost:3000/auth/sign-in",
+        "Set-Cookie": [
+          `auth_status=failure; Path=/; Secure; SameSite=Lax`,
+          `provider=FortyTwo; Path=/; Secure; SameSite=Lax`,
+        ].join(", "),
+      },
+    });
   }
   try {
     const tokens = await fortyTwo.validateAuthorizationCode(code);
@@ -116,7 +123,11 @@ export async function GET(request: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "/home",
+        Location: "http://localhost:3000/home",
+        "Set-Cookie": [
+          `auth_status=success; Path=/; Secure; SameSite=Lax`,
+          `provider=FortyTwo; Path=/; Secure; SameSite=Lax`,
+        ].join(", "),
       },
     });
   } catch (e) {

@@ -26,6 +26,10 @@ export const allPossibleAccounts: Account[] = [
     provider: "discord",
     icon: "/discord-dark.svg",
   },
+  {
+    provider: "linkedIn",
+    icon: "/LInkedInIcon.svg",
+  },
 ];
 
 export enum UnSavedChangesPopUpState {
@@ -321,11 +325,8 @@ function ControlledOpenSelect({
   );
 }
 
-export interface linkedAccountInterface {
-  provider: string;
-  username?: string;
-  isLinked: boolean;
-  icon: string;
+export interface linkedAccountInterface extends userAccountInterface {
+  isLinked?: boolean;
 }
 
 export const accountsArr = [
@@ -333,19 +334,22 @@ export const accountsArr = [
     provider: "github",
     username: "",
     isLinked: false,
-    icon: "/brand-github.svg",
+    account_type: "",
+    avatar: "/brand-github.svg",
   },
   {
     provider: "discord",
     username: "",
     isLinked: false,
-    icon: "/discord.svg",
+    account_type: "",
+    avatar: "/discord.svg",
   },
   {
     provider: "linkedIn",
     username: "",
     isLinked: false,
-    icon: "/LInkedInIconLight.svg",
+    account_type: "",
+    avatar: "/LInkedInIconLight.svg",
   },
 ];
 
@@ -366,9 +370,9 @@ export const AccountCard = ({
           return item.provider === account.provider
             ? {
                 ...item,
-                icon:
+                avatar:
                   accountsArr.find((acc) => acc.provider === item.provider)
-                    ?.icon || "",
+                    ?.avatar || "",
                 isLinked: false,
               }
             : item;
@@ -384,8 +388,8 @@ export const AccountCard = ({
     <div className="flex items-center gap-2">
       <div className="rounded-full border border-neutral">
         <Image
-          src={account.icon}
-          alt={account.icon}
+          src={account.avatar}
+          alt={account.avatar}
           width={40}
           height={40}
           className={`select-none min-w-[40px] ${account.isLinked ? "rounded-full" : "p-2"} min-h-[40px] max-sm:min-w-[40px] max-sm:min-h-[40px] max-w-[40px] max-h-[40px] max-sm:max-w-[40px] max-sm:max-h-[40px]`}
@@ -406,14 +410,14 @@ export const AccountCard = ({
       )}
       {account.isLinked ? (
         <button
-          className={` w-20 p-2 border border-neutral rounded-md text-[12px] font-semibold ml-auto`}
+          className={` w-20 select-none p-2 border border-neutral hover:bg-neutral hover:text-secondary rounded-md text-[12px] font-semibold ml-auto`}
           onClick={handleRemoveLinkedAccount}
         >
           remove
         </button>
       ) : (
         <a
-          className="bg-primary w-20 p-2 rounded-md text-[12px] font-semibold ml-auto text-center"
+          className="bg-primary select-none border-2 border-transparent w-20 p-2 hover:border-primary hover:bg-transparent hover:text-primary rounded-md text-[12px] font-semibold ml-auto text-center"
           href={`/api/auth/connect/${account.provider}`}
         >
           connect

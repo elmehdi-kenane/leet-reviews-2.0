@@ -19,9 +19,16 @@ export async function GET(request: NextRequest) {
     state !== storedState ||
     error === "access_denied"
   ) {
-    return NextResponse.redirect(
-      `http://localhost:3000/settings/?error=connect-cancelled`,
-    );
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: "http://localhost:3000/settings",
+        "Set-Cookie": [
+          `connection_status=failure; Path=/; Secure; SameSite=Lax`,
+          `provider=LinkedIn; Path=/; Secure; SameSite=Lax`,
+        ].join(", "),
+      },
+    });
   }
   try {
     const tokens = await linkedIn.validateAuthorizationCode(code);
@@ -77,6 +84,10 @@ export async function GET(request: NextRequest) {
       status: 302,
       headers: {
         Location: "http://localhost:3000/settings",
+        "Set-Cookie": [
+          `connection_status=success; Path=/; Secure; SameSite=Lax`,
+          `provider=LinkedIn; Path=/; Secure; SameSite=Lax`,
+        ].join(", "),
       },
     });
   } catch (e) {
