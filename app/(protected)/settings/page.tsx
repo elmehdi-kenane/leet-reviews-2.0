@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -174,7 +174,7 @@ const Settings = () => {
       const data = await res.json();
       console.log("data", data);
       toast.dismiss();
-      toast.success("informations updated successfully 👍", {
+      toast.success("Preferences updated successfully 👍", {
         style: { background: "#fff5e0", color: "#141e46" },
       });
       setOriginalDetails(updatedDetails);
@@ -452,13 +452,132 @@ const AccountConnections = ({
 
 const AccountDeletion = () => {
   const router = useRouter();
+  enum popUpDeleteAccountState {
+    none,
+    confirmDeletion,
+    deletionConfirmed,
+  }
+  const [isPopUpDeleteAccount, setIsPopUpDeleteAccount] = useState(
+    popUpDeleteAccountState.none,
+  );
+  const [confirmationText, setConfirmationText] = useState("");
+  const cardRef = useRef<HTMLDivElement>(null);
   const handleDeleteAccount = async () => {
-    const res = await fetch("/api/user/delete", { method: "POST" });
-    if (res.ok) router.push("http://localhost:3000/auth/sign-in");
+    if (confirmationText !== "DELETE") {
+      toast.dismiss();
+      toast.error("invalid confirmation text.", {
+        style: { background: "#fff5e0", color: "#141e46" },
+      });
+      return;
+    }
+    toast.dismiss();
+    toast.loading("account deletion...", {
+      style: { background: "#fff5e0", color: "#141e46" },
+      position: "bottom-center",
+    });
+    setIsPopUpDeleteAccount(popUpDeleteAccountState.deletionConfirmed);
+    setTimeout(async () => {
+      const res = await fetch("/api/user/delete", { method: "POST" });
+      toast.dismiss();
+      if (res.ok) router.push("http://localhost:3000/auth/sign-in");
+    }, 300);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (cardRef.current && !cardRef.current.contains(e.target as Node)) {
+        setIsPopUpDeleteAccount(popUpDeleteAccountState.none);
+      }
+    };
+    window.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col gap-5 mb-5">
       <HeaderSection headerText="Danger Zone"></HeaderSection>
+      {isPopUpDeleteAccount !== popUpDeleteAccountState.none && (
+        <div className="absolute h-full w-full left-0 top-0 z-[111] flex justify-center items-center bg-white/30 backdrop-blur-lg">
+          <div
+            ref={cardRef}
+            className="bg-neutral rounded-lg text-secondary w-[300px] h-[430px] flex flex-col items-center justify-center gap-6 p-6"
+          >
+            {isPopUpDeleteAccount ===
+            popUpDeleteAccountState.confirmDeletion ? (
+              <>
+                <div className="flex flex-col items-center">
+                  <div className="p-2 rounded-full flex justify-center items-center border border-neutral bg-red-400 mb-3">
+                    <Image
+                      src={"/warning.svg"}
+                      alt={"/warning.svg"}
+                      width={35}
+                      height={35}
+                      className="select-none min-w-[35px] min-h-[35px] max-sm:min-w-[35px] max-sm:min-h-[35px] max-w-[35px] max-h-[35px] max-sm:max-w-[35px] max-sm:max-h-[35px]"
+                    />
+                  </div>
+                  <p className=" w-max font-bold text-center font-SpaceGrotesk text-2xl">
+                    Delete Account
+                  </p>
+                  <p className="text-center font-medium font-SpaceGrotesk text-md">
+                    <span className="text-red-500 font-semibold">WARNING</span>{" "}
+                    this is permanent and cannot be undone!
+                  </p>
+                </div>
+                <p className="text-center font-semibold font-SpaceGrotesk text-[12px]">
+                  All your feedbacks, comments, votes, and saved feedbacks will
+                  be permanently deleted.
+                </p>
+                <div className="flex flex-col w-full">
+                  <label
+                    htmlFor="delete-confirmation"
+                    className="block font-medium text-sm font-SpaceGrotesk"
+                  >
+                    Type <span className="font-bold">&quot;DELETE&quot;</span>{" "}
+                    to confirm:
+                  </label>
+                  <input
+                    type="text"
+                    maxLength={20}
+                    id="delete-confirmation"
+                    className="p-2 w-full border border-secondary outline-primary bg-neutral rounded-md mt-2"
+                    placeholder='Type "DELETE"'
+                    value={confirmationText}
+                    onChange={(e) => setConfirmationText(e.target.value)}
+                  />
+                </div>
+                <div className="flex justify-between w-full gap-3 font-SpaceGrotesk">
+                  <button
+                    onClick={() =>
+                      setIsPopUpDeleteAccount(popUpDeleteAccountState.none)
+                    }
+                    className="flex justify-center h-[40px] items-center w-[49.5%] text-sm p-1 rounded-md border border-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="flex justify-center h-[40px] items-center w-[49.5%] text-sm p-1 rounded-md text-neutral bg-red-500 border border-transparent"
+                  >
+                    Delete Account
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="rounded-full flex justify-center items-center border-3 border-secondary">
+                <Image
+                  src={"/_.jpeg"}
+                  alt={"/_.jpeg"}
+                  width={150}
+                  height={150}
+                  className="select-none rounded-full min-w-[150px] min-h-[150px] max-sm:min-w-[150px] max-sm:min-h-[150px] max-w-[150px] max-h-[150px] max-sm:max-w-[150px] max-sm:max-h-[150px]"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <div className="border border-neutral p-3 flex items-center rounded-xl">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-full flex justify-center items-center w-[40px] h-[40px] border border-neutral">
@@ -475,7 +594,9 @@ const AccountDeletion = () => {
           </p>
         </div>
         <button
-          onClick={handleDeleteAccount}
+          onClick={() =>
+            setIsPopUpDeleteAccount(popUpDeleteAccountState.confirmDeletion)
+          }
           className={`w-20 select-none p-2 bg-red-500 hover:bg-neutral hover:text-red-500 rounded-md text-[12px] font-semibold ml-auto`}
         >
           delete
