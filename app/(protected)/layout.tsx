@@ -5,6 +5,7 @@ import SideBar from "@/components/SideBar";
 import BottomBar from "@/components/BottomBar";
 import { UserProvider } from "@/context/UserContext";
 import { Suspense } from "react";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -51,6 +52,15 @@ export default async function RootLayout({
               </div>
             </div>
           </UserProvider>
+          <Toaster
+            toastOptions={{
+              className: "",
+              style: {
+                color: "#FFF5E0",
+                backgroundColor: "#141E46",
+              },
+            }}
+          />
         </Suspense>
       </body>
     </html>

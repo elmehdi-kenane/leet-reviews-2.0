@@ -75,6 +75,8 @@ const Settings = () => {
     console.log("error", error);
     if (error === "connect-cancelled") {
       setTimeout(() => {
+        console.log(`toast.error("Connection was cancelled or invalid."`);
+
         toast.error("Connection was cancelled or invalid.", {
           id: "Connection was cancelled or invalid.",
           style: { background: "#fff5e0", color: "#141e46" },
@@ -375,10 +377,10 @@ const AccountConnections = ({
 }: {
   userAccounts: userAccountInterface[];
 }) => {
-  console.log("accountsArr", accountsArr);
   const [accounts, setAccounts] = useState<linkedAccountInterface[]>(
     accountsArr.map((acc) => ({ ...acc })),
   );
+  const [newAccountAdded, setNewAccountAdded] = useState({ provider: "" });
   useEffect(() => {
     // remove the auth account from the list
     setAccounts((prev) => {
@@ -403,17 +405,27 @@ const AccountConnections = ({
             userAccount.account_type === "CONNECTED",
         );
         if (userAccount) {
+          if (!account.isLinked)
+            setNewAccountAdded({ provider: account.provider });
           account.isLinked = true;
           account.username = userAccount.username;
           account.icon = userAccount.avatar;
         }
         return account;
       });
-      console.log("accountsArr", accountsArr);
-      console.log("updatedAccounts", updatedAccounts);
-
       return updatedAccounts;
     });
+    if (newAccountAdded) {
+      toast.dismiss();
+
+      toast.success(
+        `${newAccountAdded.provider} account connected successfully!`,
+        {
+          style: { background: "#fff5e0", color: "#141e46" },
+        },
+      );
+    }
+    console.log("newAccountAdded is empty");
   }, [userAccounts]);
 
   return (

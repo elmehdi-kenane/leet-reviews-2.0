@@ -1,6 +1,4 @@
-import { GitHub } from "arctic";
-import { FortyTwo } from "arctic";
-import { Discord } from "arctic";
+import { Discord, FortyTwo, GitHub, LinkedIn } from "arctic";
 
 // optional
 //   redirectURI, // required when multiple redirect URIs are defined
@@ -29,4 +27,12 @@ export const discord = new Discord(
   process.env.DISCORD_CLIENT_ID!,
   process.env.DISCORD_CLIENT_SECRET!,
   discordRedirectURI,
+);
+
+const linkedInRedirectURI =
+  "http://localhost:3000/api/auth/connect/linkedIn/callback";
+export const linkedIn = new LinkedIn(
+  process.env.LINKEDIN_CLIENT_ID!,
+  process.env.LINKEDIN_CLIENT_SECRET!,
+  linkedInRedirectURI,
 );

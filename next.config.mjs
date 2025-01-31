@@ -28,10 +28,9 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
-      // remove this later
       {
         protocol: "https",
-        hostname: "looktrailers.com",
+        hostname: "media.licdn.com",
         port: "",
         pathname: "/**",
       },

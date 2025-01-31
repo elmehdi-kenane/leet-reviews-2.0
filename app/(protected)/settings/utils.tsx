@@ -6,6 +6,7 @@ import { formDataType, userAccountInterface } from "./page";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import toast from "react-hot-toast";
 
 interface Account {
   provider: string;
@@ -371,9 +372,12 @@ export const AccountCard = ({
                 isLinked: false,
               }
             : item;
-          return item;
         }),
       );
+      toast.dismiss();
+      toast.success(`${account.provider} account removed successfully!`, {
+        style: { background: "#fff5e0", color: "#141e46" },
+      });
     } else console.log("error ocurred with disconnect a linked account");
   };
   return (
