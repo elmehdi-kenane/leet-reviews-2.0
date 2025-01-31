@@ -13,6 +13,7 @@ import {
 } from "@/app/(protected)/settings/utils";
 import { UserContext, User } from "@/context/UserContext";
 import { useSearchParams } from "next/navigation";
+import { UnSavedChangesPopUpState } from "./utils";
 
 export type formDataType = {
   name: string;
@@ -25,12 +26,6 @@ export type formDataType = {
   [key: string]: boolean | string | File | undefined;
 };
 
-export enum UnSavedChangesPopUpState {
-  OPENING,
-  CLOSING,
-  CLOSED, // only for the first render
-}
-
 export interface userAccountInterface {
   provider: string;
   account_type: string;
@@ -38,7 +33,12 @@ export interface userAccountInterface {
   avatar: string;
 }
 
-export const allPossibleAccounts = [
+interface Account {
+  provider: string;
+  icon: string;
+}
+
+export const allPossibleAccounts: Account[] = [
   {
     provider: "github",
     icon: "/brand-github-black.svg",

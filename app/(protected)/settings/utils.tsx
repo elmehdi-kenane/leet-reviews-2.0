@@ -2,7 +2,6 @@ import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Switch, { SwitchProps } from "@mui/material/Switch";
-import { UnSavedChangesPopUpState } from "./page";
 import {
   formDataType,
   userAccountInterface,
@@ -11,6 +10,12 @@ import {
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+
+export enum UnSavedChangesPopUpState {
+  OPENING,
+  CLOSING,
+  CLOSED, // only for the first render
+}
 
 export const HeaderSection = ({ headerText }: { headerText: string }) => {
   return (
