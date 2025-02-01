@@ -361,6 +361,10 @@ export const AccountCard = ({
   setAccounts: React.Dispatch<React.SetStateAction<linkedAccountInterface[]>>;
 }) => {
   const handleRemoveLinkedAccount = async () => {
+    toast.dismiss();
+    toast.loading(`Removing ${account.provider} account`, {
+      style: { background: "#fff5e0", color: "#141e46" },
+    });
     const res = await fetch(`/api/auth/disconnect/${account.provider}`, {
       method: "POST",
     });

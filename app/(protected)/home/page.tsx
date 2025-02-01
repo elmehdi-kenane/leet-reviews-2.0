@@ -6,10 +6,16 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "@/context/UserContext";
 import { FeedbackCard } from "@/components/FeedbackCard";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useSearchParams } from "next/navigation";
+import { FeedbackInterface } from "@/lib/types";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const userContext = useContext(UserContext);
   const [loading, setLoading] = useState(true);
+
+  const searchParams = useSearchParams();
+  const feedbackId = searchParams.get("feedbackId");
   useEffect(() => {
     const getFeedbacks = async () => {
       try {
@@ -17,6 +23,18 @@ export default function Home() {
         const responseData = await response.json();
         // console.log("responseData", responseData);
         userContext.setFeedbacks(responseData.feedbacks.reverse());
+        if (feedbackId) {
+          console.log("feedbackId", feedbackId);
+          const expandedFeedback = responseData.feedbacks.filter(
+            (feedback: FeedbackInterface) => feedback.id === feedbackId,
+          );
+          console.log("expandedFeedback", expandedFeedback);
+          if (expandedFeedback.length === 0)
+            toast.error("Feedback not found.", {
+              id: "Feedback Not Found.",
+              style: { background: "#fff5e0", color: "#141e46" },
+            });
+        }
         console.log("responseData.feedbacks", responseData.feedbacks.reverse());
 
         setLoading(false);
