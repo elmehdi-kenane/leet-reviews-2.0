@@ -94,6 +94,7 @@ export async function POST(request: NextRequest) {
           id: true,
           username: true,
           name: true,
+          accountDisplayedWithFeedbacks: true,
           avatar: true,
           accounts: {
             select: {
@@ -107,26 +108,23 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  const intraProfileUrl = `https://profile.intra.42.fr/users/${
-    newFeedback.author.accounts.find(
-      (account) =>
-        account.provider === "fortyTwo" && account.account_type === "AUTH",
-    )?.username
-  }`;
-
-  const discordProfileUrl = `${
-    newFeedback.author.accounts.find(
-      (account) =>
-        account.provider === "discord" && account.account_type === "CONNECTED",
-    )?.username
-  }`;
+  const linkedAccountProvider =
+    newFeedback.author.accountDisplayedWithFeedbacks;
+  const linkedAccountUsername = newFeedback.author.accounts.find(
+    (account) => account.provider === linkedAccountProvider,
+  )?.username;
+  let linkedAccountProfileUrl = "";
+  if (linkedAccountProvider === "fortyTwo")
+    linkedAccountProfileUrl = `https://profile.intra.42.fr/users/${linkedAccountUsername}`;
+  else if (linkedAccountProvider === "discord") linkedAccountProfileUrl = ``;
+  else if (linkedAccountProvider === "github")
+    linkedAccountProfileUrl = `https://github.com/${linkedAccountUsername}`;
 
   const updatedNewFeedback = {
     ...newFeedback,
     author: {
       ...newFeedback.author,
-      intraProfileUrl: intraProfileUrl,
-      discordProfileUrl: discordProfileUrl,
+      linkedAccountProfileUrl: linkedAccountProfileUrl,
     },
   };
   return NextResponse.json({ newFeedback: updatedNewFeedback });
