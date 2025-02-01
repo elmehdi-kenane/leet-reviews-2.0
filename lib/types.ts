@@ -225,7 +225,8 @@ export interface feedbackAuthorInterface {
   username: string;
   name: string;
   avatar: string;
-  intraProfileUrl: string;
+  linkedAccountProfileUrl: string;
+  accountDisplayedWithFeedbacks: string;
 }
 
 export interface saveInterface {

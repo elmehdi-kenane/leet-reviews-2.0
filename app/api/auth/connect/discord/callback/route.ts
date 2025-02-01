@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       },
     );
     const discordUser: discordUser = await discordUserResponse.json();
-
+    console.log("discordUser", discordUser);
     const existingAccount = await prismaClient.account.findUnique({
       where: {
         provider_provider_account_id: {
@@ -65,7 +65,6 @@ export async function GET(request: NextRequest) {
           { status: 401 },
         );
       }
-      console.log(discordUser);
       const avatar_url = `${DiscordImageBaseUrl}/${discordUser.id}/${discordUser.avatar}.png`;
       await prismaClient.account.create({
         data: {

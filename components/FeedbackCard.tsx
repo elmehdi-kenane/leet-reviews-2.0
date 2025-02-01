@@ -10,6 +10,7 @@ import saveFilledIcon from "@/public/save-filled-icon.svg";
 // import unSaveIcon from "@/public/un-save-icon.svg";
 import { useEffect } from "react";
 import { useState, useRef, useContext } from "react";
+import { accountsArr } from "@/app/(protected)/settings/utils";
 import {
   FeedbackInterface,
   employmentDetailInterface,
@@ -482,11 +483,11 @@ const PreviewFeedbackCard = ({
             <p className="w-full font-Inter leading-4 max-sm:leading-3">
               {feedback.authorComment}
             </p>
-            {feedback.author.intraProfileUrl !== "" &&
+            {feedback.author.linkedAccountProfileUrl !== "" &&
               feedback.feedbackType === "Publicly" && (
                 <div className="h-max w-[40px] flex justify-end items-center ">
                   <a
-                    href={feedback.author.intraProfileUrl}
+                    href={feedback.author.linkedAccountProfileUrl}
                     target="_blank"
                     className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
                     onClick={(e) => {
@@ -494,9 +495,21 @@ const PreviewFeedbackCard = ({
                     }}
                   >
                     <Image
-                      src="/42-logo.svg"
+                      src={
+                        accountsArr.find(
+                          (acc) =>
+                            acc.provider ===
+                            feedback.author.accountDisplayedWithFeedbacks,
+                        )?.avatar || ""
+                      }
                       className="select-none"
-                      alt="42-logo.svg"
+                      alt={
+                        accountsArr.find(
+                          (acc) =>
+                            acc.provider ===
+                            feedback.author.accountDisplayedWithFeedbacks,
+                        )?.avatar || ""
+                      }
                       width={20}
                       height={20}
                     />
@@ -551,11 +564,11 @@ const PreviewFeedbackCard = ({
                 : "Anonymous Author"}
             </p>
           </div>
-          {feedback.author.intraProfileUrl !== "" &&
+          {feedback.author.linkedAccountProfileUrl !== "" &&
             feedback.feedbackType === "Publicly" && (
               <div className="h-max w-[40px] flex justify-end items-center ">
                 <a
-                  href={feedback.author.intraProfileUrl}
+                  href={feedback.author.linkedAccountProfileUrl}
                   className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -563,9 +576,21 @@ const PreviewFeedbackCard = ({
                   }}
                 >
                   <Image
-                    src="/42-logo.svg"
+                    src={
+                      accountsArr.find(
+                        (acc) =>
+                          acc.provider ===
+                          feedback.author.accountDisplayedWithFeedbacks,
+                      )?.avatar || ""
+                    }
                     className="select-none"
-                    alt="42-logo.svg"
+                    alt={
+                      accountsArr.find(
+                        (acc) =>
+                          acc.provider ===
+                          feedback.author.accountDisplayedWithFeedbacks,
+                      )?.avatar || ""
+                    }
                     width={20}
                     height={20}
                   />

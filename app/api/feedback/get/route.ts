@@ -41,6 +41,7 @@ export async function GET() {
           username: true,
           name: true,
           avatar: true,
+          accountDisplayedWithFeedbacks: true,
           accounts: {
             select: {
               provider: true,
@@ -54,27 +55,22 @@ export async function GET() {
   });
 
   const updatedFeedbacks = feedbacks.map((feedback) => {
-    const intraProfileUsername = feedback.author.accounts.find(
-      (account) =>
-        account.provider === "fortyTwo" && account.account_type === "AUTH",
+    const linkedAccountProvider = feedback.author.accountDisplayedWithFeedbacks;
+    const linkedAccountUsername = feedback.author.accounts.find(
+      (account) => account.provider === linkedAccountProvider,
     )?.username;
-    const intraProfileUrl = intraProfileUsername
-      ? `https://profile.intra.42.fr/users/${intraProfileUsername}`
-      : "";
-    const discordProfileUsername = feedback.author.accounts.find(
-      (account) =>
-        account.provider === "discord" && account.account_type === "CONNECTED",
-    )?.username;
-    const discordProfileUrl = discordProfileUsername
-      ? `${discordProfileUsername}`
-      : "";
+    let linkedAccountProfileUrl = "";
+    if (linkedAccountProvider === "fortyTwo")
+      linkedAccountProfileUrl = `https://profile.intra.42.fr/users/${linkedAccountUsername}`;
+    else if (linkedAccountProvider === "discord") linkedAccountProfileUrl = ``;
+    else if (linkedAccountProvider === "github")
+      linkedAccountProfileUrl = `https://github.com/${linkedAccountUsername}`;
 
     return {
       ...feedback,
       author: {
         ...feedback.author,
-        intraProfileUrl: intraProfileUrl,
-        discordProfileUrl: discordProfileUrl,
+        linkedAccountProfileUrl: linkedAccountProfileUrl,
       },
     };
   });

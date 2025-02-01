@@ -75,6 +75,8 @@ export interface userProfileInterface {
   bio: string;
   createdAt: string;
   accounts: accountProfileInterface[];
+  isFeedbacksHidden: boolean;
+  isCommentsAndVotesHidden: boolean;
 }
 
 export interface saveProfileInterface {
@@ -143,6 +145,7 @@ export default function Profile() {
               ></MyFeedbacksAndSavedWrapper>
               <CommentsAndVotesWrapper
                 isOwn={true}
+                isCommentsAndVotesHidden={false}
                 comments={profile.comments}
                 votes={profile.votes}
               ></CommentsAndVotesWrapper>
@@ -150,9 +153,11 @@ export default function Profile() {
           ) : (
             <>
               <FeedbackAsVisitorWrapper
+                isFeedbacksHidden={profile.user.isFeedbacksHidden}
                 feedbacks={profile.feedbacks}
               ></FeedbackAsVisitorWrapper>
               <CommentsAndVotesWrapper
+                isCommentsAndVotesHidden={profile.user.isCommentsAndVotesHidden}
                 isOwn={false}
                 comments={profile.comments}
                 votes={profile.votes}
@@ -413,8 +418,10 @@ const MyFeedbacksAndSavedWrapper = ({
 
 const FeedbackAsVisitorWrapper = ({
   feedbacks,
+  isFeedbacksHidden,
 }: {
   feedbacks: FeedbackInterface[];
+  isFeedbacksHidden: boolean;
 }) => {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -449,7 +456,24 @@ const FeedbackAsVisitorWrapper = ({
       <div
         className={`${isOverflowing === true ? "h-[280px]" : "h-[270px]"} w-full bg-neutral rounded-xl`}
       >
-        {feedbacks.length === 0 && (
+        {isFeedbacksHidden ? (
+          <div className="w-full h-full text-secondary font-SpaceGrotesk flex flex-col justify-center items-center font-semibold text-lg gap-3">
+            <p>Feedbacks hidden.</p>
+            <button
+              onClick={() => router.push(`/home`)}
+              className="bg-secondary text-neutral p-2 rounded-lg hover:bg-primary flex items-center gap-1 select-none transition-transform duration-500 transform hover:scale-[1.05]"
+            >
+              <p>explore feedbacks</p>
+              <Image
+                src={exploreArrow}
+                alt={exploreArrow}
+                width={25}
+                height={15}
+                className=""
+              />
+            </button>
+          </div>
+        ) : feedbacks.length === 0 ? (
           <div className="w-full h-full text-secondary font-SpaceGrotesk flex flex-col justify-center items-center font-semibold text-lg gap-3">
             <p>No feedbacks available.</p>
             <button
@@ -466,22 +490,23 @@ const FeedbackAsVisitorWrapper = ({
               />
             </button>
           </div>
+        ) : (
+          <div
+            className={`${isOverflowing === true ? "w-[99%] mx-auto" : ""} h-[270px] rounded-2xl text-secondary flex gap-5 py-5 px-[14px] overflow-x-auto dark-scroll font-SpaceGrotesk`}
+          >
+            {feedbacks.length > 0 &&
+              feedbacks
+                .filter((feedback) => feedback.feedbackType === "Publicly")
+                .map((feedback) => {
+                  return (
+                    <FeedbackAsVisitorCard
+                      feedback={feedback}
+                      key={feedback.id}
+                    ></FeedbackAsVisitorCard>
+                  );
+                })}
+          </div>
         )}
-        <div
-          className={`${isOverflowing === true ? "w-[99%] mx-auto" : ""} h-[270px] rounded-2xl text-secondary flex gap-5 py-5 px-[14px] overflow-x-auto dark-scroll font-SpaceGrotesk`}
-        >
-          {feedbacks.length > 0 &&
-            feedbacks
-              .filter((feedback) => feedback.feedbackType === "Publicly")
-              .map((feedback) => {
-                return (
-                  <FeedbackAsVisitorCard
-                    feedback={feedback}
-                    key={feedback.id}
-                  ></FeedbackAsVisitorCard>
-                );
-              })}
-        </div>
       </div>
     </div>
   );
@@ -984,10 +1009,12 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
 
 const CommentsAndVotesWrapper = ({
   isOwn,
+  isCommentsAndVotesHidden,
   comments,
   votes,
 }: {
   isOwn: boolean;
+  isCommentsAndVotesHidden: boolean;
   comments: commentInterface[];
   votes: voteProfileInterface[];
 }) => {
@@ -1065,10 +1092,9 @@ const CommentsAndVotesWrapper = ({
         </button>
       </div>
       <div className="h-[280px] w-full bg-neutral rounded-xl flex justify-center">
-        {((selectedBtn === 1 && comments.length === 0) ||
-          (selectedBtn === 2 && votes.length === 0)) && (
+        {isCommentsAndVotesHidden ? (
           <div className="min-w-max h-max my-auto text-secondary font-SpaceGrotesk font-semibold text-lg flex flex-col items-center gap-3">
-            <p>No {selectedBtn === 1 ? "comments" : "votes"} available.</p>
+            <p>{selectedBtn === 1 ? "comments" : "votes"} hidden.</p>
             <button
               onClick={() => router.push(`/home`)}
               className="bg-secondary text-neutral p-2 rounded-lg hover:bg-primary flex items-center gap-1 transition-transform select-none duration-500 transform hover:scale-[1.05]"
@@ -1083,6 +1109,26 @@ const CommentsAndVotesWrapper = ({
               />
             </button>
           </div>
+        ) : (
+          ((selectedBtn === 1 && comments.length === 0) ||
+            (selectedBtn === 2 && votes.length === 0)) && (
+            <div className="min-w-max h-max my-auto text-secondary font-SpaceGrotesk font-semibold text-lg flex flex-col items-center gap-3">
+              <p>No {selectedBtn === 1 ? "comments" : "votes"} available.</p>
+              <button
+                onClick={() => router.push(`/home`)}
+                className="bg-secondary text-neutral p-2 rounded-lg hover:bg-primary flex items-center gap-1 transition-transform select-none duration-500 transform hover:scale-[1.05]"
+              >
+                <p>explore feedbacks</p>
+                <Image
+                  src={exploreArrow}
+                  alt={exploreArrow}
+                  width={25}
+                  height={25}
+                  className=""
+                />
+              </button>
+            </div>
+          )
         )}
         {((selectedBtn === 1 && comments.length > 0) ||
           (selectedBtn === 2 && votes.length > 0)) && (
