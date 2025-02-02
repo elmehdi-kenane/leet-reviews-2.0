@@ -416,7 +416,8 @@ export const FormSelectOptionField = <
                     {typeof type === "object" && type.description}{" "}
                     <Tooltip
                       title={
-                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+                        // "Trust Score reflects the credibility of feedback, increasing with detailed insights and community votes."
+                        "Trust Score reflects the credibility of feedback, increasing with detailed insights."
                       }
                     >
                       <span className="underline cursor-help">trust score</span>
