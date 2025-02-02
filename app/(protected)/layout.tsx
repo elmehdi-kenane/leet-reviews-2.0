@@ -37,7 +37,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary text-neutral w-full h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[url('/bg.svg')] bg-cover bg-center bg-no-repeat text-neutral w-full h-screen flex flex-col`}
       >
         <Suspense>
           <UserProvider>
