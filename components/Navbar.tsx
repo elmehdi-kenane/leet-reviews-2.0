@@ -139,7 +139,7 @@ const Navbar = () => {
   const inputMaxLength = 30;
   return (
     <div
-      className={`${isHidden === true ? "hidden" : ""} bg-[#002451] fixed flex flex-wrap justify-center w-full z-[10]`}
+      className={`${isHidden === true ? "hidden" : ""} bg-secondary fixed flex flex-wrap justify-center w-full z-[10]`}
     >
       <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max my-3">
         <Link href={"/home"} className="mr-11 max-md:mr-auto">

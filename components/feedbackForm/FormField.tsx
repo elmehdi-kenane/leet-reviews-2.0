@@ -145,7 +145,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
 
   const inputId = `${inputName}-input`;
   const inputMaxLength = 40;
-  const textareaMaxLength = 180;
+  const authorCommentMaxLength = 250;
 
   return (
     <div className="text-secondary flex flex-col w-[70%]">
@@ -156,7 +156,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
       <div className="flex w-full">
         {inputName === "authorComment" ? (
           <textarea
-            maxLength={textareaMaxLength}
+            maxLength={authorCommentMaxLength}
             id={inputId}
             name={name}
             ref={ref}
