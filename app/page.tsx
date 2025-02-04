@@ -12,21 +12,65 @@ import ProgressCheckIcon from "@/public/ProgressCheckIcon.svg";
 import authorAvatar from "@/public/Group 26.png";
 import reactions from "@/public/reactions.svg";
 import logo1 from "@/public/logo1.svg";
-import lrLogo from "@/public/lr-logo.svg";
 import logo2 from "@/public/logo2.svg";
+import logo3 from "@/public/logo3.svg";
+import elmehdiken3ane from "@/public/elmehdiken3ane.svg";
+import lrLogoWhite from "@/public/lrLogoWhite.svg";
+import goToTop from "@/public/goToTop.svg";
+import logo4 from "@/public/logo4.svg";
+import logo5 from "@/public/logo5.svg";
+import discordAvatar from "@/public/discordAvatar.svg";
+import asset from "@/public/asset.svg";
+import asset2 from "@/public/asset2.svg";
+import asset3 from "@/public/asset3.svg";
+import asset4 from "@/public/asset4.svg";
+import asset5 from "@/public/asset5.svg";
+import lrLogo from "@/public/lr-logo.svg";
+import checkMarkEmoji from "@/public/checkMarkEmoji.png";
+import crossEmoji from "@/public/crossEmoji.png";
 import hashtag from "@/public/hashtag.svg";
+import lrLogoGreen from "@/public/lr-logo-green.svg";
+import lrLogoBlue from "@/public/lr-logo-blue.svg";
 import votes from "@/public/1.svg";
 import trustScore from "@/public/2.svg";
 import anonymous from "@/public/3.svg";
+// import { useState, useEffect, useRef, MutableRefObject } from "react";
+import { useEffect, useRef, MutableRefObject } from "react";
 
-export default function landingPage() {
+export default function LandingPage() {
+  //   const [scrollPosition, setScrollPosition] = useState(0);
+  const refScrollUp = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      console.log("dir chi haja t7awa");
+      const position = window.scrollY;
+      console.log("position", position);
+      //   setScrollPosition(position);
+    };
+    console.log("chi 9alwa");
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("useEffect ran");
+  }, []);
+
   return (
-    <div className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat bg-secondary p-14 overflow-auto">
-      <div className="flex flex-col w-full box-border">
+    <div
+      ref={refScrollUp}
+      className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 overflow-scroll box-border"
+    >
+      <div className="flex flex-col w-full">
         <Navbar></Navbar>
         <Header></Header>
         <HowItWorksSection></HowItWorksSection>
         <WhySection></WhySection>
+        <CommunitySection></CommunitySection>
+        <FooterSection refScrollUp={refScrollUp}></FooterSection>
         {/* <div
           id="Why"
           className="bg-white h-52 w-full flex justify-center items-center text-secondary"
@@ -65,14 +109,227 @@ const WhySection = () => {
   return (
     <div
       id="why"
-      className="w-full mt-[80px] max-w-[730px] mx-auto flex flex-col items-center text-secondary"
+      className="w-full mt-[150px] max-w-[730px] mx-auto flex flex-col items-center text-secondary"
     >
       <SectionHeader headerText="Why"></SectionHeader>
-      <p className="font-SpaceGrotesk text-neutral text-center text-[12px]">
-        Leet Reviews is a community-driven app designed to help employees choose
-        their next job by providing insights into company cultures and
-        spotlighting potential red flags to avoid toxic environments.
-      </p>
+      <div className="flex justify-center items-center flex-col gap-5 relative">
+        <div className="font-SpaceGrotesk text-neutral text-[12px] flex gap-1 flex-wrap justify-center">
+          <div className="bg-secondary w-max h-[10px] flex min-w-max mt-[7px]">
+            <p className="mt-[-7px]">Leet Reviews</p>
+          </div>
+          <p className="w-max max-w-full">
+            is a community-driven app designed to help employees choose their
+            next job by
+          </p>
+          <div className="bg-secondary w-max h-[10px] flex min-w-max mt-[7px]">
+            <p className="mt-[-7px]">providing insights</p>
+          </div>
+          <p className="w-max max-w-full">
+            into company cultures and spotlighting potential red flags to avoid
+            toxic environments.
+          </p>
+        </div>
+        <div className="w-full max-w-[600px] bg-secondary min-h-[160px] rounded-xl flex p-3 h-max shadow-[0px_0px_69px_-13px_#141e46]">
+          <div className="w-[50%] flex items-center gap-3 flex-col">
+            <div className="bg-neutral flex w-[90%] min-w-[152px] p-3 items-center justify-between gap-2 font-SpaceGrotesk rounded-xl">
+              <Image
+                className="min-w-[20px] min-h-[20px] w-[20px] h-[20px] select-none"
+                src={crossEmoji}
+                height={20}
+                width={20}
+                alt={`${crossEmoji}`}
+              ></Image>
+              <p className="font-semibold">Without</p>
+              <Image
+                className="min-w-[30px] w-[30px] select-none"
+                src={lrLogoBlue}
+                height={30}
+                width={30}
+                alt={lrLogoBlue}
+              ></Image>
+            </div>
+            <p className="text-neutral text-center text-sm w-[90%]">
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry.
+            </p>
+          </div>
+          <div className="min-h-[50%] h-[50px] my-auto mb-[20px] bg-neutral min-w-[1px] w-[1px]"></div>
+          <div className="w-[50%] flex items-center gap-3 flex-col">
+            <div className="bg-neutral flex w-[90%] min-w-[152px] p-3 items-center justify-between gap-2 font-SpaceGrotesk rounded-xl">
+              <Image
+                className="min-w-[20px] min-h-[20px] w-[20px] h-[20px] select-none"
+                src={checkMarkEmoji}
+                height={20}
+                width={20}
+                alt={`${checkMarkEmoji}`}
+              ></Image>
+              <p className="font-semibold">With</p>
+              <Image
+                className="min-w-[30px] w-[30px] select-none"
+                src={lrLogoGreen}
+                height={30}
+                width={30}
+                alt={lrLogoGreen}
+              ></Image>
+            </div>
+            <p className="text-neutral text-center text-sm w-[90%]">
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry.
+            </p>
+          </div>
+        </div>
+        <Image
+          src={logo3}
+          alt={logo3}
+          width={80}
+          height={80}
+          className="max-w-[80px] select-none max-h-[80px] absolute z-10 bottom-[0px] right-[20px]"
+        />
+        <div className="w-full flex justify-center gap-5">
+          <div className="w-3 h-3 bg-neutral border-2 border-neutral rounded-full"></div>
+          <div className="w-3 h-3 border-2 border-neutral rounded-full"></div>
+          <div className="w-3 h-3 border-2 border-neutral rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const CommunitySection = () => {
+  return (
+    <div
+      id="community"
+      className="w-full mt-[150px] flex flex-col items-center justify-center text-secondary"
+    >
+      <SectionHeader headerText="Community"></SectionHeader>
+      <div className="font-SpaceGrotesk text-neutral text-[12px] flex flex-col gap-1 flex-wrap justify-center items-center">
+        <p>
+          Connect with like-minded professionals, share insights, and stay
+          ahead.
+        </p>
+        <div className="mt-7 flex justify-center items-end flex-col w-max ml-[30px]">
+          <Image
+            className="min-w-[9px] w-[20px] select-none"
+            src={asset}
+            height={20}
+            width={20}
+            alt={asset}
+          ></Image>
+          <div className="bg-neutral p-2 flex w-max rounded-lg gap-3 mx-auto mt-[-10px] mr-[20px]">
+            <Image
+              className="min-w-[9px] w-[50px] select-none"
+              src={discordAvatar}
+              height={50}
+              width={50}
+              alt={discordAvatar}
+            ></Image>
+            <button className="bg-primary p-2 rounded-md font-semibold text-lg select-none">
+              Join Us on Discord
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const FooterSection = ({
+  refScrollUp,
+}: {
+  refScrollUp: MutableRefObject<HTMLElement | null>;
+}) => {
+  const handleScrollUp = () => {
+    console.log("handleScrollUp call");
+
+    if (refScrollUp.current)
+      refScrollUp.current.scrollIntoView({ behavior: "smooth" });
+    else console.log("refScrollUp.current is null");
+  };
+
+  return (
+    <div className="flex justify-center flex-col mx-auto items-center mt-[150px] w-full">
+      <div className="flex justify-center w-max flex-col ">
+        <Image
+          className="min-w-[9px] w-[20px] select-none ml-auto"
+          src={asset3}
+          height={20}
+          width={20}
+          alt={asset3}
+        ></Image>
+        <div className="w-max h-[10px] flex min-w-max mt-[24px] bg-gradient-to-t from-[#141e46] to-transparent">
+          <p className="text-neutral font-SpaceGrotesk font-semibold text-[30px] mt-[-24px]">
+            Ready to make smarter career moves?
+          </p>
+        </div>
+        <Image
+          className="min-w-[9px] w-[20px] select-none mr-auto mt-[10px]"
+          src={asset2}
+          height={20}
+          width={20}
+          alt={asset2}
+        ></Image>
+      </div>
+      <div>
+        <Image
+          className="min-w-[9px] w-[45px] select-none ml-auto mt-[10px] mr-[-45px]"
+          src={asset5}
+          height={45}
+          width={45}
+          alt={asset5}
+        ></Image>
+        <button className="bg-primary border-2 border-neutral p-3 rounded-xl select-none font-SpaceGrotesk font-semibold">
+          JOIN THE COMMUNITY
+        </button>
+        <Image
+          className="min-w-[9px] w-[35px] select-none mr-auto ml-[-30px]"
+          src={asset4}
+          height={35}
+          width={35}
+          alt={asset4}
+        ></Image>
+      </div>
+      <div className="w-full flex flex-col justify-center items-center h-72">
+        <div className="flex w-[70%] min-w-[300px] justify-between max-sm:hidden my-auto">
+          <Image
+            src={logo4}
+            alt={logo4}
+            width={80}
+            height={80}
+            className="max-w-[80px] select-none max-h-[80px]"
+          />
+          <Image
+            src={logo5}
+            alt={logo5}
+            width={80}
+            height={80}
+            className="max-w-[80px] select-none max-h-[80px]"
+          />
+        </div>
+        <div className="w-full flex justify-between mt-auto">
+          <Image
+            src={elmehdiken3ane}
+            alt={elmehdiken3ane}
+            width={120}
+            height={120}
+            className="max-w-[120px] select-none max-h-[120px]"
+          />
+          <Image
+            src={lrLogoWhite}
+            alt={lrLogoWhite}
+            width={80}
+            height={80}
+            className="max-w-[80px] select-none max-h-[80px]"
+          />
+          <Image
+            src={goToTop}
+            alt={goToTop}
+            onClick={handleScrollUp}
+            width={30}
+            height={30}
+            className="max-w-[30px] select-none max-h-[30px]"
+          />
+        </div>
+      </div>
     </div>
   );
 };
@@ -126,7 +383,7 @@ const HowItWorksSection = () => {
         })}
       </div>
       <p className="text-neutral font-SpaceGrotesk my-2">And more...</p>
-      <button className="bg-secondary p-3 border-2 transition-transform duration-500 transform hover:scale-[1.05] border-neutral rounded-xl text-neutral font-SpaceGrotesk">
+      <button className="p-3 border-2 transition-transform duration-500 transform hover:scale-[1.05] border-neutral rounded-xl text-neutral font-SpaceGrotesk">
         Explore All Features
       </button>
     </div>
@@ -135,7 +392,7 @@ const HowItWorksSection = () => {
 
 const SectionHeader = ({ headerText }: { headerText: string }) => {
   return (
-    <div className="flex gap-3 mb-8">
+    <div className="flex gap-3 mb-4">
       <Image
         className="min-w-[9px] w-[20px] select-none"
         src={hashtag}
@@ -330,20 +587,22 @@ const Header = () => {
         <button className="bg-primary p-3 border-2 absolute z-[14] bottom-[-40px] transition-transform duration-500 transform hover:scale-[1.05] border-neutral rounded-xl text-neutral font-SpaceGrotesk">
           Browse Feedbacks
         </button>
-        <Image
-          src={logo1}
-          alt={logo1}
-          width={80}
-          height={80}
-          className="max-w-[80px] select-none max-h-[80px] mr-auto absolute left-0 bottom-0"
-        />
-        <Image
-          src={logo2}
-          alt={logo2}
-          width={80}
-          height={80}
-          className="max-w-[80px] select-none max-h-[80px] ml-auto absolute right-0 bottom-[-100px]"
-        />
+        <div className="flex w-[70%] min-w-[300px] top-[500px] fixed justify-between">
+          <Image
+            src={logo1}
+            alt={logo1}
+            width={80}
+            height={80}
+            className="max-w-[80px] select-none mt-[70px] max-h-[80px]"
+          />
+          <Image
+            src={logo2}
+            alt={logo2}
+            width={80}
+            height={80}
+            className="max-w-[80px] select-none max-h-[80px]"
+          />
+        </div>
       </div>
     </div>
   );
@@ -351,7 +610,7 @@ const Header = () => {
 
 const Navbar = () => {
   return (
-    <div className="max-w-full w-[100%] flex items-center justify-between p-14 pb-0 fixed top-0 left-0 right-0 font-SpaceGrotesk text-neutral">
+    <div className="max-w-full w-[99.4%] flex items-center justify-between p-14 pb-0 fixed top-0 left-0 right-0 font-SpaceGrotesk text-neutral">
       <Image
         className="min-w-[9px] w-[150px] select-none"
         src={expandedLogo}

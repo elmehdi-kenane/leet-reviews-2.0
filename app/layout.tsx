@@ -25,6 +25,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
+        style={{
+          background: "linear-gradient(180deg, #141E46 55%, #314AAC 100%)",
+        }}
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary text-neutral w-full h-screen flex flex-col`}
       >
         {children}
