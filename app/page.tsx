@@ -34,56 +34,180 @@ import lrLogoBlue from "@/public/lr-logo-blue.svg";
 import votes from "@/public/1.svg";
 import trustScore from "@/public/2.svg";
 import anonymous from "@/public/3.svg";
-import { useEffect, useRef, MutableRefObject } from "react";
-import LinkNative from "next/link";
-import { Link, Element, Events, scroller, scrollSpy } from "react-scroll";
+import { useEffect, useRef, MutableRefObject, useState } from "react";
+import Link from "next/link";
 
 export default function LandingPage() {
-  const refScrollUp = useRef<HTMLDivElement>(null);
-  //   const howItWorksSectionRef = useRef<HTMLDivElement>(null);
-  //   const whySectionRef = useRef<HTMLDivElement>(null);
-  //   const communitySectionRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const howItWorksSectionRef = useRef<HTMLDivElement>(null);
+  const whySectionRef = useRef<HTMLDivElement>(null);
+  const communitySectionRef = useRef<HTMLDivElement>(null);
 
   //   useEffect(() => {
   //     const handleScroll = () => {};
-  //     if (refScrollUp.current)
-  //       refScrollUp.current.addEventListener("scroll", handleScroll);
+  //     if (containerRef.current)
+  //       containerRef.current.addEventListener("scroll", handleScroll);
   //     return () => {
-  //       if (refScrollUp.current)
-  //         refScrollUp.current.removeEventListener("scroll", handleScroll);
+  //       if (containerRef.current)
+  //         containerRef.current.removeEventListener("scroll", handleScroll);
   //     };
   //   }, []);
 
   return (
     <div
-      ref={refScrollUp}
+      ref={containerRef}
       className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 overflow-auto box-border"
     >
       <div className="flex flex-col w-full">
-        <Navbar></Navbar>
+        <Navbar
+          containerRef={containerRef}
+          howItWorksSectionRef={howItWorksSectionRef}
+          whySectionRef={whySectionRef}
+          communitySectionRef={communitySectionRef}
+        ></Navbar>
         <Header></Header>
         <HowItWorksSection
-        //   howItWorksSectionRef={howItWorksSectionRef}
+          howItWorksSectionRef={howItWorksSectionRef}
         ></HowItWorksSection>
-        <WhySection
-        // whySectionRef={whySectionRef}
-        ></WhySection>
+        <WhySection whySectionRef={whySectionRef}></WhySection>
         <CommunitySection
-        //   communitySectionRef={communitySectionRef}
+          communitySectionRef={communitySectionRef}
         ></CommunitySection>
-        <FooterSection refScrollUp={refScrollUp}></FooterSection>
+        <FooterSection containerRef={containerRef}></FooterSection>
       </div>
     </div>
   );
 }
 
-const WhySection = (
-  {
-    //   whySectionRef,
-  }: {
-    //   whySectionRef: MutableRefObject<HTMLDivElement | null>;
-  },
-) => {
+const Navbar = ({
+  containerRef,
+  howItWorksSectionRef,
+  whySectionRef,
+  communitySectionRef,
+}: {
+  containerRef: MutableRefObject<HTMLDivElement | null>;
+  howItWorksSectionRef: MutableRefObject<HTMLDivElement | null>;
+  whySectionRef: MutableRefObject<HTMLDivElement | null>;
+  communitySectionRef: MutableRefObject<HTMLDivElement | null>;
+}) => {
+  const [currentSection, setCurrentSection] = useState("");
+
+  const offset = 150;
+
+  const sections = [
+    { name: "HowItWorks", ref: howItWorksSectionRef },
+    { name: "Why", ref: whySectionRef },
+    { name: "Community", ref: communitySectionRef },
+  ];
+
+  const handleHashChange = (event: HashChangeEvent) => {
+    setCurrentSection(event.newURL.split("#")[1]);
+  };
+
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const scrollTop = container.scrollTop;
+    const containerHeight = container.clientHeight;
+
+    let visibleSection = "";
+
+    sections.forEach((section) => {
+      if (section.ref.current) {
+        const sectionTop = section.ref.current.offsetTop;
+        const sectionHeight = section.ref.current.offsetHeight;
+        // Check if the section is in view
+        if (
+          scrollTop >= sectionTop - containerHeight / 2 &&
+          scrollTop < sectionTop + sectionHeight - containerHeight / 2
+        ) {
+          visibleSection = section.name;
+        }
+      }
+    });
+    console.log("visibleSection", visibleSection);
+
+    if (currentSection !== visibleSection) {
+      setCurrentSection(visibleSection);
+    }
+  };
+
+  useEffect(() => {
+    const initializeCurrentHashtag = () => {
+      const hash = window.location.hash;
+      setCurrentSection(hash ? hash.substring(1) : "");
+    };
+    initializeCurrentHashtag();
+    window.addEventListener("hashchange", handleHashChange);
+    if (containerRef.current)
+      containerRef.current.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+      if (containerRef.current)
+        containerRef.current.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const section = sections.find((section) => section.name === currentSection);
+    if (section && section.ref.current && containerRef.current) {
+      //   console.log("section", section);
+      const topOfSection =
+        section.ref.current.getBoundingClientRect().top - offset;
+      containerRef.current.scrollTo({
+        top: topOfSection < 0 ? topOfSection + offset : topOfSection,
+        behavior: "smooth",
+      });
+    }
+  }, [currentSection]);
+
+  return (
+    <div className="max-w-full w-[99.4%] flex h-[100px] items-center justify-between p-14 pb-0 fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral">
+      <Image
+        className="min-w-[9px] w-[117px] select-none"
+        src={expandedLogo}
+        height={150}
+        width={117}
+        alt={expandedLogo}
+      ></Image>
+      <div className="flex gap-7 items-center justify-center min-w-[730px] w-max bg-secondary/30 backdrop-blur-md h-[150%] rounded-lg relative z-[200]">
+        <Link
+          className={`${currentSection === "HowItWorks" ? "underline" : ""}`}
+          href="#HowItWorks"
+        >
+          How It Works?
+        </Link>
+        <div className="w-1 h-1 rounded-full bg-neutral"></div>
+        <Link
+          className={`${currentSection === "Why" ? "underline" : ""}`}
+          href="#Why"
+        >
+          Why?
+        </Link>
+        <div className="w-1 h-1 rounded-full bg-neutral"></div>
+        <Link
+          className={`${currentSection === "Community" ? "underline" : ""}`}
+          href="#Community"
+        >
+          Community
+        </Link>
+      </div>
+      <Link
+        href={"/auth/sign-up"}
+        className="p-2 border border-neutral rounded-md hover:bg-primary"
+      >
+        Get Started
+      </Link>
+    </div>
+  );
+};
+
+const WhySection = ({
+  whySectionRef,
+}: {
+  whySectionRef: MutableRefObject<HTMLDivElement | null>;
+}) => {
   //   const comparisons = [
   //     {
   //       name: "Transparency & Trust",
@@ -105,8 +229,9 @@ const WhySection = (
   //     },
   //   ];
   return (
-    <Element
-      name="Why"
+    <div
+      ref={whySectionRef}
+      id="Why"
       className="w-full mt-[150px] max-w-[730px] mx-auto flex flex-col items-center text-secondary"
     >
       <SectionHeader headerText="Why"></SectionHeader>
@@ -189,20 +314,19 @@ const WhySection = (
           <div className="w-3 h-3 border-2 border-neutral rounded-full"></div>
         </div>
       </div>
-    </Element>
+    </div>
   );
 };
 
-const CommunitySection = (
-  {
-    //   communitySectionRef,
-  }: {
-    //   communitySectionRef: MutableRefObject<HTMLDivElement | null>;
-  },
-) => {
+const CommunitySection = ({
+  communitySectionRef,
+}: {
+  communitySectionRef: MutableRefObject<HTMLDivElement | null>;
+}) => {
   return (
-    <Element
-      name="Community"
+    <div
+      ref={communitySectionRef}
+      id="Community"
       className="w-full mt-[150px] flex flex-col items-center justify-center text-secondary"
     >
       <SectionHeader headerText="Community"></SectionHeader>
@@ -233,21 +357,21 @@ const CommunitySection = (
           </div>
         </div>
       </div>
-    </Element>
+    </div>
   );
 };
 
 const FooterSection = ({
-  refScrollUp,
+  containerRef,
 }: {
-  refScrollUp: MutableRefObject<HTMLElement | null>;
+  containerRef: MutableRefObject<HTMLElement | null>;
 }) => {
   const handleScrollToTop = () => {
     console.log("handleScrollToTop call");
 
-    if (refScrollUp.current)
-      refScrollUp.current.scrollTo({ top: 0, behavior: "smooth" });
-    else console.log("refScrollUp.current is null");
+    if (containerRef.current)
+      containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    else console.log("containerRef.current is null");
   };
 
   return (
@@ -281,12 +405,12 @@ const FooterSection = ({
           width={45}
           alt={asset5}
         ></Image>
-        <LinkNative
+        <Link
           href={"/auth/sign-up"}
           className="bg-primary border-2 border-neutral p-3 rounded-xl select-none font-SpaceGrotesk font-semibold"
         >
           JOIN THE COMMUNITY
-        </LinkNative>
+        </Link>
         <Image
           className="min-w-[9px] w-[35px] select-none mr-auto ml-[-30px]"
           src={asset4}
@@ -341,13 +465,11 @@ const FooterSection = ({
   );
 };
 
-const HowItWorksSection = (
-  {
-    //   howItWorksSectionRef,
-  }: {
-    //   howItWorksSectionRef: MutableRefObject<HTMLDivElement | null>;
-  },
-) => {
+const HowItWorksSection = ({
+  howItWorksSectionRef,
+}: {
+  howItWorksSectionRef: MutableRefObject<HTMLDivElement | null>;
+}) => {
   const features = [
     {
       header: "Anonymous",
@@ -366,8 +488,9 @@ const HowItWorksSection = (
     },
   ];
   return (
-    <Element
-      name="HowItWorks"
+    <div
+      ref={howItWorksSectionRef}
+      id="HowItWorks"
       className="w-full mt-[150px] flex flex-col items-center text-secondary"
     >
       <SectionHeader headerText="How It Works?"></SectionHeader>
@@ -396,13 +519,13 @@ const HowItWorksSection = (
         })}
       </div>
       <p className="text-neutral font-SpaceGrotesk my-2">And more...</p>
-      <LinkNative
+      <Link
         href={"/auth/sign-up"}
         className="p-3 border-2 transition-transform duration-500 transform hover:scale-[1.05] border-neutral rounded-xl text-neutral font-SpaceGrotesk"
       >
         Explore All Features
-      </LinkNative>
-    </Element>
+      </Link>
+    </div>
   );
 };
 
@@ -602,12 +725,12 @@ const Header = () => {
             index={3}
           ></ExamplePreviewFeedbackCard>
         </div>
-        <LinkNative
+        <Link
           href={"/auth/sign-up"}
           className="bg-primary p-3 border-2 absolute z-[14] bottom-[-40px] transition-transform duration-500 transform hover:scale-[1.05] border-neutral rounded-xl text-neutral font-SpaceGrotesk"
         >
           Browse Feedbacks
-        </LinkNative>
+        </Link>
         <div className="flex w-[70%] min-w-[300px] top-[500px] fixed justify-between">
           <Image
             src={logo1}
@@ -625,130 +748,6 @@ const Header = () => {
           />
         </div>
       </div>
-    </div>
-  );
-};
-
-const Navbar = () => {
-  //   const [currentHashtag, setCurrentHashtag] = useState("");
-
-  //   const offset = 250;
-
-  //   const handleHashChange = (event: HashChangeEvent) => {
-  //     setCurrentHashtag(event.newURL.split("#")[1]);
-  //   };
-
-  //   useEffect(() => {
-  //     const initializeCurrentHashtag = () => {
-  //       const hash = window.location.hash;
-  //       setCurrentHashtag(hash ? hash.substring(1) : "");
-  //     };
-  //     initializeCurrentHashtag();
-  //     window.addEventListener("hashchange", handleHashChange);
-  //     return () => {
-  //       window.removeEventListener("hashchange", handleHashChange);
-  //     };
-  //   }, []);
-
-  //   useEffect(() => {
-  //     const sections = [
-  //       { name: "HowItWorks", ref: howItWorksSectionRef },
-  //       { name: "Why", ref: whySectionRef },
-  //       { name: "Community", ref: communitySectionRef },
-  //     ];
-  //     const section = sections.find((section) => section.name === currentHashtag);
-  //     if (section && section.ref.current && refScrollUp.current) {
-  //       //   console.log("section", section);
-  //       const topOfSection =
-  //         section.ref.current.getBoundingClientRect().top - offset;
-  //       refScrollUp.current.scrollTo({
-  //         top: topOfSection < 0 ? topOfSection + offset : topOfSection,
-  //         behavior: "smooth",
-  //       });
-  //     }
-  //   }, [currentHashtag]);
-
-  useEffect(() => {
-    // Registering the 'begin' event and logging it to the console when triggered.
-    Events.scrollEvent.register("begin", (to, element) => {
-      console.log("begin", to, element);
-    });
-
-    // Registering the 'end' event and logging it to the console when triggered.
-    Events.scrollEvent.register("end", (to, element) => {
-      console.log("end", to, element);
-    });
-
-    // Updating scrollSpy when the component mounts.
-    scrollSpy.update();
-
-    // Returning a cleanup function to remove the registered events when the component unmounts.
-    return () => {
-      Events.scrollEvent.remove("begin");
-      Events.scrollEvent.remove("end");
-    };
-  }, []);
-
-  const scrollToSection = (section: string) => {
-    scroller.scrollTo(section, {
-      duration: 500,
-      smooth: true,
-      offset: -50, // Adjust for sticky headers if needed
-    });
-  };
-
-  return (
-    <div className="max-w-full w-[99.4%] flex h-[100px] items-center justify-between p-14 pb-0 fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral">
-      <Image
-        className="min-w-[9px] w-[117px] select-none"
-        src={expandedLogo}
-        height={150}
-        width={117}
-        alt={expandedLogo}
-      ></Image>
-      <div className="flex gap-7 items-center justify-center min-w-[730px] w-max bg-secondary/30 backdrop-blur-md h-[150%] rounded-lg relative z-[200]">
-        <Link
-          onClick={() => scrollToSection("HowItWorks")}
-          activeClass="active"
-          spy={true}
-          smooth={true}
-          offset={50}
-          duration={500}
-          to="HowItWorks"
-        >
-          How It Works xdd?
-        </Link>
-        <div className="w-1 h-1 rounded-full bg-neutral"></div>
-        <Link
-          onClick={() => scrollToSection("Why")}
-          activeClass="active"
-          spy={true}
-          smooth={true}
-          offset={50}
-          duration={500}
-          to="Why"
-        >
-          Why?
-        </Link>
-        <div className="w-1 h-1 rounded-full bg-neutral"></div>
-        <Link
-          onClick={() => scrollToSection("Community")}
-          activeClass="active"
-          spy={true}
-          smooth={true}
-          offset={50}
-          duration={500}
-          to="Community"
-        >
-          Community
-        </Link>
-      </div>
-      <LinkNative
-        href={"/auth/sign-up"}
-        className="p-2 border border-neutral rounded-md hover:bg-primary"
-      >
-        Get Started
-      </LinkNative>
     </div>
   );
 };
