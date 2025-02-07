@@ -11,9 +11,10 @@ export async function GET(request: NextRequest) {
     request.nextUrl,
     `http://${request.headers.get("host")}`,
   );
-  const userIdParam = requestUrl.searchParams.get("userId");
-  if (userIdParam === null)
-    return NextResponse.json({ error: "invalid userId" }, { status: 401 });
+  let userIdParam = requestUrl.searchParams.get("userId");
+  console.log("userIdParam", typeof userIdParam);
+
+  if (userIdParam === "null" || userIdParam === null) userIdParam = userId;
   const isOwn = userId === userIdParam;
 
   let profileData = {};
@@ -28,10 +29,11 @@ export async function GET(request: NextRequest) {
       },
     },
     where: {
-      id: userIdParam ? userIdParam : "",
+      id: userIdParam,
     },
   });
-
+  if (user === null)
+    return NextResponse.json({ error: "User Not Found" }, { status: 400 });
   profileData = {
     isOwn: isOwn,
     user: user,

@@ -40,7 +40,7 @@ const BottomBar = () => {
       icon: profileIcon,
       iconFilled: profileFilledIcon,
       text: "Profile",
-      link: `/profile?userId=${userInfo?.id}`,
+      link: `/profile`,
     },
   ];
 
@@ -80,7 +80,7 @@ const BottomBar = () => {
         icon: profileIcon,
         iconFilled: profileFilledIcon,
         text: "Profile",
-        link: `/profile?userId=${userInfo?.id}`,
+        link: `/profile`,
       },
     ];
     setButtons(Buttons);
