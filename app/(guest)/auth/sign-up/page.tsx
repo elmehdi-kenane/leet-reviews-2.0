@@ -1,27 +1,32 @@
 "use client";
 
 import lrLogoWhite from "@/public/lrLogoWhite.svg";
-import fortyTwoLogo from "@/public/42-logo-black.svg";
-import githubLogo from "@/public/brand-github-black.svg";
+import fortyTwoLogo from "@/public/42-logo.svg";
+import githubLogo from "@/public/brand-github.svg";
+import fortyTwoLogoBlack from "@/public/42-logo-black.svg";
+import githubLogoBlack from "@/public/brand-github-black.svg";
 import asset6 from "@/public/asset6.svg";
 import asset7 from "@/public/asset7.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 
 export default function SignUp() {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const options = [
     {
       href: "/api/auth/login/forty-two",
       provider: "Intra",
       icon: fortyTwoLogo,
+      iconHovered: fortyTwoLogoBlack,
     },
     {
       href: "/api/auth/login/github",
       provider: "Github",
       icon: githubLogo,
+      iconHovered: githubLogoBlack,
     },
   ];
 
@@ -63,18 +68,28 @@ export default function SignUp() {
             Create Account
           </p>
           <div className="flex flex-col gap-3 items-center w-full">
-            {options.map((option) => {
+            {options.map((option, index) => {
               return (
                 <Link
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
                   key={option.provider}
                   href={option.href}
-                  className="flex gap-3 shadow-[0_5px_20px_5px_rgba(0,0,0,0.25)] justify-center items-center w-full bg-secondary border-2 border-secondary hover:bg-neutral hover:text-secondary text-neutral rounded-xl p-2 font-SpaceGrotesk font-semibold"
+                  className="flex gap-3 shadow-[0_5px_20px_5px_rgba(0,0,0,0.25)] justify-center items-center w-full bg-secondary border-2 border-secondary hover:bg-neutral hover:text-secondary text-neutral rounded-xl p-2 font-SpaceGrotesk font-semibold transition-colors duration-300"
                 >
                   <p>Signup with {option.provider}</p>
-                  <div className="bg-neutral w-[40px] p-2 h-[40px] flex justify-center items-center rounded-full">
+                  <div className="w-[40px] p-2 h-[40px] flex justify-center items-center rounded-full">
                     <Image
-                      src={option.icon}
-                      alt={option.icon}
+                      src={
+                        hoveredIndex === index
+                          ? option.iconHovered
+                          : option.icon
+                      }
+                      alt={
+                        hoveredIndex === index
+                          ? option.iconHovered
+                          : option.icon
+                      }
                       width={32}
                       height={32}
                     />
@@ -99,6 +114,12 @@ export default function SignUp() {
           className="max-w-[80px] select-none max-h-[80px]  absolute right-[-40px] bottom-[-20px]"
         />
       </div>
+      <Link
+        href={"/"}
+        className="border-2 border-neutral rounded-xl py-3 text-neutral flex gap-10 font-SpaceGrotesk justify-center items-center flex-col w-[400px] select-none"
+      >
+        Back Home
+      </Link>
     </div>
   );
 }
