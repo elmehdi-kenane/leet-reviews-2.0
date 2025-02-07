@@ -113,26 +113,41 @@ export default function Profile() {
   const [profile, setProfile] = useState<profileInterface | undefined>(
     undefined,
   );
+  const [isUserNotFound, setIsUserNotFound] = useState(false);
 
   const userId = searchParams.get("userId");
+  console.log(`userId '${userId}'`);
 
   useEffect(() => {
     const fetchProfile = async () => {
       const response = await fetch(`/api/profile/get?userId=${userId}`);
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Error fetching user:", errorData.error);
-        return;
+        // console.error("Error fetching user:", errorData.error);
+        if (errorData.error === "User Not Found") {
+          setIsUserNotFound(true);
+          return;
+        }
       }
 
       const profile = await response.json();
       setProfile(profile.data);
+      setIsUserNotFound(false);
       console.log("profile.data", profile.data);
     };
     fetchProfile();
   }, [userId]);
 
-  return (
+  return isUserNotFound ? (
+    <div className="flex w-full h-full my-auto absolute pt-32 items-center flex-col gap-5">
+      <p className="font-SpaceGrotesk font-semibold text-xl text-neutral">
+        Oooppss!!!
+      </p>
+      <p className="font-SpaceGrotesk font-semibold text-xl text-neutral">
+        User Not Found :/
+      </p>
+    </div>
+  ) : (
     <div className="text-neutral max-lg:w-[90%] w-full h-full flex flex-col max-w-[850px] mx-auto max-lg:mb-24 mt-8 gap-10">
       {profile ? (
         <>
