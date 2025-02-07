@@ -40,7 +40,7 @@ const SideBar = () => {
       icon: profileIcon,
       iconFilled: profileFilledIcon,
       text: "Profile",
-      link: `/profile?userId=${userInfo?.id}`,
+      link: `/profile`,
     },
   ];
 
@@ -80,7 +80,7 @@ const SideBar = () => {
         icon: profileIcon,
         iconFilled: profileFilledIcon,
         text: "Profile",
-        link: `/profile?userId=${userInfo?.id}`,
+        link: `/profile`,
       },
     ];
     setButtons(Buttons);
@@ -109,11 +109,7 @@ const SideBar = () => {
         return (
           <Link
             key={index}
-            href={
-              item.link === "/profile"
-                ? `/profile?userId=${userInfo?.id}`
-                : item.link
-            }
+            href={item.link === "/profile" ? `/profile` : item.link}
             className="w-full flex items-center justify-center"
           >
             <button
