@@ -33,8 +33,13 @@ export default async function RootLayout({
   return (
     // <html lang="en">
     <div
-      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary text-neutral w-full h-screen flex flex-col`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased text-neutral relative w-full min-h-screen h-screen overflow-hidden flex flex-col`}
+      style={{
+        background: "#141e46",
+      }}
     >
+      <div className="bg-[#314AAC] w-44 h-44 rounded-full blur-3xl absolute -right-20 -top-20"></div>
+      <div className="bg-[#314AAC] w-44 h-44 rounded-full blur-3xl absolute mx-auto right-56 left-0 top-52"></div>
       <Suspense>
         {children}
         <Toaster
