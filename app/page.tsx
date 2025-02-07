@@ -100,40 +100,35 @@ const Navbar = ({
     { name: "Community", ref: communitySectionRef },
   ];
 
-  const handleHashChange = (event: HashChangeEvent) => {
-    setCurrentSection(event.newURL.split("#")[1]);
-  };
-
-  const handleScroll = () => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const scrollTop = container.scrollTop;
-    const containerHeight = container.clientHeight;
-
-    let visibleSection = "";
-
-    sections.forEach((section) => {
-      if (section.ref.current) {
-        const sectionTop = section.ref.current.offsetTop;
-        const sectionHeight = section.ref.current.offsetHeight;
-        // Check if the section is in view
-        if (
-          scrollTop >= sectionTop - containerHeight / 2 &&
-          scrollTop < sectionTop + sectionHeight - containerHeight / 2
-        ) {
-          visibleSection = section.name;
-        }
-      }
-    });
-    console.log("visibleSection", visibleSection);
-
-    if (currentSection !== visibleSection) {
-      setCurrentSection(visibleSection);
-    }
-  };
-
   useEffect(() => {
+    const handleHashChange = (event: HashChangeEvent) => {
+      setCurrentSection(event.newURL.split("#")[1]);
+    };
+
+    const handleScroll = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      const scrollTop = container.scrollTop;
+      const containerHeight = container.clientHeight;
+      let visibleSection = "";
+      sections.forEach((section) => {
+        if (section.ref.current) {
+          const sectionTop = section.ref.current.offsetTop;
+          const sectionHeight = section.ref.current.offsetHeight;
+          // Check if the section is in view
+          if (
+            visibleSection === "" &&
+            scrollTop >= sectionTop - containerHeight / 2 &&
+            scrollTop < sectionTop + sectionHeight - containerHeight / 2
+          ) {
+            visibleSection = section.name;
+          }
+        }
+      });
+      if (currentSection !== visibleSection) {
+        setCurrentSection(visibleSection);
+      }
+    };
     const initializeCurrentHashtag = () => {
       const hash = window.location.hash;
       setCurrentSection(hash ? hash.substring(1) : "");
@@ -149,18 +144,33 @@ const Navbar = ({
     };
   }, []);
 
-  useEffect(() => {
-    const section = sections.find((section) => section.name === currentSection);
-    if (section && section.ref.current && containerRef.current) {
-      //   console.log("section", section);
-      const topOfSection =
-        section.ref.current.getBoundingClientRect().top - offset;
-      containerRef.current.scrollTo({
-        top: topOfSection < 0 ? topOfSection + offset : topOfSection,
-        behavior: "smooth",
-      });
-    }
-  }, [currentSection]);
+  const handleSectionClick = (section: {
+    name: string;
+    ref: MutableRefObject<HTMLDivElement | null>;
+  }) => {
+    const container = containerRef.current;
+    if (!section.ref.current || !container) return;
+    setCurrentSection(section.name);
+    const scrollTop = container.scrollTop;
+    const containerHeight = container.clientHeight;
+    let topOfSection = section.ref.current.getBoundingClientRect().top;
+    console.log(
+      `before: topOfSection ${topOfSection} scrollTop ${scrollTop} containerHeight ${containerHeight}`,
+    );
+    if (topOfSection < 0) {
+      topOfSection *= -1;
+      topOfSection = scrollTop - topOfSection;
+    } else if (topOfSection < scrollTop) topOfSection += scrollTop;
+    else if (topOfSection > scrollTop) topOfSection += scrollTop;
+    else if (topOfSection > containerHeight) topOfSection -= scrollTop;
+    console.log(
+      `after: topOfSection ${topOfSection} scrollTop ${scrollTop} containerHeight ${containerHeight}`,
+    );
+    container.scrollTo({
+      top: topOfSection - offset,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <div className="max-w-full w-[99.4%] flex h-[100px] items-center justify-between p-14 pb-0 fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral">
@@ -173,6 +183,7 @@ const Navbar = ({
       ></Image>
       <div className="flex gap-7 items-center justify-center min-w-[730px] w-max bg-secondary/30 backdrop-blur-md h-[150%] rounded-lg relative z-[200]">
         <Link
+          onClick={() => handleSectionClick(sections[0])}
           className={`${currentSection === "HowItWorks" ? "underline" : ""}`}
           href="#HowItWorks"
         >
@@ -180,6 +191,7 @@ const Navbar = ({
         </Link>
         <div className="w-1 h-1 rounded-full bg-neutral"></div>
         <Link
+          onClick={() => handleSectionClick(sections[1])}
           className={`${currentSection === "Why" ? "underline" : ""}`}
           href="#Why"
         >
@@ -187,6 +199,7 @@ const Navbar = ({
         </Link>
         <div className="w-1 h-1 rounded-full bg-neutral"></div>
         <Link
+          onClick={() => handleSectionClick(sections[2])}
           className={`${currentSection === "Community" ? "underline" : ""}`}
           href="#Community"
         >
@@ -231,7 +244,7 @@ const WhySection = ({
   return (
     <div
       ref={whySectionRef}
-      id="Why"
+      //   id="Why"
       className="w-full mt-[150px] max-w-[730px] mx-auto flex flex-col items-center text-secondary"
     >
       <SectionHeader headerText="Why"></SectionHeader>
@@ -326,7 +339,7 @@ const CommunitySection = ({
   return (
     <div
       ref={communitySectionRef}
-      id="Community"
+      //   id="Community"
       className="w-full mt-[150px] flex flex-col items-center justify-center text-secondary"
     >
       <SectionHeader headerText="Community"></SectionHeader>
@@ -375,7 +388,7 @@ const FooterSection = ({
   };
 
   return (
-    <div className="flex justify-center flex-col mx-auto items-center mt-[150px] w-full">
+    <div className="flex justify-center flex-col mx-auto items-center mt-[300px] w-full">
       <div className="flex justify-center w-max flex-col ">
         <Image
           className="min-w-[9px] w-[20px] select-none ml-auto"
@@ -490,7 +503,7 @@ const HowItWorksSection = ({
   return (
     <div
       ref={howItWorksSectionRef}
-      id="HowItWorks"
+      //   id="HowItWorks"
       className="w-full mt-[150px] flex flex-col items-center text-secondary"
     >
       <SectionHeader headerText="How It Works?"></SectionHeader>
