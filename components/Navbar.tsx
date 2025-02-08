@@ -202,7 +202,7 @@ const Navbar = () => {
               alt="circleCross.svg"
               width={35}
               height={35}
-              className="rounded-full mr-1 select-none"
+              className={`rounded-full mr-1 select-none ${searchInputValue === "" ? "hidden" : ""}`}
             ></Image>
           </button>
         </div>
@@ -325,7 +325,7 @@ const Navbar = () => {
             alt="circleCross.svg"
             width={35}
             height={35}
-            className="rounded-full mr-1"
+            className={`rounded-full mr-1 ${searchInputValue === "" ? "hidden" : ""}`}
           ></Image>
         </button>
       </div>
