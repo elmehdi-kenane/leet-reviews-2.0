@@ -826,14 +826,14 @@ const PreviewFeedbackCard = ({
                   <div className="flex gap-1">
                     <button
                       onClick={() => setIsOrderByRecent(true)}
-                      className={`${isOrderByRecent === true ? "underline" : ""}`}
+                      className={`${isOrderByRecent === true ? "underline" : ""} font-semibold`}
                     >
                       Most Recent
                     </button>
                     <p>•</p>
                     <button
                       onClick={() => setIsOrderByRecent(false)}
-                      className={`${isOrderByRecent === false ? "underline" : ""}`}
+                      className={`${isOrderByRecent === false ? "underline" : ""} font-semibold`}
                     >
                       Oldest
                     </button>

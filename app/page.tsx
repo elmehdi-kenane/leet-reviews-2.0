@@ -39,19 +39,28 @@ import Link from "next/link";
 
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const navbarSectionsRef = useRef<HTMLDivElement>(null);
+  const [navbarSectionsWidth, setNavbarSectionsWidth] = useState(0);
   const howItWorksSectionRef = useRef<HTMLDivElement>(null);
   const whySectionRef = useRef<HTMLDivElement>(null);
   const communitySectionRef = useRef<HTMLDivElement>(null);
 
-  //   useEffect(() => {
-  //     const handleScroll = () => {};
-  //     if (containerRef.current)
-  //       containerRef.current.addEventListener("scroll", handleScroll);
-  //     return () => {
-  //       if (containerRef.current)
-  //         containerRef.current.removeEventListener("scroll", handleScroll);
-  //     };
-  //   }, []);
+  useEffect(() => {
+    if (navbarSectionsRef.current)
+      setNavbarSectionsWidth(
+        navbarSectionsRef.current.getBoundingClientRect().width,
+      );
+    const handleResize = () => {
+      if (navbarSectionsRef.current)
+        setNavbarSectionsWidth(
+          navbarSectionsRef.current.getBoundingClientRect().width,
+        );
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div
@@ -61,16 +70,22 @@ export default function LandingPage() {
       <div className="flex flex-col w-full">
         <Navbar
           containerRef={containerRef}
+          navbarSectionsRef={navbarSectionsRef}
           howItWorksSectionRef={howItWorksSectionRef}
           whySectionRef={whySectionRef}
           communitySectionRef={communitySectionRef}
         ></Navbar>
-        <Header></Header>
+        <Header navbarSectionsWidth={navbarSectionsWidth}></Header>
         <HowItWorksSection
+          navbarSectionsWidth={navbarSectionsWidth}
           howItWorksSectionRef={howItWorksSectionRef}
         ></HowItWorksSection>
-        <WhySection whySectionRef={whySectionRef}></WhySection>
+        <WhySection
+          whySectionRef={whySectionRef}
+          navbarSectionsWidth={navbarSectionsWidth}
+        ></WhySection>
         <CommunitySection
+          navbarSectionsWidth={navbarSectionsWidth}
           communitySectionRef={communitySectionRef}
         ></CommunitySection>
         <FooterSection containerRef={containerRef}></FooterSection>
@@ -81,11 +96,13 @@ export default function LandingPage() {
 
 const Navbar = ({
   containerRef,
+  navbarSectionsRef,
   howItWorksSectionRef,
   whySectionRef,
   communitySectionRef,
 }: {
   containerRef: MutableRefObject<HTMLDivElement | null>;
+  navbarSectionsRef: MutableRefObject<HTMLDivElement | null>;
   howItWorksSectionRef: MutableRefObject<HTMLDivElement | null>;
   whySectionRef: MutableRefObject<HTMLDivElement | null>;
   communitySectionRef: MutableRefObject<HTMLDivElement | null>;
@@ -173,15 +190,18 @@ const Navbar = ({
   };
 
   return (
-    <div className="max-w-full w-[99.4%] flex h-[100px] items-center justify-between p-14 pb-0 fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral">
+    <div className="max-w-full w-[99.4%] flex h-[100px] items-center justify-between p-12 pb-0 fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral">
       <Image
-        className="min-w-[9px] w-[117px] select-none"
+        className="w-[117px] min-w-[117px] select-none"
         src={expandedLogo}
         height={150}
         width={117}
         alt={expandedLogo}
       ></Image>
-      <div className="flex gap-7 items-center justify-center min-w-[730px] w-max bg-secondary/30 backdrop-blur-md h-[150%] rounded-lg relative z-[200]">
+      <div
+        ref={navbarSectionsRef}
+        className="flex gap-7 mx-5 items-center justify-center max-w-[730px] flex-1 bg-secondary/30 backdrop-blur-md h-[150%] rounded-lg relative z-[200]"
+      >
         <Link
           onClick={() => handleSectionClick(sections[0])}
           className={`${currentSection === "HowItWorks" ? "underline" : ""}`}
@@ -218,54 +238,58 @@ const Navbar = ({
 
 const WhySection = ({
   whySectionRef,
+  navbarSectionsWidth,
 }: {
   whySectionRef: MutableRefObject<HTMLDivElement | null>;
+  navbarSectionsWidth: number;
 }) => {
-  //   const comparisons = [
-  //     {
-  //       name: "Transparency & Trust",
-  //       with: "Candidates get real, verified feedback from developers who have actually worked or interned at a company, improving transparency.",
-  //       without:
-  //         "Job seekers rely on unverified or scattered sources, leading to potential misinformation.",
-  //     },
-  //     {
-  //       name: "Company Culture Insights",
-  //       with: "Developers can anonymously share honest feedback about work culture, leadership, and growth opportunities.",
-  //       without:
-  //         "Companies control the narrative, making it hard for candidates to gauge real experiences before joining.",
-  //     },
-  //     {
-  //       name: "Better Career Decisions",
-  //       with: "Candidates can compare companies based on actual developer experiences, helping them choose wisely.",
-  //       without:
-  //         "Many end up in toxic workplaces or misleading roles due to lack of firsthand insights.",
-  //     },
-  //   ];
+  const [comparisonIndex, setComparisonIndex] = useState(0);
+  const comparisons = [
+    {
+      name: "Transparency & Trust",
+      with: "Candidates get real, verified feedback from developers who have actually worked or interned at a company, improving transparency.",
+      without:
+        "Job seekers rely on unverified or scattered sources, leading to potential misinformation.",
+    },
+    {
+      name: "Company Culture Insights",
+      with: "Developers can anonymously share honest feedback about work culture, leadership, and growth opportunities.",
+      without:
+        "Companies control the narrative, making it hard for candidates to gauge real experiences before joining.",
+    },
+    {
+      name: "Better Career Decisions",
+      with: "Candidates can compare companies based on actual developer experiences, helping them choose wisely.",
+      without:
+        "Many end up in toxic workplaces or misleading roles due to lack of firsthand insights.",
+    },
+  ];
   return (
     <div
       ref={whySectionRef}
       //   id="Why"
-      className="w-full mt-[150px] max-w-[730px] mx-auto flex flex-col items-center text-secondary"
+      className="mt-[150px] max-w-[730px] mx-auto flex flex-col items-center text-secondary"
+      style={{ width: navbarSectionsWidth - 3 }}
     >
       <SectionHeader headerText="Why"></SectionHeader>
-      <div className="flex justify-center items-center flex-col gap-5 relative">
-        <div className="font-SpaceGrotesk text-neutral text-[12px] flex gap-1 flex-wrap justify-center">
+      <div className="flex justify-center w-full items-center flex-col gap-5 relative">
+        <div className="font-SpaceGrotesk w-full text-neutral text-[12px] flex gap-1 flex-wrap justify-center">
           <div className="bg-secondary w-max h-[10px] flex min-w-max mt-[7px]">
             <p className="mt-[-7px]">Leet Reviews</p>
           </div>
-          <p className="w-max max-w-full">
+          <p className="w-max max-w-full text-center">
             is a community-driven app designed to help employees choose their
             next job by
           </p>
           <div className="bg-secondary w-max h-[10px] flex min-w-max mt-[7px]">
             <p className="mt-[-7px]">providing insights</p>
           </div>
-          <p className="w-max max-w-full">
+          <p className="w-max max-w-full text-center">
             into company cultures and spotlighting potential red flags to avoid
             toxic environments.
           </p>
         </div>
-        <div className="w-full max-w-[600px] bg-secondary min-h-[160px] rounded-xl flex p-3 h-max shadow-[0px_0px_69px_-13px_#141e46]">
+        <div className="w-full max-w-[600px] bg-secondary min-h-[160px] min-w-[409px] rounded-xl flex p-3 shadow-[0px_0px_69px_-13px_#141e46]">
           <div className="w-[50%] flex items-center gap-3 flex-col">
             <div className="bg-neutral flex w-[90%] min-w-[152px] p-3 items-center justify-between gap-2 font-SpaceGrotesk rounded-xl">
               <Image
@@ -284,9 +308,8 @@ const WhySection = ({
                 alt={lrLogoBlue}
               ></Image>
             </div>
-            <p className="text-neutral text-center text-sm w-[90%]">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry.
+            <p className="text-neutral px-3 text-sm w-[90%]">
+              {comparisons[comparisonIndex].without}
             </p>
           </div>
           <div className="min-h-[50%] h-[50px] my-auto mb-[20px] bg-neutral min-w-[1px] w-[1px]"></div>
@@ -308,23 +331,30 @@ const WhySection = ({
                 alt={lrLogoGreen}
               ></Image>
             </div>
-            <p className="text-neutral text-center text-sm w-[90%]">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry.
+            <p className="text-neutral px-3 text-sm w-[90%]">
+              {comparisons[comparisonIndex].with}
             </p>
           </div>
+          <Image
+            src={logo3}
+            alt={logo3}
+            width={80}
+            height={80}
+            className="max-w-[80px] select-none max-h-[80px] absolute z-10 bottom-[0px] right-[-0px]"
+          />
         </div>
-        <Image
-          src={logo3}
-          alt={logo3}
-          width={80}
-          height={80}
-          className="max-w-[80px] select-none max-h-[80px] absolute z-10 bottom-[0px] right-[20px]"
-        />
         <div className="w-full flex justify-center gap-5">
-          <div className="w-3 h-3 bg-neutral border-2 border-neutral rounded-full"></div>
-          <div className="w-3 h-3 border-2 border-neutral rounded-full"></div>
-          <div className="w-3 h-3 border-2 border-neutral rounded-full"></div>
+          {[0, 1, 2].map((index) => (
+            <button
+              key={index}
+              onClick={() => setComparisonIndex(index)}
+              className={`w-3 h-3 border-2 border-neutral rounded-full transition-all duration-500 ${
+                comparisonIndex === index
+                  ? "bg-neutral scale-125"
+                  : "bg-transparent"
+              }`}
+            ></button>
+          ))}
         </div>
       </div>
     </div>
@@ -333,12 +363,15 @@ const WhySection = ({
 
 const CommunitySection = ({
   communitySectionRef,
+  navbarSectionsWidth,
 }: {
   communitySectionRef: MutableRefObject<HTMLDivElement | null>;
+  navbarSectionsWidth: number;
 }) => {
   return (
     <div
       ref={communitySectionRef}
+      style={{ width: navbarSectionsWidth - 3 }}
       //   id="Community"
       className="w-full mt-[150px] flex flex-col items-center justify-center text-secondary"
     >
@@ -450,13 +483,15 @@ const FooterSection = ({
           />
         </div>
         <div className="w-full flex justify-between items-end mt-auto">
-          <Image
-            src={elmehdiken3ane}
-            alt={elmehdiken3ane}
-            width={120}
-            height={120}
-            className="max-w-[120px] select-none max-h-[120px]"
-          />
+          <Link href={"https://github.com/elmehdi-kenane"}>
+            <Image
+              src={elmehdiken3ane}
+              alt={elmehdiken3ane}
+              width={120}
+              height={120}
+              className="max-w-[120px] select-none max-h-[120px]"
+            />
+          </Link>
           <Image
             src={lrLogoWhite}
             alt={lrLogoWhite}
@@ -480,8 +515,10 @@ const FooterSection = ({
 
 const HowItWorksSection = ({
   howItWorksSectionRef,
+  navbarSectionsWidth,
 }: {
   howItWorksSectionRef: MutableRefObject<HTMLDivElement | null>;
+  navbarSectionsWidth: number;
 }) => {
   const features = [
     {
@@ -507,12 +544,15 @@ const HowItWorksSection = ({
       className="w-full mt-[150px] flex flex-col items-center text-secondary"
     >
       <SectionHeader headerText="How It Works?"></SectionHeader>
-      <div className="flex w-full max-w-[730px] justify-between">
+      <div
+        className="flex w-full max-w-[730px] gap-3 justify-center flex-wrap"
+        style={{ width: navbarSectionsWidth - 3 }}
+      >
         {features.map((feature) => {
           return (
             <div
               key={feature.header}
-              className="bg-neutral max-w-[318px] w-[30%] p-3 rounded-xl flex flex-col gap-1"
+              className="bg-neutral max-w-[318px] min-w-[157px] w-[30%] p-3 rounded-xl flex flex-col gap-1"
             >
               <div className="w-full flex bg-secondary gap-2 text-neutral font-SpaceGrotesk p-2 rounded-md drop-shadow-xl">
                 <Image
@@ -704,10 +744,13 @@ const ExamplePreviewFeedbackCard = ({
   );
 };
 
-const Header = () => {
+const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
   return (
-    <div className="w-full flex flex-col items-center mt-24 gap-5 text-neutral">
-      <div className="font-SpaceGrotesk text-[40px] max-w-full min-w-max font-normal flex flex-col items-center mb-10">
+    <div
+      className="w-full flex flex-col justify-center items-center mt-24 gap-5 text-neutral mx-auto"
+      style={{ width: navbarSectionsWidth - 3 }}
+    >
+      <div className="font-SpaceGrotesk text-[40px] max-lg:text-[22px] max-w-full min-w-max font-normal flex flex-col items-center mb-10">
         <div className="flex gap-2">
           <p>The Truth About Tech Jobs,</p>
           <span className="font-black flex flex-col items-center">
@@ -715,7 +758,7 @@ const Header = () => {
           </span>
         </div>
         <Image
-          className="min-w-[9px] w-[150px] select-none h-max self-end mr-7"
+          className="min-w-[9px] w-[150px] select-none h-max self-end lg:mr-7"
           src={Underline}
           height={30}
           width={150}
@@ -744,7 +787,7 @@ const Header = () => {
         >
           Browse Feedbacks
         </Link>
-        <div className="flex w-[70%] min-w-[300px] top-[500px] fixed justify-between">
+        <div className="flex w-[70%] min-w-[300px] max-lg:min-w-[715px] top-[500px] fixed justify-between">
           <Image
             src={logo1}
             alt={logo1}
