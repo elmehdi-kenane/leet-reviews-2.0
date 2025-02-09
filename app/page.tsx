@@ -3,18 +3,16 @@
 import Image from "next/image";
 import expandedLogo from "@/public/expanded-logo.svg";
 import Underline from "@/public/Underline_03.svg";
-import tanger_med_logo from "@/public/tanger_med_logo.png";
-import linkedInIcon from "@/public/LInkedInIcon.svg";
-import CompanyCityIcon from "@/public/CompanyCityIcon.svg";
-import ContractTypeIcon from "@/public/ContractTypeIcon.svg";
-import WorkLocationIcon from "@/public/WorkLocationIcon.svg";
-import ProgressCheckIcon from "@/public/ProgressCheckIcon.svg";
-import authorAvatar from "@/public/Group 26.png";
-import reactions from "@/public/reactions.svg";
+import cross_menu from "@/public/cross-menu.svg";
+import menu from "@/public/menu.svg";
 import logo1 from "@/public/logo1.svg";
 import logo2 from "@/public/logo2.svg";
+import example_1 from "@/public/example_1.svg";
+import example_2 from "@/public/example_2.svg";
+import example_3 from "@/public/example_3.svg";
 import logo3 from "@/public/logo3.svg";
-import elmehdiken3ane from "@/public/elmehdiken3ane.svg";
+import elmehdiKen3aneExpanded from "@/public/elmehdiKen3aneExpanded.svg";
+import elmehdiKen3ane from "@/public/elmehdiKen3ane.svg";
 import lrLogoWhite from "@/public/lrLogoWhite.svg";
 import goToTop from "@/public/goToTop.svg";
 import logo4 from "@/public/logo4.svg";
@@ -46,15 +44,21 @@ export default function LandingPage() {
   const communitySectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (navbarSectionsRef.current)
+    if (navbarSectionsRef.current) {
       setNavbarSectionsWidth(
         navbarSectionsRef.current.getBoundingClientRect().width,
       );
+    }
     const handleResize = () => {
-      if (navbarSectionsRef.current)
+      if (navbarSectionsRef.current) {
         setNavbarSectionsWidth(
           navbarSectionsRef.current.getBoundingClientRect().width,
         );
+        console.log(
+          "current width",
+          navbarSectionsRef.current.getBoundingClientRect().width,
+        );
+      }
     };
     window.addEventListener("resize", handleResize);
     return () => {
@@ -65,7 +69,7 @@ export default function LandingPage() {
   return (
     <div
       ref={containerRef}
-      className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 overflow-auto box-border"
+      className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 max-md:p-6 overflow-auto box-border"
     >
       <div className="flex flex-col w-full">
         <Navbar
@@ -108,6 +112,8 @@ const Navbar = ({
   communitySectionRef: MutableRefObject<HTMLDivElement | null>;
 }) => {
   const [currentSection, setCurrentSection] = useState("");
+  const [isMobileNavbarSectionsOpen, setIsMobileNavbarSectionsOpen] =
+    useState(false);
 
   const offset = 150;
 
@@ -190,49 +196,127 @@ const Navbar = ({
   };
 
   return (
-    <div className="max-w-full w-[99.4%] flex h-[100px] items-center justify-between p-12 pb-0 fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral">
-      <Image
-        className="w-[117px] min-w-[117px] select-none"
-        src={expandedLogo}
-        height={150}
-        width={117}
-        alt={expandedLogo}
-      ></Image>
+    <>
       <div
         ref={navbarSectionsRef}
-        className="flex gap-7 mx-5 items-center justify-center max-w-[730px] flex-1 bg-secondary/30 backdrop-blur-md h-[150%] rounded-lg relative z-[200]"
+        className={`max-w-full rounded-b-3xl bg-secondary/30 backdrop-blur-3xl w-[100%] justify-between md:hidden p-12 max-md:p-6 flex-col fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral transition-all duration-300 ease-in-out ${
+          isMobileNavbarSectionsOpen
+            ? "h-[320px]"
+            : "h-[70px] items-center bg-transparent"
+        }`}
       >
-        <Link
-          onClick={() => handleSectionClick(sections[0])}
-          className={`${currentSection === "HowItWorks" ? "underline" : ""}`}
-          href="#HowItWorks"
+        <div className="flex w-full justify-between">
+          <Image
+            className="w-[117px] h-[20px] min-w-[117px] select-none"
+            src={expandedLogo}
+            height={20}
+            width={117}
+            alt={expandedLogo}
+          ></Image>
+          <Image
+            className="w-[20px] min-w-[20px] select-none"
+            src={isMobileNavbarSectionsOpen === true ? cross_menu : menu}
+            height={20}
+            width={20}
+            alt={isMobileNavbarSectionsOpen === true ? cross_menu : menu}
+            onClick={() =>
+              setIsMobileNavbarSectionsOpen(!isMobileNavbarSectionsOpen)
+            }
+          ></Image>
+        </div>
+        {isMobileNavbarSectionsOpen === true && (
+          <div className="flex flex-col justify-center">
+            <div
+              className={`flex flex-col my-4 justify-center h-[160px] items-center w-full gap-5`}
+            >
+              <Link
+                onClick={() => {
+                  setIsMobileNavbarSectionsOpen(false);
+                  handleSectionClick(sections[0]);
+                }}
+                className={`${currentSection === "HowItWorks" ? "underline" : ""}`}
+                href="#HowItWorks"
+              >
+                How It Works?
+              </Link>
+              <div className="w-[10%] h-[1px] rounded-full bg-neutral"></div>
+              <Link
+                onClick={() => {
+                  setIsMobileNavbarSectionsOpen(false);
+                  handleSectionClick(sections[1]);
+                }}
+                className={`${currentSection === "Why" ? "underline" : ""}`}
+                href="#Why"
+              >
+                Why?
+              </Link>
+              <div className="w-[10%] h-[1px] rounded-full bg-neutral"></div>
+              <Link
+                onClick={() => {
+                  setIsMobileNavbarSectionsOpen(false);
+                  handleSectionClick(sections[2]);
+                }}
+                className={`${currentSection === "Community" ? "underline" : ""}`}
+                href="#Community"
+              >
+                Community
+              </Link>
+            </div>
+            <Link
+              href={"/auth/sign-up"}
+              className="p-2 border border-neutral text-center w-full rounded-md hover:bg-primary"
+            >
+              Get Started
+            </Link>
+          </div>
+        )}
+      </div>
+      <div
+        className={`max-w-full w-[99.4%] max-md:hidden flex h-[100px] items-center justify-between p-12 pb-0 fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral`}
+      >
+        <Image
+          className="w-[117px] min-w-[117px] select-none"
+          src={expandedLogo}
+          height={150}
+          width={117}
+          alt={expandedLogo}
+        ></Image>
+        <div
+          ref={navbarSectionsRef}
+          className="flex gap-7 mx-5 items-center justify-center max-w-[730px] flex-1 bg-secondary/30 backdrop-blur-md h-[150%] rounded-lg relative z-[200]"
         >
-          How It Works?
-        </Link>
-        <div className="w-1 h-1 rounded-full bg-neutral"></div>
+          <Link
+            onClick={() => handleSectionClick(sections[0])}
+            className={`${currentSection === "HowItWorks" ? "underline" : ""}`}
+            href="#HowItWorks"
+          >
+            How It Works?
+          </Link>
+          <div className="w-1 h-1 rounded-full bg-neutral"></div>
+          <Link
+            onClick={() => handleSectionClick(sections[1])}
+            className={`${currentSection === "Why" ? "underline" : ""}`}
+            href="#Why"
+          >
+            Why?
+          </Link>
+          <div className="w-1 h-1 rounded-full bg-neutral"></div>
+          <Link
+            onClick={() => handleSectionClick(sections[2])}
+            className={`${currentSection === "Community" ? "underline" : ""}`}
+            href="#Community"
+          >
+            Community
+          </Link>
+        </div>
         <Link
-          onClick={() => handleSectionClick(sections[1])}
-          className={`${currentSection === "Why" ? "underline" : ""}`}
-          href="#Why"
+          href={"/auth/sign-up"}
+          className="p-2 border max-md:hidden border-neutral rounded-md hover:bg-primary"
         >
-          Why?
-        </Link>
-        <div className="w-1 h-1 rounded-full bg-neutral"></div>
-        <Link
-          onClick={() => handleSectionClick(sections[2])}
-          className={`${currentSection === "Community" ? "underline" : ""}`}
-          href="#Community"
-        >
-          Community
+          Get Started
         </Link>
       </div>
-      <Link
-        href={"/auth/sign-up"}
-        className="p-2 border border-neutral rounded-md hover:bg-primary"
-      >
-        Get Started
-      </Link>
-    </div>
+    </>
   );
 };
 
@@ -274,23 +358,23 @@ const WhySection = ({
       <SectionHeader headerText="Why"></SectionHeader>
       <div className="flex justify-center w-full items-center flex-col gap-5 relative">
         <div className="font-SpaceGrotesk w-full text-neutral text-[12px] flex gap-1 flex-wrap justify-center">
-          <div className="bg-secondary w-max h-[10px] flex min-w-max mt-[7px]">
+          <div className="bg-secondary md:w-max h-[10px] flex min-w-max mt-[7px]">
             <p className="mt-[-7px]">Leet Reviews</p>
           </div>
-          <p className="w-max max-w-full text-center">
+          <p className="md:w-max w-full max-w-full text-center">
             is a community-driven app designed to help employees choose their
             next job by
           </p>
-          <div className="bg-secondary w-max h-[10px] flex min-w-max mt-[7px]">
+          <div className="bg-secondary md:w-max h-[10px] flex min-w-max mt-[7px]">
             <p className="mt-[-7px]">providing insights</p>
           </div>
-          <p className="w-max max-w-full text-center">
+          <p className="md:w-max w-full max-w-full text-center">
             into company cultures and spotlighting potential red flags to avoid
             toxic environments.
           </p>
         </div>
-        <div className="w-full max-w-[600px] bg-secondary min-h-[160px] min-w-[409px] rounded-xl flex p-3 shadow-[0px_0px_69px_-13px_#141e46]">
-          <div className="w-[50%] flex items-center gap-3 flex-col">
+        <div className="w-full max-w-[600px] bg-secondary min-h-[160px] sm:min-w-[409px] rounded-xl flex max-md:flex-col p-3 shadow-[0px_0px_69px_-13px_#141e46]">
+          <div className="md:w-[50%] max-md:h-[160px] max-md:w-full flex items-center gap-3 flex-col">
             <div className="bg-neutral flex w-[90%] min-w-[152px] p-3 items-center justify-between gap-2 font-SpaceGrotesk rounded-xl">
               <Image
                 className="min-w-[20px] min-h-[20px] w-[20px] h-[20px] select-none"
@@ -308,12 +392,12 @@ const WhySection = ({
                 alt={lrLogoBlue}
               ></Image>
             </div>
-            <p className="text-neutral px-3 text-sm w-[90%]">
+            <p className="text-neutral max-md:text-center px-3 text-sm w-[90%]">
               {comparisons[comparisonIndex].without}
             </p>
           </div>
-          <div className="min-h-[50%] h-[50px] my-auto mb-[20px] bg-neutral min-w-[1px] w-[1px]"></div>
-          <div className="w-[50%] flex items-center gap-3 flex-col">
+          <div className="md:min-h-[50%] md:h-[50px] max-md:hidden my-auto mb-[20px] bg-neutral min-w-[1px] max-md:h-[1px] max-md:w-[50%] w-[1px] max-md:my-5 mx-auto"></div>
+          <div className="md:w-[50%] max-md:h-[160px] max-md:w-full flex items-center gap-3 flex-col">
             <div className="bg-neutral flex w-[90%] min-w-[152px] p-3 items-center justify-between gap-2 font-SpaceGrotesk rounded-xl">
               <Image
                 className="min-w-[20px] min-h-[20px] w-[20px] h-[20px] select-none"
@@ -331,7 +415,7 @@ const WhySection = ({
                 alt={lrLogoGreen}
               ></Image>
             </div>
-            <p className="text-neutral px-3 text-sm w-[90%]">
+            <p className="text-neutral max-md:text-center px-3 text-sm w-[90%]">
               {comparisons[comparisonIndex].with}
             </p>
           </div>
@@ -373,10 +457,10 @@ const CommunitySection = ({
       ref={communitySectionRef}
       style={{ width: navbarSectionsWidth - 3 }}
       //   id="Community"
-      className="w-full mt-[150px] flex flex-col items-center justify-center text-secondary"
+      className="w-full mt-[150px] flex flex-col items-center justify-center text-secondary mx-auto"
     >
       <SectionHeader headerText="Community"></SectionHeader>
-      <div className="font-SpaceGrotesk text-neutral text-[12px] flex flex-col gap-1 flex-wrap justify-center items-center">
+      <div className="font-SpaceGrotesk text-neutral text-[12px] flex flex-col gap-1 flex-wrap justify-center items-center max-md:text-center">
         <p>
           Connect with like-minded professionals, share insights, and stay
           ahead.
@@ -422,7 +506,7 @@ const FooterSection = ({
 
   return (
     <div className="flex justify-center flex-col mx-auto items-center mt-[300px] w-full">
-      <div className="flex justify-center w-max flex-col ">
+      <div className="flex justify-center w-max flex-col max-sm:w-full">
         <Image
           className="min-w-[9px] w-[20px] select-none ml-auto"
           src={asset3}
@@ -430,8 +514,8 @@ const FooterSection = ({
           width={20}
           alt={asset3}
         ></Image>
-        <div className="w-max h-[10px] flex min-w-max mt-[24px] bg-gradient-to-t from-[#141e46] to-transparent">
-          <p className="text-neutral font-SpaceGrotesk font-semibold text-[30px] mt-[-24px]">
+        <div className="w-max max-md:w-full max-md:bg-transparent max-md:min-w-full h-[10px] flex min-w-max mt-[24px] bg-gradient-to-t md:from-[#141e46] md:to-transparent">
+          <p className="text-neutral font-SpaceGrotesk font-semibold text-[30px] mt-[-24px] w-full text-center">
             Ready to make smarter career moves?
           </p>
         </div>
@@ -445,7 +529,7 @@ const FooterSection = ({
       </div>
       <div>
         <Image
-          className="min-w-[9px] w-[45px] select-none ml-auto mt-[10px] mr-[-45px]"
+          className="min-w-[9px] w-[45px] select-none ml-auto mt-[10px] max-md:mt-[80px] mr-[-45px]"
           src={asset5}
           height={45}
           width={45}
@@ -482,14 +566,21 @@ const FooterSection = ({
             className="max-w-[80px] select-none max-h-[80px]"
           />
         </div>
-        <div className="w-full flex justify-between items-end mt-auto">
+        <div className="w-full flex justify-between items-end max-md:items-center mt-auto">
           <Link href={"https://github.com/elmehdi-kenane"}>
             <Image
-              src={elmehdiken3ane}
-              alt={elmehdiken3ane}
+              src={elmehdiKen3aneExpanded}
+              alt={elmehdiKen3aneExpanded}
               width={120}
-              height={120}
-              className="max-w-[120px] select-none max-h-[120px]"
+              height={30}
+              className="max-w-[120px] max-md:hidden select-none max-h-[120px] h-[30px]"
+            />
+            <Image
+              src={elmehdiKen3ane}
+              alt={elmehdiKen3ane}
+              width={75}
+              height={30}
+              className="md:hidden select-none max-h-[120px] h-[30px]"
             />
           </Link>
           <Image
@@ -611,183 +702,88 @@ const SectionHeader = ({ headerText }: { headerText: string }) => {
   );
 };
 
-const ExamplePreviewFeedbackCard = ({
-  rotation,
-  index,
-}: {
-  rotation: number;
-  index: number;
-}) => {
-  const circleRadius = 10;
-  return (
-    <div
-      className={`w-[300px] select-none flex flex-col gap-3 items-start ${index === 1 ? "left-[150px] z-[11]" : index === 3 ? "right-[150px] z-[12]" : "z-[13]"} justify-between relative mt-20 h-[250px] border-[3px] border-secondary bg-neutral rounded-3xl p-3`}
-      style={{ transform: `rotate(${rotation}deg)` }}
-    >
-      <div className="w-full flex items-center justify-between">
-        <div className="flex justify-start items-end rounded-full select-none">
-          <Image
-            src={tanger_med_logo}
-            alt={`${tanger_med_logo}`}
-            width={60}
-            height={60}
-            className="rounded-full bg-secondary min-w-[60px] min-h-[60px] max-w-[60px] max-h-[60px]"
-          />
-          <div
-            className={`w-[${circleRadius * 2}] h-[${
-              circleRadius * 2
-            }]  ml-[-20px] -mb-2`}
-          >
-            <Image
-              src={"/Good.svg"}
-              alt={"/Good.svg"}
-              width={15}
-              height={15}
-              className="ml-[2.5px] mb-[-18px] relative z-[9]"
-            />
-            <svg
-              width={circleRadius * 2}
-              height={circleRadius * 2}
-              xmlns="http://www.w3.org/2000/svg"
-              // className="border border-[blue]"
-            >
-              <circle
-                r={circleRadius}
-                cx={circleRadius}
-                cy={circleRadius}
-                fill="#FFF5E0"
-              />
-            </svg>
-          </div>
-          <div className="flex-1 font-SpaceGrotesk ml-2 my-auto">
-            <div className="flex h-max items-start gap-1 text-secondary">
-              <p className="text-[10px] font-semibold">Tanger Med</p>
-              <div className="w-[20px]">
-                <Image
-                  src={linkedInIcon}
-                  alt={`${linkedInIcon}`}
-                  width={17}
-                  height={17}
-                  className="min-w-[17px] min-h-[17px] max-w-[17px] max-h-[17px]"
-                />
-              </div>
-            </div>
-            <p className="text-[10px] font-normal text-secondary">
-              Software Engineer
-            </p>
-          </div>
-        </div>
-        <div className="w-[76px] h-[76px] flex justify-between flex-wrap gap-[6px] border-2 border-secondary rounded-3xl p-[8px]">
-          <div className="flex justify-center items-center p-3 bg-secondary w-[25px] h-[25px] rounded-full">
-            <Image
-              src={CompanyCityIcon}
-              alt={CompanyCityIcon}
-              width={15}
-              height={15}
-              className="max-w-[15px] max-h-[15px]"
-            />
-          </div>
-          <div className="flex justify-center items-center p-3 bg-secondary w-[25px] h-[25px] rounded-full">
-            <Image
-              src={ContractTypeIcon}
-              alt={ContractTypeIcon}
-              width={15}
-              height={15}
-              className="max-w-[15px] max-h-[15px]"
-            />
-          </div>
-          <div className="flex justify-center items-center p-3 bg-secondary w-[25px] h-[25px] rounded-full">
-            <Image
-              src={WorkLocationIcon}
-              alt={WorkLocationIcon}
-              width={15}
-              height={15}
-              className="max-w-[15px] max-h-[15px]"
-            />
-          </div>
-          <div className="flex justify-center items-center p-3 bg-secondary w-[25px] h-[25px] rounded-full">
-            <Image
-              src={ProgressCheckIcon}
-              alt={ProgressCheckIcon}
-              width={15}
-              height={15}
-              className="max-w-[15px] max-h-[15px]"
-            />
-          </div>
-        </div>
-      </div>
-      <div className="w-full">
-        <Image
-          src={authorAvatar}
-          alt={`${authorAvatar}`}
-          width={25}
-          height={25}
-          className="max-w-[25px] max-h-[25px]"
-        />
-        <div className="ml-auto w-[95%] h-15 border-2 border-secondary rounded-xl mt-[-10px] text-sm p-2">
-          <p className="blur-sm text-secondary">
-            comment comment comment xdd xdd comment comment comment xdd xdd
-          </p>
-        </div>
-      </div>
-      <div className="w-full">
-        <Image
-          src={reactions}
-          alt={reactions}
-          width={50}
-          height={50}
-          className="max-w-[50px] max-h-[50px] ml-auto"
-        />
-      </div>
-      <div className="w-[101%] absolute h-[70%] bg-gradient-to-b from-neutral/15 to-secondary/90 left-[-1px] bottom-[-1px] rounded-b-[22px]"></div>
-    </div>
-  );
-};
-
 const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
   return (
     <div
-      className="w-full flex flex-col justify-center items-center mt-24 gap-5 text-neutral mx-auto"
-      style={{ width: navbarSectionsWidth - 3 }}
+      className="w-full flex flex-col justify-center max-md:items-start items-center mt-24 gap-5 text-neutral mx-auto"
+      style={{ width: navbarSectionsWidth - 48 }}
     >
-      <div className="font-SpaceGrotesk text-[40px] max-lg:text-[22px] max-w-full min-w-max font-normal flex flex-col items-center mb-10">
-        <div className="flex gap-2">
-          <p>The Truth About Tech Jobs,</p>
-          <span className="font-black flex flex-col items-center">
+      <div className="font-SpaceGrotesk text-[40px] max-lg:text-[22px] max-md:text-[18px] max-w-full font-normal flex mx-auto max-md:flex-col max-md:justify-center items-center mb-10">
+        <p className="min-w-max mr-2">The Truth About Tech Jobs,</p>
+        <div className="flex w-max flex-col gap-[6px] max-md:gap-1 flex-wrap mt-3 max-md:mt-3">
+          <span className="font-black flex flex-col items-center self-center">
             Unlocked.
           </span>
+          <Image
+            className="min-w-[9px] w-[150px] max-lg:w-[105px] select-none h-max self-end lg:mr-7"
+            src={Underline}
+            height={30}
+            width={150}
+            alt={Underline}
+          ></Image>
         </div>
-        <Image
-          className="min-w-[9px] w-[150px] select-none h-max self-end lg:mr-7"
-          src={Underline}
-          height={30}
-          width={150}
-          alt={Underline}
-        ></Image>
       </div>
-      <div className="relative flex justify-center flex-col items-center">
-        <div className="min-w-[400px] absolute min-h-[200px] top-0 z-[10] bg-primary rounded-t-full blur-md"></div>
-        <div className="flex">
-          <ExamplePreviewFeedbackCard
-            rotation={-12}
-            index={1}
-          ></ExamplePreviewFeedbackCard>
-          <ExamplePreviewFeedbackCard
-            rotation={5}
-            index={2}
-          ></ExamplePreviewFeedbackCard>
-          <ExamplePreviewFeedbackCard
-            rotation={15}
-            index={3}
-          ></ExamplePreviewFeedbackCard>
+      <div className="relative flex justify-center flex-col items-center mx-auto">
+        <div className="w-[400px] max-md:w-[200px] min-h-[200px] max-md:min-h-[100px] top-0 left-0 right-0 z-[10] bg-primary rounded-t-full blur-md"></div>
+        <div className="flex mt-[-70px] md:hidden">
+          <Image
+            src={example_1}
+            alt={example_1}
+            width={100}
+            height={100}
+            style={{ transform: `rotate(${-12}deg)` }}
+            className="md:rounded-[35px] max-md:max-w-[100px] z-[11] select-none max-md:max-h-[100px] mr-[-50px]"
+          />
+          <Image
+            src={example_2}
+            alt={example_2}
+            width={100}
+            height={100}
+            style={{ transform: `rotate(${5}deg)` }}
+            className="md:rounded-[35px] max-md:max-w-[100px] z-[13] select-none max-md:max-h-[100px]"
+          />
+          <Image
+            src={example_3}
+            alt={example_3}
+            width={100}
+            height={100}
+            style={{ transform: `rotate(${15}deg)` }}
+            className="md:rounded-[35px] max-md:max-w-[100px] z-[12] select-none max-md:max-h-[100px] ml-[-50px]"
+          />
+        </div>
+        <div className="flex mt-[-130px] max-md:hidden">
+          <Image
+            src={example_1}
+            alt={example_1}
+            width={400}
+            height={400}
+            style={{ transform: `rotate(${-12}deg)` }}
+            className="md:rounded-[35px] max-md:max-w-[400px] z-[11] select-none max-md:max-h-[400px] ml-[-50px]"
+          />
+          <Image
+            src={example_2}
+            alt={example_2}
+            width={400}
+            height={400}
+            style={{ transform: `rotate(${5}deg)` }}
+            className="md:rounded-[35px] max-md:max-w-[400px] z-[13] select-none max-md:max-h-[400px] ml-[-200px]"
+          />
+          <Image
+            src={example_3}
+            alt={example_3}
+            width={400}
+            height={400}
+            style={{ transform: `rotate(${15}deg)` }}
+            className="md:rounded-[35px] max-md:max-w-[400px] z-[12] select-none max-md:max-h-[400px] ml-[-180px]"
+          />
         </div>
         <Link
           href={"/auth/sign-up"}
-          className="bg-primary p-3 border-2 absolute z-[14] bottom-[-40px] transition-transform duration-500 transform hover:scale-[1.05] border-neutral rounded-xl text-neutral font-SpaceGrotesk"
+          className="bg-primary p-3 border-2 absolute z-[14] bottom-[-40px] left-0 right-0 mx-auto max-md:min-w-max w-max transition-transform duration-500 transform hover:scale-[1.05] border-neutral rounded-xl text-neutral font-SpaceGrotesk"
         >
           Browse Feedbacks
         </Link>
-        <div className="flex w-[70%] min-w-[300px] max-lg:min-w-[715px] top-[500px] fixed justify-between">
+        <div className="flex w-[70%] min-w-[300px] lg:min-w-[715px] top-[500px] max-md:top-[400px] fixed justify-between">
           <Image
             src={logo1}
             alt={logo1}
