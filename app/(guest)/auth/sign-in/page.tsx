@@ -56,16 +56,16 @@ export default function SignIn() {
           className="max-w-[150px] select-none max-h-[150px] mt-20 mb-32"
         />
       </Link>
-      <div className="flex relative mb-10">
+      <div className="flex relative mb-10 max-sm:w-full">
         <Image
           src={asset7}
           alt={asset7}
           width={80}
           height={80}
-          className="max-w-[80px] select-none max-h-[80px]  absolute ml-[-40px] bottom-[-20px]"
+          className="max-w-[80px] select-none max-h-[80px]  absolute ml-[-40px] max-sm:ml-[0px] bottom-[-20px]"
         />
-        <div className="p-10 bg-neutral rounded-3xl text-secondary flex gap-10 flex-col w-[400px] select-none">
-          <p className="font-SpaceGrotesk font-bold text-[35px] text-center">
+        <div className="p-10 bg-neutral rounded-3xl text-secondary flex max-sm:gap-5 gap-10 flex-col max-sm:w-[90%] w-[400px] mx-auto select-none">
+          <p className="font-SpaceGrotesk font-bold text-[35px] max-sm:text-[25px] text-center">
             Welcome Back!
           </p>
           <div className="flex flex-col gap-3 items-center w-full">
@@ -76,7 +76,7 @@ export default function SignIn() {
                   onMouseLeave={() => setHoveredIndex(null)}
                   key={option.provider}
                   href={option.href}
-                  className="flex gap-3 shadow-[0_5px_20px_5px_rgba(0,0,0,0.25)] justify-center items-center w-full bg-secondary border-2 border-secondary hover:bg-neutral hover:text-secondary text-neutral rounded-xl p-2 font-SpaceGrotesk font-semibold transition-colors duration-300"
+                  className="flex gap-3 max-sm:text-[12px] shadow-[0_5px_20px_5px_rgba(0,0,0,0.25)] justify-center items-center w-full bg-secondary border-2 border-secondary hover:bg-neutral hover:text-secondary text-neutral rounded-xl p-2 font-SpaceGrotesk font-semibold transition-colors duration-300"
                 >
                   <p>Login with {option.provider}</p>
                   <div className="w-[40px] p-2 h-[40px] flex justify-center items-center rounded-full">
@@ -98,7 +98,7 @@ export default function SignIn() {
                 </Link>
               );
             })}
-            <p className="font-SpaceGrotesk text-sm">
+            <p className="font-SpaceGrotesk text-sm max-sm:text-[10px]">
               Don&apos;t have an account?{" "}
               <Link href={"/auth/sign-up"} className="underline font-semibold">
                 {" "}
@@ -112,12 +112,12 @@ export default function SignIn() {
           alt={asset6}
           width={80}
           height={80}
-          className="max-w-[80px] select-none max-h-[80px] absolute right-[-40px] mt-8"
+          className="max-w-[80px] select-none max-h-[80px] absolute right-[-40px] max-sm:right-[0px] mt-8"
         />
       </div>
       <Link
         href={"/"}
-        className="border-2 border-neutral rounded-xl py-3 text-neutral flex gap-10 font-SpaceGrotesk justify-center items-center flex-col w-[400px] select-none"
+        className="border-2 border-neutral max-sm:w-[90%] rounded-xl py-3 text-neutral flex gap-10 font-SpaceGrotesk justify-center items-center flex-col w-[400px] select-none"
       >
         Back Home
       </Link>

@@ -7,9 +7,9 @@ import cross_menu from "@/public/cross-menu.svg";
 import menu from "@/public/menu.svg";
 import logo1 from "@/public/logo1.svg";
 import logo2 from "@/public/logo2.svg";
-import example_1 from "@/public/example_1.svg";
-import example_2 from "@/public/example_2.svg";
-import example_3 from "@/public/example_3.svg";
+import example_1 from "@/public/example_1.png";
+import example_2 from "@/public/example_2.png";
+import example_3 from "@/public/example_3.png";
 import logo3 from "@/public/logo3.svg";
 import elmehdiKen3aneExpanded from "@/public/elmehdiKen3aneExpanded.svg";
 import elmehdiKen3ane from "@/public/elmehdiKen3ane.svg";
@@ -69,7 +69,7 @@ export default function LandingPage() {
   return (
     <div
       ref={containerRef}
-      className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 max-md:p-6 overflow-auto box-border"
+      className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 max-md:p-6 overflow-auto dark-scroll box-border"
     >
       <div className="flex flex-col w-full">
         <Navbar
@@ -724,11 +724,11 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
         </div>
       </div>
       <div className="relative flex justify-center flex-col items-center mx-auto">
-        <div className="w-[400px] max-md:w-[200px] min-h-[200px] max-md:min-h-[100px] top-0 left-0 right-0 z-[10] bg-primary rounded-t-full blur-md"></div>
+        <div className="w-[400px] max-md:w-[150px] min-h-[200px] max-md:min-h-[100px] top-0 left-0 right-0 z-[10] bg-primary rounded-t-full blur-md"></div>
         <div className="flex mt-[-70px] md:hidden">
           <Image
             src={example_1}
-            alt={example_1}
+            alt={`${example_1}`}
             width={100}
             height={100}
             style={{ transform: `rotate(${-12}deg)` }}
@@ -736,7 +736,7 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
           />
           <Image
             src={example_2}
-            alt={example_2}
+            alt={`${example_2}`}
             width={100}
             height={100}
             style={{ transform: `rotate(${5}deg)` }}
@@ -744,37 +744,37 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
           />
           <Image
             src={example_3}
-            alt={example_3}
+            alt={`${example_3}`}
             width={100}
             height={100}
             style={{ transform: `rotate(${15}deg)` }}
             className="md:rounded-[35px] max-md:max-w-[100px] z-[12] select-none max-md:max-h-[100px] ml-[-50px]"
           />
         </div>
-        <div className="flex mt-[-130px] max-md:hidden">
+        <div className="flex mt-[-130px] max-md:hidden ml-14">
           <Image
             src={example_1}
-            alt={example_1}
-            width={400}
-            height={400}
+            alt={`${example_1}`}
+            width={300}
+            height={300}
             style={{ transform: `rotate(${-12}deg)` }}
-            className="md:rounded-[35px] max-md:max-w-[400px] z-[11] select-none max-md:max-h-[400px] ml-[-50px]"
+            className="md:rounded-[35px] max-md:max-w-[300px] z-[11] select-none max-md:max-h-[300px] ml-[-50px]"
           />
           <Image
             src={example_2}
-            alt={example_2}
-            width={400}
-            height={400}
+            alt={`${example_2}`}
+            width={300}
+            height={300}
             style={{ transform: `rotate(${5}deg)` }}
-            className="md:rounded-[35px] max-md:max-w-[400px] z-[13] select-none max-md:max-h-[400px] ml-[-200px]"
+            className="md:rounded-[35px] max-md:max-w-[300px] z-[13] select-none max-md:max-h-[300px] ml-[-200px]"
           />
           <Image
             src={example_3}
-            alt={example_3}
-            width={400}
-            height={400}
+            alt={`${example_3}`}
+            width={300}
+            height={300}
             style={{ transform: `rotate(${15}deg)` }}
-            className="md:rounded-[35px] max-md:max-w-[400px] z-[12] select-none max-md:max-h-[400px] ml-[-180px]"
+            className="md:rounded-[35px] max-md:max-w-[300px] z-[12] select-none max-md:max-h-[300px] ml-[-180px]"
           />
         </div>
         <Link
