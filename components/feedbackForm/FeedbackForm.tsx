@@ -42,6 +42,7 @@ const FeedbackForm = ({
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors },
     setValue,
     watch,
@@ -81,6 +82,7 @@ const FeedbackForm = ({
   const [newFeedback, setNewFeedback] =
     useState<FeedbackInterface>(defaultNewFeedback);
   const userContext = useContext(UserContext);
+  const [isResetFields, setIsResetFields] = useState([false, false, false]);
 
   const onSubmit = async (data: FormDataRhf) => {
     const finalFormDataRhf = { trustScore: totalTrustScore, ...data };
@@ -151,7 +153,7 @@ const FeedbackForm = ({
 
   const totalTrustScore = Object.values(trustScore).reduce(
     (total, score) => total + score,
-    0,
+    0
   );
 
   useEffect(() => {
@@ -266,6 +268,9 @@ const FeedbackForm = ({
         {currentStep === 2 && (
           <div className="flex flex-col w-full min-h-[390px] items-center gap-4">
             <CompanyInfosStep
+              resetField={resetField}
+              isResetFields={isResetFields}
+              setIsResetFields={setIsResetFields}
               setTrustScore={setTrustScore}
               trustScore={trustScore}
               setValue={setValue}
@@ -331,6 +336,13 @@ const FeedbackForm = ({
               <>
                 <button
                   type="button"
+                  onClick={() => {
+                    setIsResetFields((prev) =>
+                      prev.map((value, i) =>
+                        i + 2 === currentStep ? true : value
+                      )
+                    );
+                  }}
                   className={`text-gray-400 border-2 border-primary p-3 font-bold font-SpaceGrotesk rounded-md w-[130px] max-sm:min-w-full h-11 flex justify-center items-center text-primary`}
                 >
                   RESET

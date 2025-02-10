@@ -7,7 +7,7 @@ import {
   validFeedbackType,
   validExperienceRateType,
 } from "@/lib/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PublicIcon from "@/public/PublicIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import Image from "next/image";
@@ -30,6 +30,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
 
   if (type === "file") result = watch(inputName) as unknown as FileList;
   else result = watch(inputName);
+  console.log("result", result);
 
   if (type !== "file") {
     // console.log(`watch input inputName ${inputName} : '${result}'`);
@@ -64,13 +65,31 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
       ? ""
       : type === "file" && result instanceof FileList
         ? result[0]
-        : (result as string),
+        : (result as string)
   );
+  useEffect(() => {
+    setInput(
+      result === undefined
+        ? ""
+        : type === "file" && result instanceof FileList
+          ? result[0]
+          : (result as string)
+    );
+  }, [result]);
+  console.log(
+    "set input with",
+    result === undefined
+      ? ""
+      : type === "file" && result instanceof FileList
+        ? result[0]
+        : (result as string)
+  );
+
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>,
-    type: string,
+    type: string
   ) => {
     if (
       type === "file" &&
@@ -120,7 +139,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     const fetchLocations = async () => {
       const OpenCageEndpoint = "https://api.opencagedata.com/geocode/v1/json";
       const ResponsePromise = await fetch(
-        `${OpenCageEndpoint}?q=${e.target?.value}&key=${process.env.NEXT_PUBLIC_OPEN_CAGE_API_KEY}`,
+        `${OpenCageEndpoint}?q=${e.target?.value}&key=${process.env.NEXT_PUBLIC_OPEN_CAGE_API_KEY}`
       );
       const ResponseJson = await ResponsePromise.json();
       setLocationResults(ResponseJson.results);
@@ -130,7 +149,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   };
 
   const handleFilePreviewChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     // console.log("event.target.files", event.target.files);
@@ -234,7 +253,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
                               {item.formatted}
                             </button>
                           );
-                        },
+                        }
                       )
                     )}
                   </div>

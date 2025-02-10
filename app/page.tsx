@@ -177,18 +177,18 @@ const Navbar = ({
     const scrollTop = container.scrollTop;
     const containerHeight = container.clientHeight;
     let topOfSection = section.ref.current.getBoundingClientRect().top;
-    console.log(
-      `before: topOfSection ${topOfSection} scrollTop ${scrollTop} containerHeight ${containerHeight}`,
-    );
+    // console.log(
+    //   `before: topOfSection ${topOfSection} scrollTop ${scrollTop} containerHeight ${containerHeight}`,
+    // );
     if (topOfSection < 0) {
       topOfSection *= -1;
       topOfSection = scrollTop - topOfSection;
     } else if (topOfSection < scrollTop) topOfSection += scrollTop;
     else if (topOfSection > scrollTop) topOfSection += scrollTop;
     else if (topOfSection > containerHeight) topOfSection -= scrollTop;
-    console.log(
-      `after: topOfSection ${topOfSection} scrollTop ${scrollTop} containerHeight ${containerHeight}`,
-    );
+    // console.log(
+    //   `after: topOfSection ${topOfSection} scrollTop ${scrollTop} containerHeight ${containerHeight}`,
+    // );
     container.scrollTo({
       top: topOfSection - offset,
       behavior: "smooth",

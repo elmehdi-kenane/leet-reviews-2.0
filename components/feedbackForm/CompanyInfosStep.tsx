@@ -1,16 +1,19 @@
 import { FormInputFieldItem, FormDataRhf } from "@/lib/types";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { FormInputField } from "./FormField";
 import {
   UseFormRegister,
   FieldErrors,
   UseFormWatch,
   UseFormSetValue,
+  UseFormResetField,
 } from "react-hook-form";
 
 export type CompanyInfosStepProps = {
   setValue: UseFormSetValue<FormDataRhf>;
   register: UseFormRegister<FormDataRhf>;
+  resetField: UseFormResetField<FormDataRhf>;
+  isResetFields: boolean[];
   errors: FieldErrors<FormDataRhf>;
   watch: UseFormWatch<FormDataRhf>;
   setTrustScore: Dispatch<
@@ -34,6 +37,8 @@ export type CompanyInfosStepProps = {
 const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
   errors,
   register,
+  resetField,
+  isResetFields,
   setValue,
   trustScore,
   setTrustScore,
@@ -73,6 +78,22 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
       error: errors.companyLinkedIn,
     },
   ];
+  useEffect(() => {
+    if (isResetFields[0]) {
+      console.log("reset", isResetFields);
+
+      CompanyInfoFields.forEach((element) => {
+        resetField(element.name, { defaultValue: "" });
+      });
+
+      // Prevent infinite loop by resetting the state after the operation
+      //   setIsResetFields((prevState) =>
+      //     prevState.map((value, i) => (i === 0 ? false : value))
+      //   );
+    } else {
+      console.log("don't reset", isResetFields);
+    }
+  }, [isResetFields]);
   return (
     <>
       {CompanyInfoFields.map((item, index) => {
