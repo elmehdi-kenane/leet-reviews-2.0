@@ -69,7 +69,7 @@ export default function LandingPage() {
   return (
     <div
       ref={containerRef}
-      className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 max-md:p-6 overflow-auto box-border"
+      className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 max-md:p-6 overflow-y-auto overflow-x-hidden box-border"
     >
       <div className="flex flex-col w-full">
         <Navbar
@@ -167,6 +167,27 @@ const Navbar = ({
     };
   }, []);
 
+  //   useEffect(() => {
+  //     const handleClickOutside = (e: MouseEvent) => {
+  //       if (
+  //         isMobileNavbarSectionsOpen === true &&
+  //         navbarSectionsRef.current &&
+  //         !navbarSectionsRef.current.contains(e.target as Node)
+  //       ) {
+  //         console.log("close the navbar from handleClickOutside");
+  //         console.log("navbarSectionsRef.current", navbarSectionsRef.current);
+  //         console.log("e.target", e.target);
+  //         setTimeout(() => {
+  //             setIsMobileNavbarSectionsOpen(false);
+  //         }, 500);
+  //       }
+  //     };
+  //     window.addEventListener("mousedown", handleClickOutside);
+  //     return () => {
+  //       window.removeEventListener("mousedown", handleClickOutside);
+  //     };
+  //   }, [navbarSectionsRef.current, ]);
+
   const handleSectionClick = (section: {
     name: string;
     ref: MutableRefObject<HTMLDivElement | null>;
@@ -219,9 +240,11 @@ const Navbar = ({
             height={20}
             width={20}
             alt={isMobileNavbarSectionsOpen === true ? cross_menu : menu}
-            onClick={() =>
-              setIsMobileNavbarSectionsOpen(!isMobileNavbarSectionsOpen)
-            }
+            onClick={() => {
+              setIsMobileNavbarSectionsOpen((prev) => !prev);
+              if (isMobileNavbarSectionsOpen === true)
+                console.log("close the navbar");
+            }}
           ></Image>
         </div>
         {isMobileNavbarSectionsOpen === true && (
@@ -272,7 +295,8 @@ const Navbar = ({
         )}
       </div>
       <div
-        className={`max-w-full w-[99.4%] max-md:hidden flex h-[100px] items-center justify-between p-12 pb-0 fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral`}
+        className={`max-w-full w-[100%] max-md:hidden flex rounded-b-3xl h-[120px] items-center bg-secondary/30 backdrop-blur-md justify-between px-12 pb-0 fixed top-0 z-[300] left-0 right-0 font-SpaceGrotesk text-neutral`}
+        ref={navbarSectionsRef}
       >
         <Image
           className="w-[117px] min-w-[117px] select-none"
@@ -281,10 +305,7 @@ const Navbar = ({
           width={117}
           alt={expandedLogo}
         ></Image>
-        <div
-          ref={navbarSectionsRef}
-          className="flex gap-7 mx-5 items-center justify-center max-w-[730px] flex-1 bg-secondary/30 backdrop-blur-md h-[150%] rounded-lg relative z-[200]"
-        >
+        <div className="flex gap-7 mx-5 items-center justify-center max-w-[730px] flex-1 rounded-lg relative z-[200]">
           <Link
             onClick={() => handleSectionClick(sections[0])}
             className={`${currentSection === "HowItWorks" ? "underline" : ""}`}
@@ -455,7 +476,7 @@ const CommunitySection = ({
   return (
     <div
       ref={communitySectionRef}
-      style={{ width: navbarSectionsWidth - 3 }}
+      style={{ width: navbarSectionsWidth - 112 }}
       //   id="Community"
       className="w-full mt-[150px] flex flex-col items-center justify-center text-secondary mx-auto"
     >
@@ -567,13 +588,16 @@ const FooterSection = ({
           />
         </div>
         <div className="w-full flex justify-between items-end max-md:items-center mt-auto">
-          <Link href={"https://github.com/elmehdi-kenane"}>
+          <Link
+            href={"https://github.com/elmehdi-kenane"}
+            className="flex max-md:min-w-[75px] md:min-w-[120px]"
+          >
             <Image
               src={elmehdiKen3aneExpanded}
               alt={elmehdiKen3aneExpanded}
               width={120}
               height={30}
-              className="max-w-[120px] max-md:hidden select-none max-h-[120px] h-[30px]"
+              className="max-md:hidden select-none max-h-[120px] h-[30px]"
             />
             <Image
               src={elmehdiKen3ane}
@@ -586,18 +610,20 @@ const FooterSection = ({
           <Image
             src={lrLogoWhite}
             alt={lrLogoWhite}
-            width={80}
+            width={120}
             height={80}
-            className="max-w-[80px] select-none max-h-[80px]"
+            className="max-md:min-w-[75px] md:min-w-[120px] select-none max-h-[80px]"
           />
-          <Image
-            src={goToTop}
-            alt={goToTop}
-            onClick={handleScrollToTop}
-            width={30}
-            height={30}
-            className="max-w-[30px] cursor-pointer select-none max-h-[30px]"
-          />
+          <div className="max-md:min-w-[30px] md:min-w-[120px] flex justify-end">
+            <Image
+              src={goToTop}
+              alt={goToTop}
+              onClick={handleScrollToTop}
+              width={30}
+              height={30}
+              className="cursor-pointer select-none max-h-[30px]"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -703,10 +729,11 @@ const SectionHeader = ({ headerText }: { headerText: string }) => {
 };
 
 const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
+  const [isExampleHovered, setIsExampleHovered] = useState(false);
   return (
     <div
       className="w-full flex flex-col justify-center max-md:items-start items-center mt-24 gap-5 text-neutral mx-auto"
-      style={{ width: navbarSectionsWidth - 48 }}
+      style={{ width: navbarSectionsWidth - 112 }}
     >
       <div className="font-SpaceGrotesk text-[40px] max-lg:text-[22px] max-md:text-[18px] max-w-full font-normal flex mx-auto max-md:flex-col max-md:justify-center items-center mb-10">
         <p className="min-w-max mr-2">The Truth About Tech Jobs,</p>
@@ -731,7 +758,12 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
             alt={example_1}
             width={100}
             height={100}
-            style={{ transform: `rotate(${-12}deg)` }}
+            style={{
+              transform: `${isExampleHovered === true ? "rotate(3deg)" : "rotate(-12deg)"}`,
+              transition: "transform 0.3s ease-in-out",
+            }}
+            onMouseEnter={() => setIsExampleHovered(true)}
+            onMouseLeave={() => setIsExampleHovered(false)}
             className="md:rounded-[35px] max-md:max-w-[100px] z-[11] select-none max-md:max-h-[100px] mr-[-50px]"
           />
           <Image
@@ -739,7 +771,12 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
             alt={example_2}
             width={100}
             height={100}
-            style={{ transform: `rotate(${5}deg)` }}
+            style={{
+              transform: `${isExampleHovered === true ? "rotate(4deg)" : "rotate(-5deg)"}`,
+              transition: "transform 0.3s ease-in-out",
+            }}
+            onMouseEnter={() => setIsExampleHovered(true)}
+            onMouseLeave={() => setIsExampleHovered(false)}
             className="md:rounded-[35px] max-md:max-w-[100px] z-[13] select-none max-md:max-h-[100px]"
           />
           <Image
@@ -747,7 +784,12 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
             alt={example_3}
             width={100}
             height={100}
-            style={{ transform: `rotate(${15}deg)` }}
+            style={{
+              transform: `${isExampleHovered === true ? "rotate(-5deg)" : "rotate(15deg)"}`,
+              transition: "transform 0.3s ease-in-out",
+            }}
+            onMouseEnter={() => setIsExampleHovered(true)}
+            onMouseLeave={() => setIsExampleHovered(false)}
             className="md:rounded-[35px] max-md:max-w-[100px] z-[12] select-none max-md:max-h-[100px] ml-[-50px]"
           />
         </div>
@@ -757,23 +799,38 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
             alt={example_1}
             width={400}
             height={400}
-            style={{ transform: `rotate(${-12}deg)` }}
-            className="md:rounded-[35px] max-md:max-w-[400px] z-[11] select-none max-md:max-h-[400px] ml-[-50px]"
+            style={{
+              transform: `${isExampleHovered === true ? "rotate(3deg)" : "rotate(-12deg)"}`,
+              transition: "transform 0.3s ease-in-out",
+            }}
+            onMouseEnter={() => setIsExampleHovered(true)}
+            onMouseLeave={() => setIsExampleHovered(false)}
+            className="md:rounded-[35px] max-md:max-w-[400px] z-[11] select-none max-md:max-h-[400px] ml-[0px]"
           />
           <Image
             src={example_2}
             alt={example_2}
             width={400}
             height={400}
-            style={{ transform: `rotate(${5}deg)` }}
-            className="md:rounded-[35px] max-md:max-w-[400px] z-[13] select-none max-md:max-h-[400px] ml-[-200px]"
+            style={{
+              transform: `${isExampleHovered === true ? "rotate(4deg)" : "rotate(-5deg)"}`,
+              transition: "transform 0.3s ease-in-out",
+            }}
+            onMouseEnter={() => setIsExampleHovered(true)}
+            onMouseLeave={() => setIsExampleHovered(false)}
+            className="md:rounded-[35px] max-md:max-w-[400px] z-[13] select-none max-md:max-h-[400px] ml-[-150px]"
           />
           <Image
             src={example_3}
             alt={example_3}
             width={400}
             height={400}
-            style={{ transform: `rotate(${15}deg)` }}
+            style={{
+              transform: `${isExampleHovered === true ? "rotate(-5deg)" : "rotate(15deg)"}`,
+              transition: "transform 0.3s ease-in-out",
+            }}
+            onMouseEnter={() => setIsExampleHovered(true)}
+            onMouseLeave={() => setIsExampleHovered(false)}
             className="md:rounded-[35px] max-md:max-w-[400px] z-[12] select-none max-md:max-h-[400px] ml-[-180px]"
           />
         </div>
@@ -783,20 +840,20 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
         >
           Browse Feedbacks
         </Link>
-        <div className="flex w-[70%] min-w-[300px] lg:min-w-[715px] top-[500px] max-md:top-[400px] fixed justify-between">
+        <div className="flex w-[70%] min-w-[300px] lg:min-w-[715px] top-[500px] max-md:top-[400px] z-[300] fixed justify-between">
           <Image
             src={logo1}
             alt={logo1}
             width={80}
             height={80}
-            className="max-w-[80px] select-none mt-[70px] max-h-[80px]"
+            className="max-w-[80px] select-none mt-[70px] max-h-[80px] absolute z-[500]"
           />
           <Image
             src={logo2}
             alt={logo2}
             width={80}
             height={80}
-            className="max-w-[80px] select-none max-h-[80px]"
+            className="max-w-[80px] select-none max-h-[80px] absolute right-0 z-[1]"
           />
         </div>
       </div>

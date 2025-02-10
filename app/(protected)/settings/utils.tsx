@@ -338,6 +338,13 @@ export const accountsArr = [
     avatar: "/brand-github.svg",
   },
   {
+    provider: "fortyTwo",
+    username: "",
+    isLinked: false,
+    account_type: "",
+    avatar: "/42-logo.svg",
+  },
+  {
     provider: "discord",
     username: "",
     isLinked: false,
