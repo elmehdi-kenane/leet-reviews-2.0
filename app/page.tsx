@@ -5,8 +5,8 @@ import expandedLogo from "@/public/expanded-logo.svg";
 import Underline from "@/public/Underline_03.svg";
 import cross_menu from "@/public/cross-menu.svg";
 import menu from "@/public/menu.svg";
-import logo1 from "@/public/logo1.svg";
-import logo2 from "@/public/logo2.svg";
+// import logo1 from "@/public/logo1.svg";
+// import logo2 from "@/public/logo2.svg";
 import example_1 from "@/public/example_1.png";
 import example_2 from "@/public/example_2.png";
 import example_3 from "@/public/example_3.png";
@@ -69,7 +69,7 @@ export default function LandingPage() {
   return (
     <div
       ref={containerRef}
-      className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 max-md:p-6 overflow-y-auto overflow-x-hidden box-border"
+      className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat p-14 max-md:p-6 light-scroll small-scroll overflow-y-auto overflow-x-hidden box-border"
     >
       <div className="flex flex-col w-full">
         <Navbar
@@ -793,10 +793,10 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
             className="md:rounded-[35px] max-md:max-w-[100px] z-[12] select-none max-md:max-h-[100px] ml-[-50px]"
           />
         </div>
-        <div className="flex mt-[-130px] max-md:hidden ml-14">
+        <div className="flex mt-[-130px] max-md:hidden ml-[-40px]">
           <Image
             src={example_1}
-            alt={example_1}
+            alt={`${example_1}`}
             width={400}
             height={400}
             style={{
@@ -809,7 +809,7 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
           />
           <Image
             src={example_2}
-            alt={example_2}
+            alt={`${example_2}`}
             width={400}
             height={400}
             style={{
@@ -818,11 +818,11 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
             }}
             onMouseEnter={() => setIsExampleHovered(true)}
             onMouseLeave={() => setIsExampleHovered(false)}
-            className="md:rounded-[35px] max-md:max-w-[400px] z-[13] select-none max-md:max-h-[400px] ml-[-150px]"
+            className="md:rounded-[35px] max-md:max-w-[400px] z-[13] select-none max-md:max-h-[400px] ml-[-250px]"
           />
           <Image
             src={example_3}
-            alt={example_3}
+            alt={`${example_3}`}
             width={400}
             height={400}
             style={{
@@ -840,7 +840,7 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
         >
           Browse Feedbacks
         </Link>
-        <div className="flex w-[70%] min-w-[300px] lg:min-w-[715px] top-[500px] max-md:top-[400px] z-[300] fixed justify-between">
+        {/* <div className="flex w-[70%] min-w-[300px] lg:min-w-[715px] top-[500px] max-md:top-[400px] z-[300] fixed justify-between">
           <Image
             src={logo1}
             alt={logo1}
@@ -855,7 +855,7 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
             height={80}
             className="max-w-[80px] select-none max-h-[80px] absolute right-0 z-[1]"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -7,16 +7,20 @@ import {
   jobProgressTypes,
 } from "@/lib/types";
 import { FormInputField, FormSelectOptionField } from "./FormField";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import {
   UseFormRegister,
   UseFormSetValue,
   FieldErrors,
   UseFormWatch,
+  UseFormResetField,
 } from "react-hook-form";
 
 export type JobInfosStepProps = {
   register: UseFormRegister<FormDataRhf>;
+  resetField: UseFormResetField<FormDataRhf>;
+  isResetFields: boolean[];
+  setIsResetFields: Dispatch<SetStateAction<boolean[]>>;
   errors: FieldErrors<FormDataRhf>;
   setValue: UseFormSetValue<FormDataRhf>;
   setTrustScore: Dispatch<
@@ -41,6 +45,9 @@ export type JobInfosStepProps = {
 const JobInfosStep: React.FC<JobInfosStepProps> = ({
   errors,
   register,
+  resetField,
+  isResetFields,
+  setIsResetFields,
   setValue,
   setTrustScore,
   trustScore,
@@ -80,6 +87,17 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
       step: 3,
     },
   ];
+  useEffect(() => {
+    if (isResetFields[1]) {
+      resetField(jobStatusField.name, { defaultValue: "" });
+      jobInfosFields.forEach((element) => {
+        resetField(element.name, { defaultValue: undefined });
+      });
+      setIsResetFields([false, false, false]);
+    } else {
+      console.log("don't reset", isResetFields);
+    }
+  }, [isResetFields]);
   return (
     <>
       <FormInputField

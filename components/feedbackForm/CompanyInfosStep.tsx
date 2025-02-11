@@ -14,6 +14,7 @@ export type CompanyInfosStepProps = {
   register: UseFormRegister<FormDataRhf>;
   resetField: UseFormResetField<FormDataRhf>;
   isResetFields: boolean[];
+  setIsResetFields: Dispatch<SetStateAction<boolean[]>>;
   errors: FieldErrors<FormDataRhf>;
   watch: UseFormWatch<FormDataRhf>;
   setTrustScore: Dispatch<
@@ -39,6 +40,7 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
   register,
   resetField,
   isResetFields,
+  setIsResetFields,
   setValue,
   trustScore,
   setTrustScore,
@@ -80,16 +82,10 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
   ];
   useEffect(() => {
     if (isResetFields[0]) {
-      console.log("reset", isResetFields);
-
       CompanyInfoFields.forEach((element) => {
         resetField(element.name, { defaultValue: "" });
       });
-
-      // Prevent infinite loop by resetting the state after the operation
-      //   setIsResetFields((prevState) =>
-      //     prevState.map((value, i) => (i === 0 ? false : value))
-      //   );
+      setIsResetFields([false, false, false]);
     } else {
       console.log("don't reset", isResetFields);
     }

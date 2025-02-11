@@ -50,11 +50,16 @@ body {
 
 .light-scroll::-webkit-scrollbar {
   width: 7px;
-  /* margin: 0 100px; */
+  margin: 0 0px;
+}
+
+.small-scroll::-webkit-scrollbar {
+  width: 3px;
   margin: 0 0px;
 }
 .light-scroll::-webkit-scrollbar-track {
-  background: #141e46;
+  /* background: #141e46; */
+  background: transparent;
   /* margin-top: 100px; */
   margin-top: 0px;
 }

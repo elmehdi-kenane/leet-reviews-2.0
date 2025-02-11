@@ -1,13 +1,8 @@
 import { useForm, UseFormWatch } from "react-hook-form";
-import {
-  FormDataRhf,
-  experienceRateTypes,
-  FormSelectFieldItem,
-  FeedbackInterface,
-} from "@/lib/types";
-import { FormInputField, FormSelectOptionField } from "./FormField";
+import { FormDataRhf, FeedbackInterface } from "@/lib/types";
 import FeedbackTypeStep from "./FeedbackTypeStep";
 import CompanyInfosStep from "./CompanyInfosStep";
+import ExperienceInfosStep from "./ExperienceInfosStep";
 import JobInfosStep from "./JobInfosStep";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -130,15 +125,6 @@ const FeedbackForm = ({
     addNewFeedback();
   };
 
-  const experienceRate: FormSelectFieldItem = {
-    name: "experienceRate",
-    label: "Experience rate",
-    step: 4,
-    error: errors.experienceRate,
-    isRequired: true,
-    types: experienceRateTypes,
-  };
-
   const formRef = useRef<HTMLFormElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [isPopUpFeedbackFormOpen, setIsPopUpFeedbackFormOpen] = useState(false);
@@ -153,7 +139,7 @@ const FeedbackForm = ({
 
   const totalTrustScore = Object.values(trustScore).reduce(
     (total, score) => total + score,
-    0
+    0,
   );
 
   useEffect(() => {
@@ -216,7 +202,7 @@ const FeedbackForm = ({
         await handleStepValidation();
         handleSubmit(onSubmit)(e);
       }}
-      className={`relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max my-auto rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
+      className={`relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max mt-20 mb-20 rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}
     >
       {isPopUpFeedbackFormOpen && (
@@ -283,6 +269,9 @@ const FeedbackForm = ({
         {currentStep === 3 && (
           <div className="flex flex-col w-full min-h-[390px] items-center gap-4">
             <JobInfosStep
+              resetField={resetField}
+              isResetFields={isResetFields}
+              setIsResetFields={setIsResetFields}
               setTrustScore={setTrustScore}
               trustScore={trustScore}
               register={register}
@@ -293,34 +282,17 @@ const FeedbackForm = ({
           </div>
         )}
         {currentStep === 4 && (
-          <div className="flex flex-col w-full min-h-[390px] items-center gap-4">
-            <FormSelectOptionField
-              setTrustScore={setTrustScore}
-              trustScore={trustScore}
-              watch={watch}
-              name={experienceRate.name}
-              label={experienceRate.label}
-              register={register}
-              isRequired={true}
-              error={experienceRate.error}
-              setValue={setValue}
-              types={experienceRate.types}
-              currentStep={experienceRate.step}
-            ></FormSelectOptionField>
-            <FormInputField
-              setTrustScore={setTrustScore}
-              trustScore={trustScore}
-              setValue={setValue}
-              watch={watch}
-              type="text"
-              placeholder="Feedback comment"
-              label="Feedback comment"
-              inputName="authorComment"
-              isRequired={false}
-              register={register}
-              error={errors.authorComment}
-            />
-          </div>
+          <ExperienceInfosStep
+            resetField={resetField}
+            isResetFields={isResetFields}
+            setIsResetFields={setIsResetFields}
+            setTrustScore={setTrustScore}
+            trustScore={trustScore}
+            register={register}
+            errors={errors}
+            setValue={setValue}
+            watch={watch}
+          ></ExperienceInfosStep>
         )}
         {currentStep >= 5 ? (
           <MinimalPreviewFeedback
@@ -339,8 +311,8 @@ const FeedbackForm = ({
                   onClick={() => {
                     setIsResetFields((prev) =>
                       prev.map((value, i) =>
-                        i + 2 === currentStep ? true : value
-                      )
+                        i + 2 === currentStep ? true : value,
+                      ),
                     );
                   }}
                   className={`text-gray-400 border-2 border-primary p-3 font-bold font-SpaceGrotesk rounded-md w-[130px] max-sm:min-w-full h-11 flex justify-center items-center text-primary`}

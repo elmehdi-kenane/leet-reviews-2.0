@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
   const userId = result.user?.id;
   if (userId === undefined)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  console.log("formData", formData);
 
   const createAt = new Date();
   const data: FeedbackCreateInput = {
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
 
   for (const [key, value] of formData.entries()) {
     if (value instanceof File || key === "companyLogo") {
-      if (value === "undefined") {
+      if (value === "undefined" || value === "") {
         data[key] = "/DefaultCompanyLogo.svg";
       } else {
         const companyLogoFile = value as File;
