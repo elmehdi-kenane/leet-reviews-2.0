@@ -744,7 +744,7 @@ const MinimalPreviewFeedback = ({
                       onClick={(e) => {
                         item.onclick(e);
                       }}
-                      className={`p-1 w-[32px] h-[32px] justify-center  rounded-md bg-neutral flex items-center gap-1 text-secondary`}
+                      className={`p-1 w-[32px] relative h-[32px] justify-center  rounded-md bg-neutral flex items-center gap-1 text-secondary`}
                     >
                       <Image
                         className="min-w-[20px]"
@@ -753,6 +753,11 @@ const MinimalPreviewFeedback = ({
                         width={20}
                         alt={item.icon}
                       ></Image>
+                      {item.text === "Edit" && (
+                        <div className="p-1 bg-primary text-neutral absolute rounded-sm text-[7px] left-2 top-5">
+                          SOON
+                        </div>
+                      )}
                     </button>
                   </CustomizedTooltip>
                 );

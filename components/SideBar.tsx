@@ -64,12 +64,6 @@ const SideBar = () => {
         text: "Home",
         link: "/home",
       },
-      // {
-      //   icon: heartIcon,
-      //   iconFilled: heartFilledIcon,
-      //   text: "Favorites",
-      //   link: "/favorites",
-      // },
       {
         icon: notificationIcon,
         iconFilled: notificationFilledIcon,
@@ -110,10 +104,10 @@ const SideBar = () => {
           <Link
             key={index}
             href={item.link === "/profile" ? `/profile` : item.link}
-            className="w-full flex items-center justify-center"
+            className={`w-full flex items-center justify-center ${item.text === "Notifications" ? "pointer-events-none" : ""}`}
           >
             <button
-              className={`flex items-center rounded-xl gap-1 border-2 border-transparent hover:border-secondary ${
+              className={`flex items-center rounded-xl gap-1 relative border-2 border-transparent hover:border-secondary ${
                 selected === item.text && "bg-secondary"
               } w-[80%] h-[48px] p-2`}
               onClick={() => {
@@ -127,6 +121,11 @@ const SideBar = () => {
                 height={30}
                 className="mx-auto w-full h-full"
               ></Image>
+              {item.text === "Notifications" && (
+                <div className="p-1 bg-primary text-neutral absolute rounded-sm text-[7px] left-5 top-5">
+                  SOON
+                </div>
+              )}
             </button>
           </Link>
         );

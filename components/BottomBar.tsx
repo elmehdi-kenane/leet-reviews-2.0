@@ -136,11 +136,11 @@ const BottomBar = () => {
             <Link
               key={index}
               href={item.link}
-              className="w-full flex items-center justify-center"
+              className={`w-full flex items-center justify-center ${item.text === "Notifications" ? "pointer-events-none" : ""}`}
             >
               <div className="flex flex-col items-center gap-1">
                 <button
-                  className={`flex items-center rounded-xl gap-1 border-2 border-transparent hover:border-[#141E46] ${
+                  className={`flex items-center relative rounded-xl gap-1 border-2 border-transparent hover:border-[#141E46] ${
                     selected === item.text
                       ? "bg-[#141E46] scale-1 self-start"
                       : "bg-neutral"
@@ -154,6 +154,11 @@ const BottomBar = () => {
                     height={30}
                     className="mx-auto w-full h-full"
                   ></Image>
+                  {item.text === "Notifications" && (
+                    <div className="p-1 bg-primary text-neutral absolute rounded-sm text-[7px] left-5 top-5">
+                      SOON
+                    </div>
+                  )}
                 </button>
               </div>
             </Link>

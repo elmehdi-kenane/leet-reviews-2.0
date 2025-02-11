@@ -15,7 +15,6 @@ export async function POST(request: NextRequest) {
   const userId = result.user?.id;
   if (userId === undefined)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  console.log("formData", formData);
 
   const createAt = new Date();
   const data: FeedbackCreateInput = {

@@ -980,6 +980,9 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
             height={30}
             className="rounded-lg min-w-[28px] min-h-[28px] max-w-[28px] max-h-[28px] p-2"
           />
+          <div className="p-1 bg-primary text-neutral absolute rounded-sm text-[7px] left-2 top-5">
+            SOON
+          </div>
         </button>
         <button
           onClick={(e) => {
