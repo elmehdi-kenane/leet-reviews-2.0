@@ -233,7 +233,10 @@ const Navbar = () => {
         >
           Create feedback
         </button>
-        <div className="flex justify-end  select-none" ref={DropDownRef}>
+        <div
+          className="flex justify-end font-SpaceGrotesk select-none"
+          ref={DropDownRef}
+        >
           <button
             className={`border-[3px] ${isDropDownOpen === true ? "border-primary" : "border-neutral"} w-[53px] h-[53px] rounded-full flex justify-center items-center`}
             onClick={() => {
@@ -274,17 +277,19 @@ const Navbar = () => {
                   );
                 })}
               </div>
-              <div className="bg-secondary w-full h-[37px] flex items-center justify-between mt-1 rounded-md">
-                <button className="w-[30%] h-[80%] flex items-center justify-center p-1 hover:bg-primary mx-auto rounded-md">
+              <div className="w-[25px] h-[1px] bg-[white] mx-auto"></div>
+              <div className="bg-secondary w-full flex flex-col p-2 items-center justify-between mt-1 rounded-md">
+                <button className="w-[100%] flex items-center py-1 px-1 pr-3 hover:bg-primary mx-auto gap-2 rounded-md">
                   <Image
                     src={"/discord.svg"}
                     alt={"/discord.svg"}
-                    width={20}
-                    height={20}
+                    width={25}
+                    height={25}
                     className=""
                   ></Image>
+                  Join Us
                 </button>
-                <div className="w-[1px] h-[25px] bg-[white]"></div>
+                {/* <div className="w-[1px] h-[25px] bg-[white]"></div>
                 <a
                   className="w-[30%] h-[80%] flex items-center justify-center p-1 hover:bg-primary mx-auto rounded-md"
                   href="https://github.com/yel-aziz/Reviews-Leet"
@@ -296,7 +301,7 @@ const Navbar = () => {
                     height={20}
                     className=""
                   ></Image>
-                </a>
+                </a> */}
               </div>
             </div>
           )}

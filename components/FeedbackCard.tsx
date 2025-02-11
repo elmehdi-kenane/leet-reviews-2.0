@@ -326,7 +326,6 @@ const PreviewFeedbackCard = ({
       console.error("Error", error);
     }
   };
-  console.log("isProfileHovering", isProfileHovering);
 
   return (
     <div

@@ -408,6 +408,18 @@ const AccountConnections = ({
       });
       return updatedAccounts;
     });
+    // remove the 42 and github account from the list *will be added later
+    // remove the linkedIn account also (linkedin doesn't provide the username)
+    setAccounts((prev) => {
+      const updatedAccounts = prev.filter((account) => {
+        return (
+          account.provider !== "fortyTwo" &&
+          account.provider !== "github" &&
+          account.provider !== "linkedIn"
+        );
+      });
+      return updatedAccounts;
+    });
     // update with already linked accounts
     console.log("accounts", accounts);
     setAccounts((prev) => {
@@ -431,7 +443,7 @@ const AccountConnections = ({
   return (
     <div className="flex flex-col gap-5">
       <HeaderSection headerText="Linked Accounts"></HeaderSection>
-      <div className="border border-neutral p-3 flex flex-col rounded-xl">
+      <div className="border border-neutral p-3 flex flex-col rounded-xl min-h-[66px]">
         {accounts.map((account, index) => {
           return (
             <div key={account.provider}>

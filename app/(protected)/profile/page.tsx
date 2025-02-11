@@ -199,7 +199,7 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
   useEffect(() => {
     if (!router) return;
 
-    const createClickHandler = (provider: string) => {
+    const clickHandler = (provider: string) => {
       //   return (e: React.MouseEvent<HTMLButtonElement>) => {
       return () => {
         // router.push(
@@ -208,11 +208,15 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
         const account = user.accounts.find((acc) => acc.provider === provider);
         console.log(`${provider} account:`, account);
         // this is working :/ !!!!!!!!!!!!!!!!!!!!!!!
-        // if (account) {
-        //   router.push(
-        //     `https://profile.intra.42.fr/users/${account.username}`
-        //   );
-        // }
+        if (account && account.provider === "fortyTwo") {
+          router.push(`https://profile.intra.42.fr/users/${account.username}`);
+        } else if (account && account.provider === "linkedIn") {
+          console.log("account.username", account.username);
+
+          //   router.push(`https://www.linkedin.com/in/${account.username}`);
+        } else if (account && account.provider === "github") {
+          router.push(`https://github.com/${account.username}`);
+        } else console.log(`account not found`);
       };
     };
 
@@ -220,22 +224,22 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
       {
         icon: "42-logo.svg",
         provider: "fortyTwo",
-        onclick: createClickHandler("fortyTwo"),
+        onclick: clickHandler("fortyTwo"),
       },
       {
         icon: "discord.svg",
         provider: "discord",
-        onclick: createClickHandler("discord"),
+        onclick: clickHandler("discord"),
       },
       {
         icon: "brand-github.svg",
         provider: "github",
-        onclick: createClickHandler("github"),
+        onclick: clickHandler("github"),
       },
       {
         icon: "LInkedInIconLight.svg",
         provider: "linkedIn",
-        onclick: createClickHandler("linkedIn"),
+        onclick: clickHandler("linkedIn"),
       },
     ]);
   }, [router, user.accounts]);

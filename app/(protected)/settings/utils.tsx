@@ -344,13 +344,13 @@ export const accountsArr = [
     account_type: "",
     avatar: "/42-logo.svg",
   },
-  {
-    provider: "discord",
-    username: "",
-    isLinked: false,
-    account_type: "",
-    avatar: "/discord.svg",
-  },
+  //   {
+  //     provider: "discord",
+  //     username: "",
+  //     isLinked: false,
+  //     account_type: "",
+  //     avatar: "/discord.svg",
+  //   },
   {
     provider: "linkedIn",
     username: "",
