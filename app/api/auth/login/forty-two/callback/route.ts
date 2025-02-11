@@ -39,23 +39,25 @@ export async function GET(request: NextRequest) {
     });
     const fortyTwoUser: fortyTwoUser = await fortyTwoUserResponse.json();
 
-    const userId = fortyTwoUser.id.toString();
+    const accountUserId = fortyTwoUser.id.toString();
     const fortyTwoUsername = fortyTwoUser.login;
     const fortyTwoFullName = fortyTwoUser.usual_full_name;
 
-    const existingUser = await prismaClient.user.findUnique({
+    const existingUser = await prismaClient.account.findUnique({
       where: {
-        id: userId,
+        id: accountUserId,
+        account_type: "AUTH",
+        provider: "fortyTwo",
       },
     });
     if (existingUser) {
-      const session = await lucia.createSession(existingUser.id, {});
-      const sessionCookie = lucia.createSessionCookie(session.id);
-      cookies().set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes,
-      );
+      //   const session = await lucia.createSession(existingUser.userId, {});
+      //   const sessionCookie = lucia.createSessionCookie(session.id);
+      //   cookies().set(
+      //     sessionCookie.name,
+      //     sessionCookie.value,
+      //     sessionCookie.attributes
+      //   );
       return new Response(null, {
         status: 302,
         headers: {
@@ -63,18 +65,15 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-    const createAt = new Date();
     const userEmail =
       fortyTwoUser.email !== undefined ? fortyTwoUser.email : "";
-    await prismaClient.user.create({
+    const newUser = await prismaClient.user.create({
       data: {
-        id: userId,
         username: fortyTwoUsername,
         name: fortyTwoFullName,
         email: userEmail,
         avatar: fortyTwoUser.image.link,
         bio: "I'm just a chill guy",
-        createdAt: createAt,
         accountDisplayedWithFeedbacks: "fortyTwo",
       },
     });
@@ -83,14 +82,14 @@ export async function GET(request: NextRequest) {
       where: {
         provider_provider_account_id: {
           provider: "fortyTwo",
-          provider_account_id: userId,
+          provider_account_id: accountUserId,
         },
       },
     });
     if (!existingAccount) {
       await prismaClient.account.create({
         data: {
-          userId: userId,
+          userId: newUser.id,
           account_type: "AUTH",
           type: "oauth2",
           username: fortyTwoUsername,
@@ -111,7 +110,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const session = await lucia.createSession(userId, {});
+    const session = await lucia.createSession(accountUserId, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
     cookies().set(

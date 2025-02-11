@@ -37,22 +37,24 @@ export async function GET(request: NextRequest) {
       },
     });
     const githubUser: GitHubUser = await githubUserResponse.json();
-    const githubUserId = githubUser.id.toString();
+    const accountUserId = githubUser.id.toString();
     const githubUsername = githubUser.login;
     const githubFullName = githubUser.name;
-    const existingUser = await prismaClient.user.findUnique({
+    const existingUser = await prismaClient.account.findUnique({
       where: {
-        id: githubUserId,
+        id: accountUserId,
+        account_type: "AUTH",
+        provider: "fortyTwo",
       },
     });
     if (existingUser) {
-      const session = await lucia.createSession(existingUser.id, {});
-      const sessionCookie = lucia.createSessionCookie(session.id);
-      cookies().set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes,
-      );
+      //   const session = await lucia.createSession(existingUser.userId, {});
+      //   const sessionCookie = lucia.createSessionCookie(session.id);
+      //   cookies().set(
+      //     sessionCookie.name,
+      //     sessionCookie.value,
+      //     sessionCookie.attributes,
+      //   );
       return new Response(null, {
         status: 302,
         headers: {
@@ -60,17 +62,14 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-    const createAt = new Date();
     const userEmail = githubUser.email !== undefined ? githubUser.email : "";
-    await prismaClient.user.create({
+    const newUser = await prismaClient.user.create({
       data: {
-        id: githubUserId,
         username: githubUsername,
         avatar: githubUser.avatar_url,
         email: userEmail,
         name: githubFullName,
         bio: "I'm just a chill guy",
-        createdAt: createAt,
         accountDisplayedWithFeedbacks: "github",
       },
     });
@@ -79,20 +78,20 @@ export async function GET(request: NextRequest) {
       where: {
         provider_provider_account_id: {
           provider: "github",
-          provider_account_id: githubUserId,
+          provider_account_id: accountUserId,
         },
       },
     });
     if (!existingAccount) {
       await prismaClient.account.create({
         data: {
-          userId: githubUserId,
+          userId: newUser.id,
           account_type: "AUTH",
           type: "oauth2",
           username: githubUsername,
           avatar: githubUser.avatar_url,
           provider: "github",
-          provider_account_id: githubUserId,
+          provider_account_id: accountUserId,
           access_token: tokens.accessToken,
         },
       });
@@ -107,7 +106,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const session = await lucia.createSession(githubUserId, {});
+    const session = await lucia.createSession(accountUserId, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
     cookies().set(
