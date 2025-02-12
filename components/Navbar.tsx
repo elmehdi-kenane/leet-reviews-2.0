@@ -5,8 +5,8 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { useContext } from "react";
-// import { debounce } from "lodash";
+import { useContext, useCallback } from "react";
+import { debounce } from "lodash";
 import { UserContext } from "@/context/UserContext";
 import FeedbackForm from "./feedbackForm/FeedbackForm";
 import logoIcon from "@/public/logoIcon.svg";
@@ -58,6 +58,22 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutsideDropDown);
     };
   }, []);
+
+  const fetchSearchResult = async (searchTerm: string) => {
+    if (searchTerm === "") return;
+    const response = await fetch(`/api/search?searchTerm=${searchTerm}`);
+    const responseData = await response.json();
+    setSearchResults(responseData.results);
+    console.log("responseData", responseData);
+  };
+  const delay = 300;
+  const debouncedSearch = useCallback(debounce(fetchSearchResult, delay), []);
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchResults(null);
+    debouncedSearch(event.target.value);
+    setSearchInputValue(event.target.value);
+  };
+
   const router = useRouter();
   const userContext = useContext(UserContext);
   if (!userContext) {
@@ -148,20 +164,6 @@ const Navbar = () => {
     ) {
       setIsDropDownOpen(false);
     }
-  };
-  //   const fetchSearchResult = async (searchTerm: string) => {
-  //     if (searchTerm === "") return;
-  //     const response = await fetch(`/api/search?searchTerm=${searchTerm}`);
-  //     const responseData = await response.json();
-  //     setSearchResults(responseData.results);
-  //     console.log("responseData", responseData);
-  //   };
-  //   const delay = 300;
-  //   const debouncedSearch = useCallback(debounce(fetchSearchResult, delay), []);
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchResults(null);
-    // debouncedSearch(event.target.value);
-    setSearchInputValue(event.target.value);
   };
 
   const avatar = userInfo?.avatar || "/default.jpeg";
