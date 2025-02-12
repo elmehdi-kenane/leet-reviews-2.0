@@ -10,8 +10,7 @@ export const github = new GitHub(
   process.env.GITHUB_CLIENT_SECRET!,
 );
 
-const fortyTwoRedirectURI =
-  "http://localhost:3000/api/auth/login/forty-two/callback";
+const fortyTwoRedirectURI = `${process.env.DOMAIN_NAME}/api/auth/login/forty-two/callback`;
 export const fortyTwo = new FortyTwo(
   process.env.FORTY_TWO_CLIENT_ID!,
   process.env.FORTY_TWO_CLIENT_SECRET!,
@@ -21,16 +20,14 @@ export const fortyTwo = new FortyTwo(
 // ================ CONNECT-PROVIDERS ================
 export const DiscordImageBaseUrl: string =
   "https://cdn.discordapp.com/avatars" as string; // /user_id/user_avatar.png *
-const discordRedirectURI =
-  "http://localhost:3000/api/auth/connect/discord/callback";
+const discordRedirectURI = `${process.env.DOMAIN_NAME}/api/auth/connect/discord/callback`;
 export const discord = new Discord(
   process.env.DISCORD_CLIENT_ID!,
   process.env.DISCORD_CLIENT_SECRET!,
   discordRedirectURI,
 );
 
-const linkedInRedirectURI =
-  "http://localhost:3000/api/auth/connect/linkedIn/callback";
+const linkedInRedirectURI = `${process.env.DOMAIN_NAME}/api/auth/connect/linkedIn/callback`;
 export const linkedIn = new LinkedIn(
   process.env.LINKEDIN_CLIENT_ID!,
   process.env.LINKEDIN_CLIENT_SECRET!,

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "http://localhost:3000/settings",
+        Location: `${process.env.DOMAIN_NAME}/settings`,
         "Set-Cookie": [
           `auth_status=failure; Path=/; Secure; SameSite=Lax`,
           `provider=Github; Path=/; Secure; SameSite=Lax`,
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "http://localhost:3000/settings",
+        Location: `${process.env.DOMAIN_NAME}/settings`,
         "Set-Cookie": [
           `connection_status=success; Path=/; Secure; SameSite=Lax`,
           `provider=Github; Path=/; Secure; SameSite=Lax`,

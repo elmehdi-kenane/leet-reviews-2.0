@@ -601,7 +601,7 @@ const MinimalPreviewFeedback = ({
     //   | React.MouseEvent<HTMLButtonElement, MouseEvent>,
     {
       navigator.clipboard.writeText(
-        `http://localhost:3000/home?feedbackId=${feedback.id}`,
+        `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/home?feedbackId=${feedback.id}`,
       );
       toast.dismiss();
       toast.success("feedback link copied!");

@@ -298,7 +298,7 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
           className="font-SpaceGrotesk text-[12px] bg-primary p-2 rounded-lg transition-transform duration-500 transform hover:scale-[1.05] select-none"
           onClick={() => {
             navigator.clipboard.writeText(
-              `http://localhost:3000/profile?userId=${user.id}`,
+              `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/profile?userId=${user.id}`,
             );
             toast.dismiss();
             toast.success("profile link copied!", {
@@ -963,7 +963,7 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
             className="rounded-lg min-w-[28px] min-h-[28px] max-w-[28px] max-h-[28px] p-2"
             onClick={() => {
               navigator.clipboard.writeText(
-                `http://localhost:3000/home?feedbackId=${feedback.id}`,
+                `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/home?feedbackId=${feedback.id}`,
               );
               toast.dismiss();
               toast.success("feedback link copied!", {

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "http://localhost:3000/auth/sign-in",
+        Location: `${process.env.DOMAIN_NAME}/auth/sign-in`,
         "Set-Cookie": [
           `auth_status=failure; Path=/; Secure; SameSite=Lax`,
           `provider=FortyTwo; Path=/; Secure; SameSite=Lax`,
@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "http://localhost:3000/home",
+        Location: `${process.env.DOMAIN_NAME}/home`,
         "Set-Cookie": [
           `auth_status=success; Path=/; Secure; SameSite=Lax`,
           `provider=FortyTwo; Path=/; Secure; SameSite=Lax`,

@@ -491,7 +491,8 @@ const AccountDeletion = () => {
     setTimeout(async () => {
       const res = await fetch("/api/user/delete", { method: "POST" });
       toast.dismiss();
-      if (res.ok) router.push("http://localhost:3000/auth/sign-in");
+      if (res.ok)
+        router.push(`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/auth/sign-in`);
     }, 300);
   };
 
