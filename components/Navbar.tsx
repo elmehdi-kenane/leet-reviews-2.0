@@ -253,7 +253,7 @@ const Navbar = () => {
                   found
                 </p>
               ) : (
-                <div className="font-medium m-auto w-full flex flex-col gap-2">
+                <div className="font-medium m-auto w-full flex flex-col gap-2 max-h-[300px] overflow-auto dark-scroll">
                   {searchResults.map((item) => {
                     return (
                       <div
@@ -440,7 +440,7 @@ const Navbar = () => {
                 found
               </p>
             ) : (
-              <div className="font-medium m-auto w-full flex flex-col gap-2">
+              <div className="font-medium m-auto w-full flex flex-col gap-2 max-h-[300px] overflow-auto dark-scroll">
                 {searchResults.map((item) => {
                   return (
                     <div
