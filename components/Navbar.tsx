@@ -279,7 +279,10 @@ const Navbar = () => {
               </div>
               <div className="w-[25px] h-[1px] bg-[white] mx-auto"></div>
               <div className="bg-secondary w-full flex flex-col p-2 items-center justify-between mt-1 rounded-md">
-                <button className="w-[100%] flex items-center py-1 px-1 pr-3 hover:bg-primary mx-auto gap-2 rounded-md">
+                <a
+                  href="https://discord.gg/5BpBZ929"
+                  className="w-[100%] flex items-center py-1 px-1 pr-3 hover:bg-primary mx-auto gap-2 rounded-md"
+                >
                   <Image
                     src={"/discord.svg"}
                     alt={"/discord.svg"}
@@ -288,7 +291,7 @@ const Navbar = () => {
                     className=""
                   ></Image>
                   Join Us
-                </button>
+                </a>
                 {/* <div className="w-[1px] h-[25px] bg-[white]"></div>
                 <a
                   className="w-[30%] h-[80%] flex items-center justify-center p-1 hover:bg-primary mx-auto rounded-md"

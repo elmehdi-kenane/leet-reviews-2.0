@@ -21,14 +21,11 @@ export default function Home() {
       try {
         const response = await fetch("/api/feedback/get");
         const responseData = await response.json();
-        // console.log("responseData", responseData);
         userContext.setFeedbacks(responseData.feedbacks.reverse());
         if (feedbackId) {
-          console.log("feedbackId", feedbackId);
           const expandedFeedback = responseData.feedbacks.filter(
             (feedback: FeedbackInterface) => feedback.id === feedbackId,
           );
-          console.log("expandedFeedback", expandedFeedback);
           if (expandedFeedback.length === 0)
             toast.error("Feedback not found.", {
               id: "Feedback Not Found.",
@@ -85,7 +82,6 @@ const FeedbackCardSkeleton = () => {
       feedbackCardSkeletonRef.current.getBoundingClientRect().width -
         (window.innerWidth < 768 ? 30 : 80),
   );
-  console.log("feedbackCardSkeletonWidth", feedbackCardSkeletonWidth);
 
   const [isMd, setIsMd] = useState(false);
   useEffect(() => {

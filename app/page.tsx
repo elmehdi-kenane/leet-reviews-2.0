@@ -502,9 +502,12 @@ const CommunitySection = ({
               width={50}
               alt={discordAvatar}
             ></Image>
-            <button className="bg-primary p-2 rounded-md font-semibold text-lg select-none">
+            <a
+              href="https://discord.gg/5BpBZ929"
+              className="bg-primary p-2 rounded-md font-semibold text-lg select-none"
+            >
               Join Us on Discord
-            </button>
+            </a>
           </div>
         </div>
       </div>
