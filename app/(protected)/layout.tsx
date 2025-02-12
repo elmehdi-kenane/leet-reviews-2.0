@@ -6,7 +6,6 @@ import BottomBar from "@/components/BottomBar";
 import { UserProvider } from "@/context/UserContext";
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import { Metadata } from "next";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -18,27 +17,6 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
-export const metadata: Metadata = {
-  title: "Leet Reviews - Honest Workplace Feedback",
-  description:
-    "Discover and share honest workplace feedback with Leet Reviews.",
-  openGraph: {
-    type: "website",
-    url: "https://leet-reviews-2-0.vercel.app/",
-    title: "Leet Reviews - Honest Workplace Feedback",
-    description:
-      "Discover and share honest workplace feedback with Leet Reviews.",
-    images: [
-      {
-        url: "https://leet-reviews-2-0.vercel.app/og_image.png", // Replace with actual image
-        width: 1200,
-        height: 630,
-        alt: "Leet Reviews",
-      },
-    ],
-  },
-};
 
 export default async function RootLayout({
   children,
