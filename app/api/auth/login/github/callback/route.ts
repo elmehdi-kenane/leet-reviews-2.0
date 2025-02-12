@@ -40,11 +40,11 @@ export async function GET(request: NextRequest) {
     const accountUserId = githubUser.id.toString();
     const githubUsername = githubUser.login;
     const githubFullName = githubUser.name;
-    const existingUser = await prismaClient.account.findUnique({
+    const existingUser = await prismaClient.account.findFirst({
       where: {
-        id: accountUserId,
+        provider_account_id: accountUserId,
         account_type: "AUTH",
-        provider: "fortyTwo",
+        provider: "github",
       },
     });
     if (existingUser) {
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const session = await lucia.createSession(accountUserId, {});
+    const session = await lucia.createSession(newUser.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
     cookies().set(

@@ -42,22 +42,21 @@ export async function GET(request: NextRequest) {
     const accountUserId = fortyTwoUser.id.toString();
     const fortyTwoUsername = fortyTwoUser.login;
     const fortyTwoFullName = fortyTwoUser.usual_full_name;
-
-    const existingUser = await prismaClient.account.findUnique({
+    const existingUser = await prismaClient.account.findFirst({
       where: {
-        id: accountUserId,
+        provider_account_id: accountUserId,
         account_type: "AUTH",
         provider: "fortyTwo",
       },
     });
     if (existingUser) {
-      //   const session = await lucia.createSession(existingUser.userId, {});
-      //   const sessionCookie = lucia.createSessionCookie(session.id);
-      //   cookies().set(
-      //     sessionCookie.name,
-      //     sessionCookie.value,
-      //     sessionCookie.attributes
-      //   );
+      const session = await lucia.createSession(existingUser.userId, {});
+      const sessionCookie = lucia.createSessionCookie(session.id);
+      cookies().set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes,
+      );
       return new Response(null, {
         status: 302,
         headers: {
@@ -109,8 +108,7 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-
-    const session = await lucia.createSession(accountUserId, {});
+    const session = await lucia.createSession(newUser.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
     cookies().set(
