@@ -74,6 +74,22 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
           ? result[0]
           : (result as string),
     );
+    console.log(`inputName ${inputName} result ${result}`);
+    if (
+      trustScore &&
+      (result === "" || result === undefined) &&
+      !isRequired &&
+      inputName in trustScore
+    ) {
+      setTrustScore((prevState) => {
+        const newState = {
+          ...prevState,
+          [inputName]: 0,
+        };
+
+        return newState;
+      });
+    }
   }, [result]);
 
   const handleInputChange = (
@@ -92,7 +108,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     } else onChange(e);
 
     setInput(e.target?.value);
-
     if (
       trustScore &&
       (e.target?.value !== "" || type === "file") &&

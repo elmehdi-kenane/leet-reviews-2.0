@@ -468,21 +468,39 @@ const FeedbackFormHeader = ({
               viewBox={`0 0 ${svgSize} ${svgSize}`}
               className={`${totalTrustScore <= 4 ? "bg-red-400" : "bg-green-500"} rounded-full flex justify-center items-center`}
             >
-              <circle
-                cx={svgSize / 2}
-                cy={svgSize / 2 + 0.5}
-                r={trustSoreRadius + 0.7}
-                stroke="currentColor"
-                strokeWidth="3"
-                fill="none"
-                strokeDasharray={`${fullCircle + 0.1}`}
-                style={{
-                  transition: "stroke-dashoffset 1s ease-in-out",
-                  strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
-                }}
-                transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
-                strokeLinecap="round"
-              />
+              {totalTrustScore > 0 ? (
+                <circle
+                  cx={svgSize / 2}
+                  cy={svgSize / 2 + 0.5}
+                  r={trustSoreRadius + 0.7}
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeDasharray={`${fullCircle + 0.1}`}
+                  style={{
+                    transition: "stroke-dashoffset 1s ease-in-out",
+                    strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
+                  }}
+                  transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
+                  strokeLinecap="round"
+                />
+              ) : (
+                <circle
+                  cx={svgSize / 2}
+                  cy={svgSize / 2 + 0.5}
+                  r={trustSoreRadius + 0.7}
+                  stroke="currentColor"
+                  strokeWidth="0"
+                  fill="none"
+                  strokeDasharray={`${fullCircle + 0.1}`}
+                  style={{
+                    transition: "stroke-dashoffset 1s ease-in-out",
+                    strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
+                  }}
+                  transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
+                  strokeLinecap="round"
+                />
+              )}
               <text
                 x="50%"
                 y="50%"
