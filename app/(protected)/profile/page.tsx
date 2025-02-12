@@ -116,7 +116,6 @@ export default function Profile() {
   const [isUserNotFound, setIsUserNotFound] = useState(false);
 
   const userId = searchParams.get("userId");
-  console.log(`userId '${userId}'`);
 
   useEffect(() => {
     const fetchProfile = async () => {

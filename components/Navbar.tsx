@@ -6,17 +6,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
+// import { debounce } from "lodash";
 import { UserContext } from "@/context/UserContext";
 import FeedbackForm from "./feedbackForm/FeedbackForm";
 import logoIcon from "@/public/logoIcon.svg";
 
 const Navbar = () => {
   const [isSearchInputOnFocus, setIsSearchInputOnFocus] = useState(false);
-  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+  const [isSearchBarMobileOpen, setIsSearchBarMobileOpen] = useState(false);
   const [isFeedbackFormOpen, setIsFeedbackFormOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
   const searchBarRef = useRef<HTMLDivElement>(null);
+  const searchResultsRef = useRef<HTMLDivElement>(null);
   const DropDownRef = useRef<HTMLDivElement>(null);
   const inputDesktopRef = useRef<HTMLInputElement>(null);
   const inputMobileRef = useRef<HTMLInputElement>(null);
@@ -25,6 +27,15 @@ const Navbar = () => {
     useState({ top: 0, left: 0 });
   const buttonCreateFeedbackRef = useRef<HTMLButtonElement>(null);
   const [isClosingFeedbackForm, setIsClosingFeedbackForm] = useState(false);
+  type searchResultType = {
+    id: string;
+    avatar: string;
+    name: string;
+    username: string;
+  };
+  const [searchResults, setSearchResults] = useState<
+    searchResultType[] | [] | null
+  >([]);
 
   const pathname = usePathname();
   const hiddenRoutes = ["/auth/sign-in", "/auth/sign-up"];
@@ -35,9 +46,14 @@ const Navbar = () => {
   //   }
 
   useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutsideSearchBarMobile);
     document.addEventListener("mousedown", handleClickOutsideSearchBar);
     document.addEventListener("mousedown", handleClickOutsideDropDown);
     return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutsideSearchBarMobile,
+      );
       document.removeEventListener("mousedown", handleClickOutsideSearchBar);
       document.removeEventListener("mousedown", handleClickOutsideDropDown);
     };
@@ -104,15 +120,23 @@ const Navbar = () => {
     } else console.log("inputRef.current invalid");
   };
 
+  const handleClickOutsideSearchBarMobile = (event: MouseEvent) => {
+    if (
+      searchBarRef.current &&
+      !searchBarRef.current.contains(event.target as Node)
+    ) {
+      setIsSearchBarMobileOpen(false);
+    }
+  };
+
   const handleClickOutsideSearchBar = (event: MouseEvent) => {
     if (
-      searchBarRef &&
-      searchButtonRef.current &&
       searchBarRef.current &&
       !searchBarRef.current.contains(event.target as Node) &&
-      !searchButtonRef.current.contains(event.target as Node)
+      searchResultsRef.current &&
+      !searchResultsRef.current.contains(event.target as Node)
     ) {
-      setIsSearchBarOpen(false);
+      setIsSearchInputOnFocus(false);
     }
   };
 
@@ -125,14 +149,19 @@ const Navbar = () => {
       setIsDropDownOpen(false);
     }
   };
-
+  //   const fetchSearchResult = async (searchTerm: string) => {
+  //     if (searchTerm === "") return;
+  //     const response = await fetch(`/api/search?searchTerm=${searchTerm}`);
+  //     const responseData = await response.json();
+  //     setSearchResults(responseData.results);
+  //     console.log("responseData", responseData);
+  //   };
+  //   const delay = 300;
+  //   const debouncedSearch = useCallback(debounce(fetchSearchResult, delay), []);
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchResults(null);
+    // debouncedSearch(event.target.value);
     setSearchInputValue(event.target.value);
-
-    // Trigger a custom event when the search term changes
-    // window.dispatchEvent(
-    //   new CustomEvent("searchTermChange", { detail: event.target.value })
-    // );
   };
 
   const avatar = userInfo?.avatar || "/default.jpeg";
@@ -141,6 +170,9 @@ const Navbar = () => {
     <div
       className={`${isHidden === true ? "hidden" : ""} bg-secondary fixed flex flex-wrap justify-center w-full z-[10]`}
     >
+      {(isSearchInputOnFocus === true || isSearchBarMobileOpen === true) && (
+        <div className="w-full h-screen absolute bg-secondary/30 backdrop-blur-sm"></div>
+      )}
       <div className="w-full max-w-[850px] max-md:mx-2 flex items-center gap-3 max-md:gap-1 min-w-max my-3">
         <Link href={"/home"} className="mr-11 max-md:mr-auto">
           <Image
@@ -151,11 +183,9 @@ const Navbar = () => {
             alt={logoIcon}
           ></Image>
         </Link>
-        {/* <p className="mr-11 max-md:mr-auto border border-secondary w-[50px] h-[50px] text-center rounded-xl">
-          LOGO
-        </p> */}
+        {/* search-desktop-screen */}
         <div
-          className={`max-md:hidden flex rounded-xl bg-transparent flex-1 h-[50px] py-1 pl-1 border-2 ${
+          className={`max-md:hidden relative flex rounded-xl bg-transparent flex-1 h-[50px] py-1 pl-1 border-2 ${
             isSearchInputOnFocus === true ? "border-primary" : "border-neutral"
           } hover:border-2 hover:border-primary`}
           ref={searchBarRef}
@@ -184,7 +214,7 @@ const Navbar = () => {
           <input
             maxLength={inputMaxLength}
             onFocus={() => setIsSearchInputOnFocus(true)}
-            onBlur={() => setIsSearchInputOnFocus(false)}
+            // onBlur={() => setIsSearchInputOnFocus(false)}
             ref={inputDesktopRef}
             placeholder="Search"
             onChange={handleSearchChange}
@@ -205,21 +235,73 @@ const Navbar = () => {
               className={`rounded-full mr-1 select-none ${searchInputValue === "" ? "hidden" : ""}`}
             ></Image>
           </button>
+          {isSearchInputOnFocus === true && (
+            <div
+              ref={searchResultsRef}
+              className="absolute font-SpaceGrotesk top-14 w-[100.7%] ml-[-2px] bg-neutral left-0 rounded-xl min-h-16 p-1 border-2 border-primary text-secondary flex"
+            >
+              {searchInputValue === "" ? (
+                <p className="font-semibold m-auto w-max">Search For Users</p>
+              ) : searchResults === null ? (
+                <p className="font-semibold m-auto w-max">Searching...</p>
+              ) : searchResults.length === 0 ? (
+                <p className="font-normal m-auto w-max text-center">
+                  results with `
+                  <span className="font-semibold">{searchInputValue}</span>` not
+                  found
+                </p>
+              ) : (
+                <div className="font-medium m-auto w-full flex flex-col gap-2">
+                  {searchResults.map((item) => {
+                    return (
+                      <div
+                        key={item.username}
+                        onClick={() => {
+                          router.push(`/profile?userId=${item.id}`);
+                          setIsSearchInputOnFocus(false);
+                        }}
+                        className="flex w-full hover:bg-secondary items-center hover:text-neutral p-2 rounded-lg gap-2 cursor-pointer"
+                      >
+                        <Image
+                          src={item.avatar}
+                          alt={item.avatar}
+                          width={40}
+                          height={40}
+                          className="rounded-full max-h-[40px] border-2 border-primary"
+                        ></Image>
+                        <div className="flex flex-col">
+                          <p className="font-semibold">{item.name}</p>
+                          <p className="font-normal text-[12px]">
+                            {item.username}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
         </div>
+        {/* search-mobile-screen */}
         <button
-          className={`md:hidden flex justify-center items-center border-2 ${isSearchBarOpen === true ? "border-primary" : "border-neutral"} w-[50px] h-[50px] rounded-xl`}
+          className={`md:hidden flex justify-center items-center border-2 ${isSearchBarMobileOpen === true ? "border-primary" : "border-neutral"} w-[50px] h-[50px] rounded-xl`}
           ref={searchButtonRef}
           onClick={() => {
-            setIsSearchBarOpen(!isSearchBarOpen);
+            setIsSearchBarMobileOpen(true);
             handleFocusInput(inputMobileRef);
           }}
         >
           <Image
             src={`${
-              isSearchBarOpen === true ? "/searchGreen.svg" : "/searchWhite.svg"
+              isSearchBarMobileOpen === true
+                ? "/searchGreen.svg"
+                : "/searchWhite.svg"
             }`}
             alt={`${
-              isSearchBarOpen === true ? "/searchGreen.svg" : "/searchWhite.svg"
+              isSearchBarMobileOpen === true
+                ? "/searchGreen.svg"
+                : "/searchWhite.svg"
             }`}
             width={30}
             height={30}
@@ -312,30 +394,81 @@ const Navbar = () => {
       </div>
       <div
         ref={searchBarRef}
-        className={`md:hidden ${isSearchBarOpen === false && "hidden"} my-2 flex rounded-xl bg-transparent mx-2 pl-2 flex-1 w-full h-[50px] border-2 border-primary hover:border-2 hover:border-primary`}
+        className={`md:hidden ${isSearchBarMobileOpen === false && "hidden"} top-20 absolute w-[97%] flex flex-col gap-2`}
       >
-        <input
-          maxLength={inputMaxLength}
-          placeholder="Search"
-          onChange={handleSearchChange}
-          value={searchInputValue}
-          className="outline-none w-full bg-transparent text-neutral font-medium ml-2"
-          ref={inputMobileRef}
-        />
-        <button
-          onClick={() => {
-            setSearchInputValue("");
-            handleFocusInput(inputMobileRef);
-          }}
+        <div
+          className={`md:hidden ${isSearchBarMobileOpen === false && "hidden"} flex rounded-xl bg-transparent pl-2 h-[60px] w-full border-2 border-primary hover:border-2 hover:border-primary`}
         >
-          <Image
-            src={"/circleCross.svg"}
-            alt="circleCross.svg"
-            width={35}
-            height={35}
-            className={`rounded-full mr-1 ${searchInputValue === "" ? "hidden" : ""}`}
-          ></Image>
-        </button>
+          <input
+            maxLength={inputMaxLength}
+            placeholder="Search"
+            onChange={handleSearchChange}
+            value={searchInputValue}
+            className="outline-none w-full bg-transparent text-neutral font-medium ml-2"
+            ref={inputMobileRef}
+          />
+          <button
+            onClick={() => {
+              setSearchInputValue("");
+              handleFocusInput(inputMobileRef);
+            }}
+          >
+            <Image
+              src={"/circleCross.svg"}
+              alt="circleCross.svg"
+              width={35}
+              height={35}
+              className={`rounded-full mr-1 ${searchInputValue === "" ? "hidden" : ""}`}
+            ></Image>
+          </button>
+        </div>
+        {isSearchBarMobileOpen === true && (
+          <div
+            ref={searchResultsRef}
+            className="font-SpaceGrotesk bg-neutral rounded-xl min-h-16 p-1 border-2 border-primary text-secondary flex"
+          >
+            {searchInputValue === "" ? (
+              <p className="font-semibold m-auto w-max">Search For Users</p>
+            ) : searchResults === null ? (
+              <p className="font-semibold m-auto w-max">Searching...</p>
+            ) : searchResults.length === 0 ? (
+              <p className="font-normal m-auto w-max text-center">
+                results with `
+                <span className="font-semibold">{searchInputValue}</span>` not
+                found
+              </p>
+            ) : (
+              <div className="font-medium m-auto w-full flex flex-col gap-2">
+                {searchResults.map((item) => {
+                  return (
+                    <div
+                      key={item.username}
+                      onClick={() => {
+                        router.push(`/profile?userId=${item.id}`);
+                        setIsSearchInputOnFocus(false);
+                      }}
+                      className="flex w-full hover:bg-secondary items-center hover:text-neutral p-2 rounded-lg gap-2 cursor-pointer"
+                    >
+                      <Image
+                        src={item.avatar}
+                        alt={item.avatar}
+                        width={40}
+                        height={40}
+                        className="rounded-full max-h-[40px] border-2 border-primary"
+                      ></Image>
+                      <div className="flex flex-col">
+                        <p className="font-semibold">{item.name}</p>
+                        <p className="font-normal text-[12px]">
+                          {item.username}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
       {isFeedbackFormOpen && (
         <div className="absolute w-full h-screen flex bg-white/30 backdrop-blur-sm justify-center py-5">
