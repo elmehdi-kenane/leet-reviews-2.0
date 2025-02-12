@@ -48,13 +48,13 @@ export async function GET(request: NextRequest) {
       },
     });
     if (existingUser) {
-      //   const session = await lucia.createSession(existingUser.userId, {});
-      //   const sessionCookie = lucia.createSessionCookie(session.id);
-      //   cookies().set(
-      //     sessionCookie.name,
-      //     sessionCookie.value,
-      //     sessionCookie.attributes,
-      //   );
+      const session = await lucia.createSession(existingUser.userId, {});
+      const sessionCookie = lucia.createSessionCookie(session.id);
+      cookies().set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes,
+      );
       return new Response(null, {
         status: 302,
         headers: {

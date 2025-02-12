@@ -839,7 +839,7 @@ const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
         </div>
         <Link
           href={"/auth/sign-up"}
-          className="bg-primary p-3 border-2 absolute z-[14] bottom-[-40px] left-0 right-0 mx-auto max-md:min-w-max w-max transition-transform duration-500 transform hover:scale-[1.05] border-neutral rounded-xl text-neutral font-SpaceGrotesk"
+          className="bg-primary cursor-pointer p-3 border-2 absolute z-[14] bottom-[-40px] left-0 right-0 mx-auto max-md:min-w-max w-max transition-transform duration-500 transform hover:scale-[1.05] border-neutral rounded-xl text-neutral font-SpaceGrotesk"
         >
           Browse Feedbacks
         </Link>

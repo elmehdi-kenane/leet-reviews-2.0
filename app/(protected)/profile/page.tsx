@@ -1130,50 +1130,38 @@ const CommentsAndVotesWrapper = ({
               />
             </button>
           </div>
+        ) : (selectedBtn === 1 && comments.length === 0) ||
+          (selectedBtn === 2 && votes.length === 0) ? (
+          <div className="min-w-max h-max my-auto text-secondary bg-[red] font-SpaceGrotesk font-semibold text-lg flex flex-col items-center gap-3">
+            <p>No {selectedBtn === 1 ? "comments" : "votes"} available.</p>
+            <button
+              onClick={() => router.push(`/home`)}
+              className="bg-secondary text-neutral p-2 rounded-lg hover:bg-primary flex items-center gap-1 transition-transform select-none duration-500 transform hover:scale-[1.05]"
+            >
+              <p>explore feedbacks</p>
+              <Image
+                src={exploreArrow}
+                alt={exploreArrow}
+                width={25}
+                height={25}
+                className=""
+              />
+            </button>
+          </div>
         ) : (
-          ((selectedBtn === 1 && comments.length === 0) ||
-            (selectedBtn === 2 && votes.length === 0)) && (
-            <div className="min-w-max h-max my-auto text-secondary font-SpaceGrotesk font-semibold text-lg flex flex-col items-center gap-3">
-              <p>No {selectedBtn === 1 ? "comments" : "votes"} available.</p>
-              <button
-                onClick={() => router.push(`/home`)}
-                className="bg-secondary text-neutral p-2 rounded-lg hover:bg-primary flex items-center gap-1 transition-transform select-none duration-500 transform hover:scale-[1.05]"
-              >
-                <p>explore feedbacks</p>
-                <Image
-                  src={exploreArrow}
-                  alt={exploreArrow}
-                  width={25}
-                  height={25}
-                  className=""
-                />
-              </button>
-            </div>
-          )
-        )}
-        {((selectedBtn === 1 && comments.length > 0) ||
-          (selectedBtn === 2 && votes.length > 0)) && (
           <div
-            className={`${isOverflowing === true ? "w-[97.5%] pl-0 pr-[9px]" : "w-full"} mx-auto h-[95%] my-auto text-secondary flex flex-col gap-2 p-2 overflow-y-auto dark-scroll font-SpaceGrotesk`}
+            className={`${
+              isOverflowing ? "w-[97.5%] pl-0 pr-[9px]" : "w-full"
+            } mx-auto h-[95%] my-auto text-secondary flex flex-col gap-2 p-2 overflow-y-auto dark-scroll font-SpaceGrotesk`}
             ref={containerRef}
           >
             {selectedBtn === 1
-              ? comments.map((comment) => {
-                  return (
-                    <CommentProfileCard
-                      key={comment.id}
-                      comment={comment}
-                    ></CommentProfileCard>
-                  );
-                })
-              : votes.map((vote) => {
-                  return (
-                    <VoteProfileCard
-                      key={vote.id}
-                      vote={vote}
-                    ></VoteProfileCard>
-                  );
-                })}
+              ? comments.map((comment) => (
+                  <CommentProfileCard key={comment.id} comment={comment} />
+                ))
+              : votes.map((vote) => (
+                  <VoteProfileCard key={vote.id} vote={vote} />
+                ))}
           </div>
         )}
       </div>
