@@ -6,6 +6,7 @@ import BottomBar from "@/components/BottomBar";
 import { UserProvider } from "@/context/UserContext";
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
+import Head from "next/head";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -36,6 +37,19 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <Head>
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://leetreviews.com/" />
+        <meta
+          property="og:title"
+          content="Leet Reviews - Honest Workplace Feedback"
+        />
+        <meta
+          property="og:description"
+          content="Discover and share honest workplace feedback with Leet Reviews."
+        />
+        <meta property="og:image" content="https://leetreviews.com/_.jpeg" />
+      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[url('/bg.svg')] bg-cover bg-center bg-no-repeat text-neutral w-full h-screen flex flex-col`}
       >
