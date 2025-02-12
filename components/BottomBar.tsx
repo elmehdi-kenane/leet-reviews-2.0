@@ -155,7 +155,7 @@ const BottomBar = () => {
                     className="mx-auto w-full h-full"
                   ></Image>
                   {item.text === "Notifications" && (
-                    <div className="p-1 bg-primary text-neutral absolute rounded-sm text-[7px] left-5 top-5">
+                    <div className="p-1 bg-primary text-neutral absolute rounded-md text-[7px] left-5 top-5">
                       SOON
                     </div>
                   )}

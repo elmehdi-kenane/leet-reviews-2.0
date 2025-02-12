@@ -772,7 +772,7 @@ const MinimalPreviewFeedback = ({
                         alt={item.icon}
                       ></Image>
                       {item.text === "Edit" && (
-                        <div className="p-1 bg-primary text-neutral absolute rounded-sm text-[7px] left-2 top-5">
+                        <div className="p-1 bg-primary text-neutral absolute rounded-md text-[7px] left-2 top-5">
                           SOON
                         </div>
                       )}
