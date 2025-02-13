@@ -25,7 +25,7 @@ export const metadata: Metadata = {
       "Discover and share honest workplace feedback with Leet Reviews.",
     images: [
       {
-        url: "https://leet-reviews-2-0.vercel.app/og_image.png", // Replace with actual image
+        url: "https://leet-reviews-2-0.vercel.app/og_tag_image.png", // Replace with actual image
         width: 1200,
         height: 630,
         alt: "Leet Reviews",
