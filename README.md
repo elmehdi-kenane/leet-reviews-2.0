@@ -17,8 +17,8 @@ We've made significant improvements and added new features to enhance your exper
 - 🔒 **Anonymous Review Option** to share your thoughts securely.
 - 📊 **Trust Score** helping users evaluate workplace reliability and transparency.
 
-### _[Leet Reviews](https://leet-reviews-2-0.vercel.app/) - Check it out now!_
-
 ## 🌟 Support
 
 If you like this project, give it a ⭐ on GitHub and share it with others!
+
+### _[Leet Reviews](https://leet-reviews-2-0.vercel.app/) - Check it out now!_
