@@ -47,13 +47,16 @@ export default function SignIn() {
 
   return (
     <div className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat flex items-center flex-col overflow-y-auto">
-      <Link href={"/"}>
+      <Link
+        href={"/"}
+        className=" flex-1 flex items-center justify-center max-h-[250px] min-h-[70px]"
+      >
         <Image
           src={lrLogoWhite}
           alt={lrLogoWhite}
           width={150}
           height={150}
-          className="max-w-[150px] select-none max-h-[150px] mt-20 mb-32"
+          className="max-w-[150px] select-none max-h-[150px]"
         />
       </Link>
       <div className="flex relative mb-10 max-sm:w-full">
@@ -117,7 +120,7 @@ export default function SignIn() {
       </div>
       <Link
         href={"/"}
-        className="border-2 border-neutral max-sm:w-[90%] rounded-xl py-3 text-neutral flex gap-10 font-SpaceGrotesk justify-center items-center flex-col w-[400px] select-none"
+        className="border-2 border-neutral max-sm:w-[90%] rounded-xl py-3 text-neutral flex gap-10 font-SpaceGrotesk justify-center items-center flex-col w-[400px] select-none mb-5"
       >
         Back Home
       </Link>
