@@ -87,7 +87,6 @@ export async function GET(request: NextRequest) {
         status: 400,
       });
     }
-    console.log(e);
 
     return new Response(null, {
       status: 500,

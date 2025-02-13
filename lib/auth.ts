@@ -74,7 +74,6 @@ export const validateRequest = cache(
         );
       }
     } catch {}
-    // console.log("result", result);
     return result;
   },
 );

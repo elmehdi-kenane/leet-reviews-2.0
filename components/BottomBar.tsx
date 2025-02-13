@@ -91,10 +91,6 @@ const BottomBar = () => {
   const [selected, setSelected] = useState("");
 
   useEffect(() => {
-    // console.log("fullPath", fullPath);
-    // console.log("userInfo?.id", userInfo?.id);
-    // console.log("buttons", buttons);
-
     const activeButton = buttons.find((button) => button.link === fullPath);
     if (activeButton) {
       setSelected(activeButton.text);

@@ -86,8 +86,6 @@ const CompanyInfosStep: React.FC<CompanyInfosStepProps> = ({
         resetField(element.name, { defaultValue: "" });
       });
       setIsResetFields([false, false, false]);
-    } else {
-      console.log("don't reset", isResetFields);
     }
   }, [isResetFields]);
   return (

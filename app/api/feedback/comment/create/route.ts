@@ -32,7 +32,6 @@ export async function POST(request: NextRequest) {
       },
     },
   });
-  console.log("newComment", newComment);
 
   return NextResponse.json({ newComment: newComment });
 }

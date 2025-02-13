@@ -42,7 +42,6 @@ export async function GET(request: NextRequest) {
       },
     );
     const linkedInUser: linkedInUser = await linkedInUserResponse.json();
-    console.log("linkedInUser", linkedInUser);
     const existingAccount = await prismaClient.account.findUnique({
       where: {
         provider_provider_account_id: {
@@ -96,7 +95,6 @@ export async function GET(request: NextRequest) {
         status: 400,
       });
     }
-    console.log(e);
 
     return new Response(null, {
       status: 500,

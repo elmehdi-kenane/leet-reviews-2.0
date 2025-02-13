@@ -94,8 +94,6 @@ const JobInfosStep: React.FC<JobInfosStepProps> = ({
         resetField(element.name, { defaultValue: undefined });
       });
       setIsResetFields([false, false, false]);
-    } else {
-      console.log("don't reset", isResetFields);
     }
   }, [isResetFields]);
   return (

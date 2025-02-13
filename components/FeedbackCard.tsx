@@ -264,19 +264,17 @@ const PreviewFeedbackCard = ({
         top: rect.top,
         left: rect.left,
       });
-    } else console.log("PreviewFeedbackCardPosition not setted");
+    }
   };
 
   const createVote = async (feedbackId: string, isUp: boolean) => {
     try {
-      const response = await fetch(
+      await fetch(
         `/api/feedback/vote/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
         {
           method: "POST",
         },
       );
-      const data = await response.json();
-      console.log(data);
     } catch (error) {
       console.error("Error", error);
     }
@@ -284,14 +282,12 @@ const PreviewFeedbackCard = ({
 
   const createSave = async (feedbackId: string) => {
     try {
-      const response = await fetch(
+      await fetch(
         `/api/feedback/save/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
         {
           method: "POST",
         },
       );
-      const data = await response.json();
-      console.log(data);
     } catch (error) {
       console.error("Error", error);
     }
@@ -299,14 +295,12 @@ const PreviewFeedbackCard = ({
 
   const deleteSave = async (feedbackId: string) => {
     try {
-      const response = await fetch(
+      await fetch(
         `/api/feedback/save/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
         {
           method: "POST",
         },
       );
-      const data = await response.json();
-      console.log(data);
     } catch (error) {
       console.error("Error", error);
     }
@@ -314,14 +308,12 @@ const PreviewFeedbackCard = ({
 
   const deleteVote = async (feedbackId: string, isUp: boolean) => {
     try {
-      const response = await fetch(
+      await fetch(
         `/api/feedback/vote/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
         {
           method: "POST",
         },
       );
-      const data = await response.json();
-      console.log(data);
     } catch (error) {
       console.error("Error", error);
     }

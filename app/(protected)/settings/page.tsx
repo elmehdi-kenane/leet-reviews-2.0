@@ -97,16 +97,13 @@ const Settings = () => {
         const errorData = await response.json();
         console.error("Error fetching user:", errorData.error);
         if (response.status === 401) {
-          console.log("Unauthorized access. Please log in.");
           router.push("/auth/sign-in");
         } else {
-          console.log("An unexpected error occurred.");
           router.push("/auth/sign-in");
         }
         return;
       }
       const data = await response.json();
-      console.log("data settings", data);
 
       setOriginalDetails(data);
       setUpdatedDetails(data);
@@ -154,25 +151,14 @@ const Settings = () => {
     // set unchanged details to undefined will be used in the backend
     Object.keys(formDataValues).forEach((key) => {
       if (updatedDetails[key] === originalDetails[key]) {
-        console.log("delete", key, "from the form");
         formData.delete(key); // Remove unchanged fields from FormData
-      } else
-        console.log(
-          "keep",
-          key,
-          "in the form",
-          formDataValues[key],
-          originalDetails[key],
-        );
+      }
     });
-    console.log("onSubmit formDataValues", Object.fromEntries(formData));
     const res = await fetch("/api/user/update", {
       method: "POST",
       body: formData,
     });
     if (res.ok) {
-      const data = await res.json();
-      console.log("data", data);
       toast.dismiss();
       toast.success("Preferences updated successfully 👍", {
         style: { background: "#fff5e0", color: "#141e46" },
@@ -305,27 +291,21 @@ const Profile = ({
           <button
             type="button"
             className="bg-neutral hover:bg-primary rounded-md p-2 text-secondary font-SpaceGrotesk max-sm:ml-auto max-sm:flex-1 sm:w-full relative"
-            onClick={() => console.log("file input button clicked")}
           >
             <input
               type="file"
               name="avatar"
               accept="image/png, image/jpeg"
               className="opacity-0 absolute h-full w-full top-0 left-0"
-              onClick={() => console.log("file input clicked")}
               onChange={(e) => {
                 const files = e.target.files;
                 if (files && files[0]) {
-                  console.log("files[0]", files[0]);
-                  console.log("uploading...");
-
                   setUpdatedDetails((prev) => ({
                     ...prev!,
                     avatar: files[0],
                   }));
                 }
                 e.target.value = "";
-                console.log("nothing");
                 // Reset input value so selecting the same file triggers onChange again
               }}
             />
@@ -421,7 +401,6 @@ const AccountConnections = ({
       return updatedAccounts;
     });
     // update with already linked accounts
-    console.log("accounts", accounts);
     setAccounts((prev) => {
       const updatedAccounts = prev.map((account) => {
         const userAccount = userAccounts.find(

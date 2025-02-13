@@ -54,10 +54,6 @@ export default function LandingPage() {
         setNavbarSectionsWidth(
           navbarSectionsRef.current.getBoundingClientRect().width,
         );
-        console.log(
-          "current width",
-          navbarSectionsRef.current.getBoundingClientRect().width,
-        );
       }
     };
     window.addEventListener("resize", handleResize);
@@ -174,9 +170,6 @@ const Navbar = ({
   //         navbarSectionsRef.current &&
   //         !navbarSectionsRef.current.contains(e.target as Node)
   //       ) {
-  //         console.log("close the navbar from handleClickOutside");
-  //         console.log("navbarSectionsRef.current", navbarSectionsRef.current);
-  //         console.log("e.target", e.target);
   //         setTimeout(() => {
   //             setIsMobileNavbarSectionsOpen(false);
   //         }, 500);
@@ -198,18 +191,12 @@ const Navbar = ({
     const scrollTop = container.scrollTop;
     const containerHeight = container.clientHeight;
     let topOfSection = section.ref.current.getBoundingClientRect().top;
-    // console.log(
-    //   `before: topOfSection ${topOfSection} scrollTop ${scrollTop} containerHeight ${containerHeight}`,
-    // );
     if (topOfSection < 0) {
       topOfSection *= -1;
       topOfSection = scrollTop - topOfSection;
     } else if (topOfSection < scrollTop) topOfSection += scrollTop;
     else if (topOfSection > scrollTop) topOfSection += scrollTop;
     else if (topOfSection > containerHeight) topOfSection -= scrollTop;
-    // console.log(
-    //   `after: topOfSection ${topOfSection} scrollTop ${scrollTop} containerHeight ${containerHeight}`,
-    // );
     container.scrollTo({
       top: topOfSection - offset,
       behavior: "smooth",
@@ -242,8 +229,6 @@ const Navbar = ({
             alt={isMobileNavbarSectionsOpen === true ? cross_menu : menu}
             onClick={() => {
               setIsMobileNavbarSectionsOpen((prev) => !prev);
-              if (isMobileNavbarSectionsOpen === true)
-                console.log("close the navbar");
             }}
           ></Image>
         </div>
@@ -521,11 +506,8 @@ const FooterSection = ({
   containerRef: MutableRefObject<HTMLElement | null>;
 }) => {
   const handleScrollToTop = () => {
-    console.log("handleScrollToTop call");
-
     if (containerRef.current)
       containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
-    else console.log("containerRef.current is null");
   };
 
   return (

@@ -72,8 +72,6 @@ const ExperienceInfosStep: React.FC<ExperienceInfosStepProps> = ({
       resetField(experienceRate.name, { defaultValue: undefined });
       resetField(experienceComment.name, { defaultValue: "" });
       setIsResetFields([false, false, false]);
-    } else {
-      console.log("don't reset", isResetFields);
     }
   }, [isResetFields]);
   return (

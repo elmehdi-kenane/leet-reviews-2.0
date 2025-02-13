@@ -32,7 +32,6 @@ export default function Home() {
               style: { background: "#fff5e0", color: "#141e46" },
             });
         }
-        console.log("responseData.feedbacks", responseData.feedbacks.reverse());
 
         setLoading(false);
       } catch (error) {

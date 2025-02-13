@@ -393,7 +393,7 @@ export const AccountCard = ({
       toast.success(`${account.provider} account removed successfully!`, {
         style: { background: "#fff5e0", color: "#141e46" },
       });
-    } else console.log("error ocurred with disconnect a linked account");
+    }
   };
   return (
     <div className="flex items-center gap-2">

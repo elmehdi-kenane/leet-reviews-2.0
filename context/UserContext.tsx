@@ -61,17 +61,12 @@ export const UserProvider: React.FC<{
         const errorData = await response.json();
         console.error("Error fetching user:", errorData.error);
         if (response.status === 401) {
-          console.log("Unauthorized access. Please log in.");
-          router.push("/auth/sign-in");
-        } else {
-          console.log("An unexpected error occurred.");
           router.push("/auth/sign-in");
         }
         return;
       }
 
       const data = await response.json();
-      //   console.log("data inside useEffect", data);
       setUserInfo(data);
     };
 

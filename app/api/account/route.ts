@@ -34,7 +34,6 @@ export async function GET() {
     const connectedAccounts = await prismaClient.account.findMany({
       where: { userId, account_type: "CONNECTED" },
     });
-    // console.log("connectedAccounts", JSON.stringify(connectedAccounts));
 
     return NextResponse.json({ authAccounts, connectedAccounts });
   } catch (error) {

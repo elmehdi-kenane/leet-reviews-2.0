@@ -20,9 +20,6 @@ export const DisplayAccounts = () => {
         setConnectedAccounts(data.connectedAccounts);
       } catch (err: unknown) {
         if (err instanceof Error) {
-          console.log(err.message);
-        } else {
-          console.log("An unknown error occurred");
         }
       } finally {
         setLoading(false);

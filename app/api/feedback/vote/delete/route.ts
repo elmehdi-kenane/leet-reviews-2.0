@@ -22,9 +22,6 @@ export async function POST(request: NextRequest) {
     },
   });
   if (votes.length > 0) {
-    console.log("votes", votes);
-    console.log("votes[0].id", votes[0].id);
-
     await prismaClient.vote.delete({
       where: {
         id: votes[0].id,

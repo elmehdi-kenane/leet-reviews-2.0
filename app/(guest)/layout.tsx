@@ -21,7 +21,6 @@ export default async function RootLayout({
 }>) {
   //   const { user } = await validateRequest();
   //   if (!user) {
-  //     console.log("redirect to sign in page");
   //     return redirect("/auth/sign-in");
   //   }
 

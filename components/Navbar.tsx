@@ -41,7 +41,6 @@ const Navbar = () => {
   const hiddenRoutes = ["/auth/sign-in", "/auth/sign-up"];
   const isHidden = hiddenRoutes.includes(pathname);
   //   if (isHidden) {
-  // console.log("path name is an auth path so hide navbar");
   // return null;
   //   }
 
@@ -64,7 +63,6 @@ const Navbar = () => {
     const response = await fetch(`/api/search?searchTerm=${searchTerm}`);
     const responseData = await response.json();
     setSearchResults(responseData.results);
-    console.log("responseData", responseData);
   };
   const delay = 300;
   const debouncedSearch = useCallback(debounce(fetchSearchResult, delay), []);
@@ -77,7 +75,6 @@ const Navbar = () => {
   const router = useRouter();
   const userContext = useContext(UserContext);
   if (!userContext) {
-    console.log("user Context undefined");
     return <div>user Context undefined</div>;
   }
   const { userInfo } = userContext;
@@ -133,7 +130,7 @@ const Navbar = () => {
   const handleFocusInput = (inputRef: React.RefObject<HTMLInputElement>) => {
     if (inputRef.current) {
       inputRef.current.focus();
-    } else console.log("inputRef.current invalid");
+    }
   };
 
   const handleClickOutsideSearchBarMobile = (event: MouseEvent) => {

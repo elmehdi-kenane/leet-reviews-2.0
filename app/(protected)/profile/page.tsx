@@ -132,7 +132,6 @@ export default function Profile() {
       const profile = await response.json();
       setProfile(profile.data);
       setIsUserNotFound(false);
-      console.log("profile.data", profile.data);
     };
     fetchProfile();
   }, [userId]);
@@ -205,17 +204,14 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
         //   `https://youtube.com`
         // );
         const account = user.accounts.find((acc) => acc.provider === provider);
-        console.log(`${provider} account:`, account);
         // this is working :/ !!!!!!!!!!!!!!!!!!!!!!!
         if (account && account.provider === "fortyTwo") {
           router.push(`https://profile.intra.42.fr/users/${account.username}`);
         } else if (account && account.provider === "linkedIn") {
-          console.log("account.username", account.username);
-
           //   router.push(`https://www.linkedin.com/in/${account.username}`);
         } else if (account && account.provider === "github") {
           router.push(`https://github.com/${account.username}`);
-        } else console.log(`account not found`);
+        }
       };
     };
 
@@ -541,14 +537,12 @@ const PopUpDeleteFeedback = ({
 
   const deleteFeedback = async (feedbackId: string) => {
     try {
-      const response = await fetch(
+      await fetch(
         `/api/feedback/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
         {
           method: "POST",
         },
       );
-      const data = await response.json();
-      console.log(data);
     } catch (error) {
       console.error("Error", error);
     }
@@ -598,14 +592,12 @@ const PopUpUnSaveFeedback = ({
 
   const deleteSave = async (feedbackId: string) => {
     try {
-      const response = await fetch(
+      await fetch(
         `/api/feedback/save/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
         {
           method: "POST",
         },
       );
-      const data = await response.json();
-      console.log(data);
     } catch (error) {
       console.error("Error", error);
     }
@@ -651,14 +643,12 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
   const userContext = useContext(UserContext);
   const createSave = async (feedbackId: string) => {
     try {
-      const response = await fetch(
+      await fetch(
         `/api/feedback/save/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
         {
           method: "POST",
         },
       );
-      const data = await response.json();
-      console.log(data);
     } catch (error) {
       console.error("Error", error);
     }
@@ -793,14 +783,12 @@ const FeedbackAsVisitorCard = ({
   const router = useRouter();
   const createSave = async (feedbackId: string) => {
     try {
-      const response = await fetch(
+      await fetch(
         `/api/feedback/save/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
         {
           method: "POST",
         },
       );
-      const data = await response.json();
-      console.log(data);
     } catch (error) {
       console.error("Error", error);
     }

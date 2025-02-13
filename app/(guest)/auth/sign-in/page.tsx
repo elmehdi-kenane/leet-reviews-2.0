@@ -34,7 +34,6 @@ export default function SignIn() {
   const searchParams = useSearchParams();
   useEffect(() => {
     const error = searchParams.get("error");
-    console.log("error", error);
     if (error === "auth-cancelled") {
       setTimeout(() => {
         toast.error("Authentication was cancelled or invalid.", {
@@ -42,7 +41,7 @@ export default function SignIn() {
           style: { background: "#fff5e0", color: "#141e46" },
         });
       }, 300);
-    } else console.log("unknown error");
+    }
   }, [searchParams]);
 
   return (

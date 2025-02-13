@@ -5,7 +5,6 @@ import { cookies } from "next/headers";
 
 export async function GET() {
   const state = generateState();
-  console.log("state in github route:", state);
 
   const url = await github.createAuthorizationURL(state, {
     scopes: ["user:email"],

@@ -32,7 +32,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   else result = watch(inputName);
 
   if (type !== "file") {
-    // console.log(`watch input inputName ${inputName} : '${result}'`);
   } else if (
     result !== undefined &&
     type === "file" &&
@@ -40,10 +39,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
   ) {
     const file = result[0];
     if (file instanceof File) previewFileURL = URL.createObjectURL(file);
-    // console.log("Selected file:", file); // File inputName
-    // console.log("Selected file:", file.inputName); // File inputName
-    // console.log("File size:", file.size); // File size
-    // console.log("File type:", file.type); // File type
   }
   const { onBlur, name, onChange, ref } = register(inputName, {
     required: isRequired ? placeholder : false,
@@ -74,7 +69,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
           ? result[0]
           : (result as string),
     );
-    console.log(`inputName ${inputName} result ${result}`);
     if (
       trustScore &&
       (result === "" || result === undefined) &&
@@ -114,15 +108,11 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
       !isRequired &&
       inputName in trustScore
     ) {
-      console.log("add +2", inputName);
       setTrustScore((prevState) => {
-        console.log("prevState", prevState);
-
         const newState = {
           ...prevState,
           [inputName]: 2,
         };
-        console.log("newState", newState);
         return newState;
       });
     } else if (
@@ -158,8 +148,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
-    // console.log("event.target.files", event.target.files);
-    // console.log("test handleFilePreviewChange file", file);
     if (file) {
       const fileURL = URL.createObjectURL(file);
       setPreview(fileURL);
@@ -249,7 +237,6 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
                               key={index}
                               className={`w-full min-h-[50%] rounded-lg italic border border-secondary hover:bg-secondary hover:text-neutral ${selectedLocation === item.formatted ? "bg-secondary text-neutral" : "text-secondary"}`}
                               onClick={(e) => {
-                                console.log("onclick");
                                 setSelectedLocation(item.formatted);
                                 setInput(item.formatted);
                                 setValue(name, item.formatted);
@@ -312,7 +299,6 @@ export const FormSelectOptionField = <
   watch,
 }: FormSelectFieldProps<T>) => {
   const result = watch(name);
-  //   console.log(`watch select name ${name} : '${result}'`);
   const [selected, setSelected] = useState<
     string | number | { name: string; description: string }
   >(typeof result === "object" ? result.name : result);

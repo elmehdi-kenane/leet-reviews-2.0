@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
   const formDataValues: FormDataWithBooleans = Object.fromEntries(
     formData.entries(),
   );
-  console.log("formDataValues", formDataValues);
   if (formDataValues.avatar && formDataValues.avatar instanceof File) {
     const fileBuffer = Buffer.from(await formDataValues.avatar.arrayBuffer());
     const uploadResult: CloudinaryUploadResult =

@@ -95,7 +95,6 @@ const FeedbackForm = ({
       }
     });
 
-    console.log("SUCCESS", finalFormData);
     let responseData: responseDataInterface;
     const addNewFeedback = async () => {
       try {
@@ -109,13 +108,8 @@ const FeedbackForm = ({
         responseData = await response.json();
       } catch (err: unknown) {
         if (err instanceof Error) {
-          console.log(err.message);
-        } else {
-          console.log("An unknown error occurred");
         }
       } finally {
-        console.log("responseData.newFeedback", responseData.newFeedback);
-
         setNewFeedback(responseData.newFeedback);
         userContext?.setFeedbacks((prev: FeedbackInterface[]) => {
           return [responseData.newFeedback, ...prev];
@@ -156,24 +150,15 @@ const FeedbackForm = ({
   const handleStepValidation = async () => {
     const isValid = await trigger();
     if (isValid) {
-      console.log("step is valid");
-      if (currentStep === 4) console.log("send form");
       setCurrentStep((prevStep) => {
         return prevStep + 1;
       });
     } else {
-      console.log("step isn't valid");
       if (errors) {
-        console.log("errors", errors);
-
         const errorKeys = Object.keys(errors) as (keyof FormDataRhf)[]; // Explicitly cast keys to keyof FormDataRhf
-        console.log("errorKeys", errorKeys);
         const firstField = errorKeys[0];
-        console.log("firstField", firstField);
         let errorMessage = "Feedback type";
         errorMessage = errors[firstField]?.message || "Feedback type";
-        console.log("errorMessage", errorMessage);
-        console.log("errors[firstField]", errors[firstField]);
         toast.dismiss();
         toast.error(`Invalid ${errorMessage}`);
       }
@@ -183,8 +168,6 @@ const FeedbackForm = ({
 
   useEffect(() => {
     if (currentStep === 5) {
-      console.log("run a jsConfetti.addConfetti");
-
       jsConfetti.addConfetti({
         confettiColors: ["#41B06E", "#141E46"],
         confettiNumber: 100,
@@ -423,9 +406,6 @@ const FeedbackFormHeader = ({
 }) => {
   const trustSoreRadius = 15;
   const fullCircle = 2 * Math.PI * trustSoreRadius;
-
-  const full = fullCircle - (fullCircle * totalTrustScore) / 10;
-  if (totalTrustScore === 10) console.log("full", full);
 
   const svgSize = 35;
   return (

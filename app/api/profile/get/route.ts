@@ -12,7 +12,6 @@ export async function GET(request: NextRequest) {
     `http://${request.headers.get("host")}`,
   );
   let userIdParam = requestUrl.searchParams.get("userId");
-  console.log("userIdParam", typeof userIdParam);
 
   if (userIdParam === "null" || userIdParam === null) userIdParam = userId;
   const isOwn = userId === userIdParam;
@@ -154,7 +153,6 @@ export async function GET(request: NextRequest) {
     ...profileData,
     votes: votes,
   };
-  console.log(profileData, "profileData");
 
   return NextResponse.json({ data: profileData });
 }
