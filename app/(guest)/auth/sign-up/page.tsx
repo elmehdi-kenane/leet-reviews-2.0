@@ -119,7 +119,7 @@ export default function SignUp() {
       </div>
       <Link
         href={"/"}
-        className="border-2 border-neutral max-sm:w-[90%] rounded-xl py-3 text-neutral flex gap-10 font-SpaceGrotesk justify-center items-center flex-col w-[400px] select-none mb-5"
+        className="border-2 border-neutral max-sm:w-[90%] rounded-xl py-3 text-neutral flex gap-10 font-SpaceGrotesk justify-center items-center flex-col w-[400px] select-none mb-10"
       >
         Back Home
       </Link>
