@@ -410,9 +410,9 @@ const PreviewFeedbackCard = ({
               return (
                 <div
                   key={index}
-                  className={`flex ${employmentDetail.text === "" ? "hidden" : ""} items-center gap-[5px] rounded-[14px] border border-[#00224D] bg-secondary text-neutral w-[150px] max-lg:w-[48%] max-md:max-w-[140px] max-md:text-xs min-w-max h-[50px] p-[5px] max-lg:text-sm ${index != 0 && employmentDetails[index - 1].text === "" ? "min-w-full w-full max-w-full max-lg:w-full" : ""}`}
+                  className={`flex ${employmentDetail.text === "" ? "hidden" : ""} items-center gap-[5px] rounded-[14px] border border-secondary bg-secondary text-neutral w-[150px] max-lg:w-[48%] max-md:max-w-[140px] max-md:text-xs h-[50px] p-[5px] max-lg:text-sm ${index != 0 && employmentDetails[index - 1].text === "" ? "min-w-full w-full max-w-full max-lg:w-full" : ""}`}
                 >
-                  <div className="bg-[#00224D] rounded-full min-w-[35px] min-h-[35px] flex justify-center items-center">
+                  <div className="bg-neutral rounded-full min-w-[35px] min-h-[35px] flex justify-center items-center">
                     <Image
                       src={employmentDetail.icon}
                       className="select-none"
@@ -425,7 +425,22 @@ const PreviewFeedbackCard = ({
                       }`}
                     />
                   </div>
-                  <p className="font-semibold">{employmentDetail.text}</p>
+                  {employmentDetail.icon === CompanyCityIcon &&
+                  isExpandFeedbackCard === true ? (
+                    <CustomizedTooltip
+                      placement="bottom"
+                      title={`${employmentDetail.text}`}
+                      arrow
+                    >
+                      <p className="font-semibold truncate">
+                        {employmentDetail.text}
+                      </p>
+                    </CustomizedTooltip>
+                  ) : (
+                    <p className="font-semibold truncate">
+                      {employmentDetail.text}
+                    </p>
+                  )}
                 </div>
               );
             },
@@ -487,7 +502,6 @@ const PreviewFeedbackCard = ({
                 <div className="h-max w-[40px] flex justify-end items-center ">
                   <a
                     href={feedback.author.linkedAccountProfileUrl}
-                    target="_blank"
                     className="bg-[#00224D] rounded-full w-[35px] h-[35px] flex justify-center items-center"
                     onClick={(e) => {
                       e.stopPropagation();
