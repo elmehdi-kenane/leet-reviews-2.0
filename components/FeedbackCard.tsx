@@ -872,9 +872,6 @@ const PreviewFeedbackCard = ({
       )}
       {isExpandFeedbackCard && !isUnExpandingFeedbackCard && (
         <div className="w-full flex absolute top-[910px] left-[1px] justify-between">
-          <button className="p-3 bg-secondary text-neutral rounded-xl font-semibold w-max flex gap-2">
-            <p>Report feedback</p>
-          </button>
           <button
             className="p-3 bg-secondary text-neutral rounded-xl font-semibold w-max flex gap-2"
             onClick={(e) => {
@@ -890,6 +887,12 @@ const PreviewFeedbackCard = ({
               height={25}
               className="rounded-full min-w-[25px] min-h-[25px] max-w-[25px] max-h-[25px]"
             />
+          </button>
+          <button className="p-3 bg-secondary text-neutral rounded-xl font-semibold w-max flex gap-2">
+            <p>Report feedback</p>
+            <div className="p-1 bg-primary text-neutral absolute rounded-md text-[10px] right-2 top-9">
+              SOON
+            </div>
           </button>
         </div>
       )}

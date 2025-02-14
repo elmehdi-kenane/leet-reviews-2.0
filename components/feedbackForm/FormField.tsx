@@ -187,6 +187,7 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
             id={inputId}
             name={name}
             ref={ref}
+            accept="image/png, image/jpeg"
             onBlur={() => {
               setIsInputFocused(false);
               onBlur;
@@ -431,10 +432,12 @@ export const FormSelectOptionField = <
                     <Tooltip
                       title={
                         // "Trust Score reflects the credibility of feedback, increasing with detailed insights and community votes."
-                        "Trust Score reflects the credibility of feedback, increasing with detailed insights."
+                        "Trust Score reflects the credibility of feedback, increasing with detailed insights. The more details you provide, the higher your Trust Score will be."
                       }
                     >
-                      <span className="underline cursor-help">trust score</span>
+                      <span className="underline cursor-help font-semibold">
+                        trust score
+                      </span>
                     </Tooltip>
                     .
                   </p>

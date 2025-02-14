@@ -656,7 +656,7 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
 
   return (
     <div
-      onClick={() => router.push(`/home?feedbackId=${save.id}`)}
+      onClick={() => router.push(`/home?feedbackId=${save.feedbackId}`)}
       className="bg-secondary cursor-pointer text-neutral min-w-[200px] max-w-[200px] flex rounded-lg flex-col items-center p-5 transition-transform duration-500 transform hover:scale-[1.05]"
       key={save.id}
     >
@@ -1120,7 +1120,7 @@ const CommentsAndVotesWrapper = ({
           </div>
         ) : (selectedBtn === 1 && comments.length === 0) ||
           (selectedBtn === 2 && votes.length === 0) ? (
-          <div className="min-w-max h-max my-auto text-secondary bg-[red] font-SpaceGrotesk font-semibold text-lg flex flex-col items-center gap-3">
+          <div className="min-w-max h-max my-auto text-secondary font-SpaceGrotesk font-semibold text-lg flex flex-col items-center gap-3">
             <p>No {selectedBtn === 1 ? "comments" : "votes"} available.</p>
             <button
               onClick={() => router.push(`/home`)}

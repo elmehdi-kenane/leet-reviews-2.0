@@ -13,7 +13,7 @@ const config: Config = {
         primary: "#41B06E",
         secondary: "#141E46",
         accent: "#8DECB4",
-        neutral: "#FFF5E0",
+        neutral: "#FFFFFF",
         gray: "#D9D9D9",
       },
       fontFamily: {

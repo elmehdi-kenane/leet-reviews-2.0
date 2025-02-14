@@ -21,7 +21,7 @@ export default function Home() {
       try {
         const response = await fetch("/api/feedback/get");
         const responseData = await response.json();
-        userContext.setFeedbacks(responseData.feedbacks.reverse());
+        userContext.setFeedbacks(responseData.feedbacks);
         if (feedbackId) {
           const expandedFeedback = responseData.feedbacks.filter(
             (feedback: FeedbackInterface) => feedback.id === feedbackId,
