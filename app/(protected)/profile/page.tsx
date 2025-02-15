@@ -14,11 +14,11 @@ import shareFeedbackIcon from "@/public/share.svg";
 import dotsCross from "@/public/cross.svg";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow, format } from "date-fns";
-import ArrowDownIcon from "@/public/arrow-down-profile.svg";
 import ArrowDownBlueIcon from "@/public/arrow-down-blue.svg";
 import ArrowUpBlueIcon from "@/public/arrow-up-blue.svg";
 import ArrowDownBlueFilledIcon from "@/public/arrow-down-blue-filled.svg";
 import ArrowUpBlueFilledIcon from "@/public/arrow-up-blue-filled.svg";
+import ArrowDownIcon from "@/public/arrow-down-profile.svg";
 import ArrowUpIcon from "@/public/arrow-up-profile.svg";
 import exploreArrow from "@/public/exploreArrow.svg";
 import saveIcon from "@/public/save-icon.svg";
@@ -244,8 +244,8 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
       <div className="flex items-center gap-3">
         <div className="flex max-sm:flex-col max-sm:items-start items-center gap-3">
           <Image
-            src={user.avatar || "/default.jpeg"}
-            alt={user.avatar || "/default.jpeg"}
+            src={user.avatar || "/default_avatar.jpg"}
+            alt={user.avatar || "/default_avatar.jpg"}
             width={125}
             height={125}
             className="rounded-full select-none min-w-[125px] min-h-[125px] max-sm:min-w-[70px] max-sm:min-h-[70px] max-w-[125px] max-h-[125px] max-sm:max-w-[70px] max-sm:max-h-[70px] border-2 border-neutral"
@@ -657,7 +657,7 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
   return (
     <div
       onClick={() => router.push(`/home?feedbackId=${save.feedbackId}`)}
-      className="bg-secondary cursor-pointer text-neutral min-w-[200px] max-w-[200px] flex rounded-lg flex-col items-center p-5 transition-transform duration-500 transform hover:scale-[1.05]"
+      className="bg-secondary shadow-2xl cursor-pointer text-neutral min-w-[200px] max-w-[200px] flex rounded-lg flex-col items-center p-5 transition-transform duration-500 transform hover:scale-[1.05]"
       key={save.id}
     >
       <Image
@@ -689,7 +689,7 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
             r={circleRadius}
             cx={circleRadius}
             cy={circleRadius}
-            fill="#FFF5E0"
+            fill="#FFFFFF"
           />
         </svg>
       </div>
@@ -828,7 +828,7 @@ const FeedbackAsVisitorCard = ({
             r={circleRadius}
             cx={circleRadius}
             cy={circleRadius}
-            fill="#FFF5E0"
+            fill="#FFFFFF"
           />
         </svg>
       </div>
@@ -890,7 +890,7 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   return (
     <div
       onClick={() => router.push(`/home?feedbackId=${feedback.id}`)}
-      className="bg-secondary cursor-pointer text-neutral min-w-[200px] flex rounded-lg flex-col items-center p-5 transition-transform duration-500 transform hover:scale-[1.05]"
+      className="bg-secondary shadow-2xl cursor-pointer text-neutral min-w-[200px] flex rounded-lg flex-col items-center p-5 transition-transform duration-500 transform hover:scale-[1.05]"
       key={feedback.id}
     >
       <Image
@@ -922,7 +922,7 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
             r={circleRadius}
             cx={circleRadius}
             cy={circleRadius}
-            fill="#FFF5E0"
+            fill="#FFFFFF"
           />
         </svg>
       </div>
@@ -1164,7 +1164,7 @@ const CommentProfileCard = ({ comment }: { comment: commentInterface }) => {
     <div
       onClick={() => router.push(`/home?feedbackId=${comment.feedback.id}`)}
       key={comment.id}
-      className="w-[100%] max-w-full cursor-pointer text-neutral bg-secondary flex gap-2 items-center font-SpaceGrotesk p-1 rounded-lg"
+      className="w-[100%] shadow-2xl max-w-full cursor-pointer text-neutral bg-secondary flex gap-2 items-center font-SpaceGrotesk p-1 rounded-lg"
     >
       <Image
         src={comment.feedback.companyLogo}
@@ -1195,7 +1195,7 @@ const CommentProfileCard = ({ comment }: { comment: commentInterface }) => {
             r={circleRadius}
             cx={circleRadius}
             cy={circleRadius}
-            fill="#FFF5E0"
+            fill="#FFFFFF"
           />
         </svg>
       </div>
@@ -1249,7 +1249,7 @@ const VoteProfileCard = ({ vote }: { vote: voteProfileInterface }) => {
     <div
       onClick={() => router.push(`/home?feedbackId=${vote.feedback.id}`)}
       key={vote.id}
-      className="w-[100%] cursor-pointer text-neutral bg-secondary flex gap-2 items-center font-SpaceGrotesk p-1 rounded-lg"
+      className="w-[100%] shadow-2xl cursor-pointer text-neutral bg-secondary flex gap-2 items-center font-SpaceGrotesk p-1 rounded-lg"
     >
       <Image
         src={vote.isUp === true ? ArrowUpIcon : ArrowDownIcon}
@@ -1288,7 +1288,7 @@ const VoteProfileCard = ({ vote }: { vote: voteProfileInterface }) => {
             r={circleRadius}
             cx={circleRadius}
             cy={circleRadius}
-            fill="#FFF5E0"
+            fill="#FFFFFF"
           />
         </svg>
       </div>

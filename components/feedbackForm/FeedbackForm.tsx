@@ -439,77 +439,85 @@ const FeedbackFormHeader = ({
             <p className="max-sm:hidden">Anonymous Feedback</p>
           </div>
         )}
-        <div className="bg-secondary h-full w-max font-semibold flex items-center gap-2 p-3 rounded-xl text-neutral">
-          <p>Trust score</p>
-          {totalTrustScore !== 10 && (
-            <svg
-              width={svgSize}
-              height={svgSize}
-              viewBox={`0 0 ${svgSize} ${svgSize}`}
-              className={`${totalTrustScore <= 4 ? "bg-red-400" : "bg-green-500"} rounded-full flex justify-center items-center`}
-            >
-              {totalTrustScore > 0 ? (
-                <circle
-                  cx={svgSize / 2}
-                  cy={svgSize / 2 + 0.5}
-                  r={trustSoreRadius + 0.7}
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  fill="none"
-                  strokeDasharray={`${fullCircle + 0.1}`}
-                  style={{
-                    transition: "stroke-dashoffset 1s ease-in-out",
-                    strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
-                  }}
-                  transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
-                  strokeLinecap="round"
-                />
-              ) : (
-                <circle
-                  cx={svgSize / 2}
-                  cy={svgSize / 2 + 0.5}
-                  r={trustSoreRadius + 0.7}
-                  stroke="currentColor"
-                  strokeWidth="0"
-                  fill="none"
-                  strokeDasharray={`${fullCircle + 0.1}`}
-                  style={{
-                    transition: "stroke-dashoffset 1s ease-in-out",
-                    strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
-                  }}
-                  transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
-                  strokeLinecap="round"
-                />
-              )}
-              <text
-                x="50%"
-                y="50%"
-                textAnchor="middle"
-                dy="0.3em"
-                fontSize="15"
-                fill="currentColor"
+        <CustomizedTooltip
+          placement="bottom-end"
+          title={
+            "Trust Score reflects the credibility of feedback, increasing with detailed insights. The more details you provide, the higher your Trust Score will be."
+          }
+          arrow
+        >
+          <div className="bg-secondary h-full w-max font-semibold flex items-center gap-2 p-3 rounded-xl text-neutral">
+            <p>Trust score</p>
+            {totalTrustScore !== 10 && (
+              <svg
+                width={svgSize}
+                height={svgSize}
+                viewBox={`0 0 ${svgSize} ${svgSize}`}
+                className={`${totalTrustScore <= 4 ? "bg-red-400" : "bg-green-500"} rounded-full flex justify-center items-center`}
               >
-                {totalTrustScore}
-              </text>
-            </svg>
-          )}
-          {totalTrustScore === 10 && (
-            <div
-              className="w-[35px] h-[35px] flex justify-center items-center border-[3px] border-neutral rounded-full"
-              style={{
-                animation: "scaleUp 0.3s ease-out",
-              }}
-            >
-              <Image
-                className="min-w-[25px] relative top-0 left-0 z-[200]"
-                src={CheckMarkIcon}
-                height={25}
-                width={25}
-                alt={CheckMarkIcon}
-              ></Image>
-            </div>
-          )}
-        </div>
+                {totalTrustScore > 0 ? (
+                  <circle
+                    cx={svgSize / 2}
+                    cy={svgSize / 2 + 0.5}
+                    r={trustSoreRadius + 0.7}
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="none"
+                    strokeDasharray={`${fullCircle + 0.1}`}
+                    style={{
+                      transition: "stroke-dashoffset 1s ease-in-out",
+                      strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
+                    }}
+                    transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
+                    strokeLinecap="round"
+                  />
+                ) : (
+                  <circle
+                    cx={svgSize / 2}
+                    cy={svgSize / 2 + 0.5}
+                    r={trustSoreRadius + 0.7}
+                    stroke="currentColor"
+                    strokeWidth="0"
+                    fill="none"
+                    strokeDasharray={`${fullCircle + 0.1}`}
+                    style={{
+                      transition: "stroke-dashoffset 1s ease-in-out",
+                      strokeDashoffset: `calc(${fullCircle} - (${fullCircle} * ${totalTrustScore} / 10))`,
+                    }}
+                    transform={`rotate(-90 ${svgSize / 2} ${svgSize / 2})`}
+                    strokeLinecap="round"
+                  />
+                )}
+                <text
+                  x="50%"
+                  y="50%"
+                  textAnchor="middle"
+                  dy="0.3em"
+                  fontSize="15"
+                  fill="currentColor"
+                >
+                  {totalTrustScore}
+                </text>
+              </svg>
+            )}
+            {totalTrustScore === 10 && (
+              <div
+                className="w-[35px] h-[35px] flex justify-center items-center border-[3px] border-neutral rounded-full"
+                style={{
+                  animation: "scaleUp 0.3s ease-out",
+                }}
+              >
+                <Image
+                  className="min-w-[25px] relative top-0 left-0 z-[200]"
+                  src={CheckMarkIcon}
+                  height={25}
+                  width={25}
+                  alt={CheckMarkIcon}
+                ></Image>
+              </div>
+            )}
+          </div>
+        </CustomizedTooltip>
       </div>
       <div className="flex items-center justify-between max-sm:justify-center gap-3 w-[80%]">
         {currentStep === 2 ? (

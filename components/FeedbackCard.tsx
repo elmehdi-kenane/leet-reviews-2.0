@@ -24,21 +24,21 @@ import { useSearchParams } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { RefObject } from "react";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
-import arrowDown from "@/public/arrow-down.svg";
-import arrowDownFilled from "@/public/arrow-down-filled.svg";
-import arrowUp from "@/public/arrow-up.svg";
 import link from "@/public/link-green.svg";
-import arrowUpFilled from "@/public/arrow-up-filled.svg";
+import arrowDown from "@/public/dislike.svg";
+import arrowDownFilled from "@/public/dislike-filled.svg";
+import arrowUp from "@/public/like.svg";
+import arrowUpFilled from "@/public/like-filled.svg";
 import { UserContext } from "@/context/UserContext";
 import { tooltipClasses } from "@mui/material/Tooltip";
 
 const getExperienceRateIcon = (experienceRate: number) => {
   const icons = [
-    "/VeryPoor.svg",
-    "/Poor.svg",
-    "/Average.svg",
-    "/Good.svg",
-    "/Excellent.svg",
+    "/VeryPoorLight.svg",
+    "/PoorLight.svg",
+    "/AverageLight.svg",
+    "/GoodLight.svg",
+    "/ExcellentLight.svg",
   ];
   return icons[experienceRate - 1];
 };
@@ -369,7 +369,8 @@ const PreviewFeedbackCard = ({
                     r={circleRadius}
                     cx={circleRadius}
                     cy={circleRadius}
-                    fill="#FFF5E0"
+                    // fill="#FFFFFF"
+                    fill="#141e46"
                   />
                 </svg>
               </div>
@@ -607,7 +608,7 @@ const PreviewFeedbackCard = ({
       <div className="flex justify-between items-center">
         <CustomizedTooltip
           placement="top"
-          title={`[ ${feedback.trustScore / 2}/5 ]`}
+          title={`[ ${feedback.trustScore}/10 ]`}
           slotProps={{
             popper: {
               sx: {

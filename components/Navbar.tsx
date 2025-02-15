@@ -163,7 +163,7 @@ const Navbar = () => {
     }
   };
 
-  const avatar = userInfo?.avatar || "/default.jpeg";
+  const avatar = userInfo?.avatar || "/default_avatar.jpg";
   const inputMaxLength = 30;
   return (
     <div

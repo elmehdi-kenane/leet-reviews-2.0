@@ -24,7 +24,7 @@ export interface UserContextType {
 
 const defaultUser: User = {
   username: "default_username",
-  avatar: "/default.jpeg",
+  avatar: "/default_avatar.jpg",
   id: "default_id",
   email: "default_email",
 };
