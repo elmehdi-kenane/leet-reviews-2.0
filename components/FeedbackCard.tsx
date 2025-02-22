@@ -350,7 +350,7 @@ const PreviewFeedbackCard = ({
               <div
                 className={`w-[${circleRadius * 2}] h-[${
                   circleRadius * 2
-                }]  ml-[-30px]`}
+                }]  ml-[-30px] cursor-pointer`}
               >
                 <Image
                   src={getExperienceRateIcon(feedback.experienceRate)}
@@ -849,20 +849,12 @@ const PreviewFeedbackCard = ({
                   {isOrderByRecent === true
                     ? feedback.comments.map((comment) => {
                         return (
-                          <Comment
-                            feedbackType={feedback.feedbackType}
-                            comment={comment}
-                            key={comment.id}
-                          ></Comment>
+                          <Comment comment={comment} key={comment.id}></Comment>
                         );
                       })
                     : [...feedback.comments].reverse().map((comment) => {
                         return (
-                          <Comment
-                            feedbackType={feedback.feedbackType}
-                            comment={comment}
-                            key={comment.id}
-                          ></Comment>
+                          <Comment comment={comment} key={comment.id}></Comment>
                         );
                       })}
                 </div>
@@ -901,13 +893,7 @@ const PreviewFeedbackCard = ({
   );
 };
 
-const Comment = ({
-  comment,
-  feedbackType,
-}: {
-  comment: commentInterface;
-  feedbackType: string;
-}) => {
+const Comment = ({ comment }: { comment: commentInterface }) => {
   const router = useRouter();
   const [isProfileHovering, setIsProfileHovering] = useState(false);
   return (
@@ -916,12 +902,12 @@ const Comment = ({
         <div
           onMouseEnter={() => setIsProfileHovering(true)}
           onMouseLeave={() => setIsProfileHovering(false)}
-          className={`border-2 ${feedbackType === "Publicly" && isProfileHovering === true ? "border-primary cursor-pointer" : "border-secondary"} flex justify-center items-center mb-1 rounded-full w-[33px] h-[33px] relative z-[9] bg-neutral`}
+          className={`border-2 ${isProfileHovering === true ? "border-primary cursor-pointer" : "border-secondary"} flex justify-center items-center mb-1 rounded-full w-[33px] h-[33px] relative z-[9] bg-neutral`}
           onClick={(e) => {
-            if (feedbackType === "Publicly") {
-              e.stopPropagation();
-              router.push(`/profile?userId=${comment.authorId}`);
-            }
+            // if (feedbackType === "Publicly") {
+            e.stopPropagation();
+            router.push(`/profile?userId=${comment.authorId}`);
+            // }
           }}
         >
           <Image
@@ -934,12 +920,12 @@ const Comment = ({
         </div>
         <p
           onClick={(e) => {
-            if (feedbackType === "Publicly") {
-              e.stopPropagation();
-              router.push(`/profile?userId=${comment.authorId}`);
-            }
+            // if (feedbackType === "Publicly") {
+            e.stopPropagation();
+            router.push(`/profile?userId=${comment.authorId}`);
+            // }
           }}
-          className={`mb-[20px] ${feedbackType === "Publicly" && isProfileHovering === true ? "text-primary cursor-pointer" : "text-secondary"} font-semibold text-sm`}
+          className={`mb-[20px] ${isProfileHovering === true ? "text-primary cursor-pointer" : "text-secondary"} font-semibold text-sm`}
           onMouseEnter={() => setIsProfileHovering(true)}
           onMouseLeave={() => setIsProfileHovering(false)}
         >
