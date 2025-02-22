@@ -397,7 +397,7 @@ const PreviewFeedbackCard = ({
             </p>
           </div>
         </div>
-        <div className="flex items-center flex-wrap max-md:justify-end max-sm:justify-center w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
+        <div className="flex items-center flex-wrap max-md:justify-end max-sm:justify-center min-w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
           {employmentDetails.map(
             (employmentDetail: employmentDetailInterface, index: number) => {
               return (
@@ -444,7 +444,7 @@ const PreviewFeedbackCard = ({
         <div className="flex justify-between items-start flex-col">
           <div className="flex items-center gap-1">
             <div
-              className={`border-2 ${feedback.feedbackType === "Publicly" && isProfileHovering === true ? "border-primary cursor-pointer" : "border-secondary"} flex justify-center items-center mb-[5px] ml-[-14px] rounded-full w-[44px] h-[44px] relative z-[9] bg-neutral`}
+              className={`border-2 ${feedback.feedbackType === "Publicly" && isProfileHovering === true ? "border-primary cursor-pointer" : "border-secondary"} flex justify-center items-center mb-[5px] rounded-full w-[44px] h-[44px] relative z-[9] bg-neutral`}
               onClick={(e) => {
                 if (feedback.feedbackType === "Publicly") {
                   e.stopPropagation();
