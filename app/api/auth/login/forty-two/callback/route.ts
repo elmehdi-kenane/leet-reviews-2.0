@@ -60,7 +60,6 @@ export async function GET(request: NextRequest) {
         try {
           await prismaClient.$transaction(async (prisma) => {
             // Ensure newUserId exists (optional, to avoid breaking the database)
-            console.log("========================-1");
             const userExists = await prisma.user.findUnique({
               where: {
                 id: newUserId,
@@ -72,7 +71,6 @@ export async function GET(request: NextRequest) {
             }
 
             // Create a new user record with newUserId (optional, depends on use case)
-            console.log("========================0");
             await prisma.user.create({
               data: {
                 id: newUserId,
@@ -86,7 +84,6 @@ export async function GET(request: NextRequest) {
             });
 
             // Now update the Account record to reference newUserId
-            console.log("========================1");
             await prisma.account.update({
               where: {
                 id: existingAccount?.id,
@@ -96,7 +93,6 @@ export async function GET(request: NextRequest) {
                 providerAccountId: accountUserId, // Optionally update providerAccountId
               },
             });
-            console.log("========================2");
             console.log(
               `User ID updated and account linked with new user ID ${newUserId}`,
             );
