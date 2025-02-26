@@ -44,9 +44,9 @@ export async function GET(request: NextRequest) {
     const discordUser: discordUser = await discordUserResponse.json();
     const existingAccount = await prismaClient.account.findUnique({
       where: {
-        provider_provider_account_id: {
+        provider_providerAccountId: {
           provider: "discord",
-          provider_account_id: discordUser.id,
+          providerAccountId: discordUser.id,
         },
       },
     });
@@ -69,12 +69,12 @@ export async function GET(request: NextRequest) {
         data: {
           provider: "discord",
           type: "oauth2",
-          account_type: "CONNECTED",
+          accountType: "CONNECTED",
           avatar: avatar_url,
           username: discordUser.username,
-          provider_account_id: discordUser.id,
+          providerAccountId: discordUser.id,
           userId: authenticatedUser.id,
-          access_token: tokens.accessToken,
+          accessToken: tokens.accessToken,
         },
       });
     }

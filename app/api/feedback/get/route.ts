@@ -46,7 +46,7 @@ export async function GET() {
             select: {
               provider: true,
               username: true,
-              account_type: true,
+              accountType: true,
             },
           },
         },

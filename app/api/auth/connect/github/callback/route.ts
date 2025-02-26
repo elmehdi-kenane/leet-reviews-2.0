@@ -40,9 +40,9 @@ export async function GET(request: NextRequest) {
     const githubUser: GitHubUser = await githubUserResponse.json();
     const existingUser = await prismaClient.account.findUnique({
       where: {
-        provider_provider_account_id: {
+        provider_providerAccountId: {
           provider: "discord",
-          provider_account_id: githubUser.id,
+          providerAccountId: githubUser.id,
         },
       },
     });
@@ -63,12 +63,12 @@ export async function GET(request: NextRequest) {
       data: {
         provider: "discord",
         type: "oauth2",
-        account_type: "CONNECTED",
+        accountType: "CONNECTED",
         avatar: githubUser.avatar_url,
         username: githubUser.login,
-        provider_account_id: githubUser.id,
+        providerAccountId: githubUser.id,
         userId: authenticatedUser.id,
-        access_token: tokens.accessToken,
+        accessToken: tokens.accessToken,
       },
     });
     return new Response(null, {

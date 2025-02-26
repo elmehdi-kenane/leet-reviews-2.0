@@ -378,32 +378,33 @@ const PreviewFeedbackCard = ({
           </div>
           <div className="flex flex-col h-full w-full max-sm:items-center justify-center">
             <div className="font-bold text-2xl max-lg:text-lg flex gap-1 items-center">
-              {feedback.companyName}
-              {feedback.companyLinkedIn !== "" && (
-                <a
-                  href={feedback.companyLinkedIn}
-                  target="_blank"
-                  className=" select-none"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <Image src={linkedInIcon} alt="" width={25} height={25} />
-                </a>
-              )}
+              <p className="max-md:text-center">{feedback.companyName}</p>
+              {feedback.companyLinkedIn !== "" &&
+                feedback.companyLinkedIn !== null && (
+                  <a
+                    href={feedback.companyLinkedIn}
+                    target="_blank"
+                    className="min-w-[25px] select-none"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <Image src={linkedInIcon} alt="" width={25} height={25} />
+                  </a>
+                )}
             </div>
             <p className="font-semibold text-xl max-lg:text-base">
               {feedback.jobStatus}
             </p>
           </div>
         </div>
-        <div className="flex items-center flex-wrap max-md:justify-end max-sm:justify-center min-w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
+        <div className="flex items-center flex-wrap justify-end max-sm:justify-center min-w-[310px] max-w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
           {employmentDetails.map(
             (employmentDetail: employmentDetailInterface, index: number) => {
               return (
                 <div
                   key={index}
-                  className={`flex ${employmentDetail.text === "" ? "hidden" : ""} items-center gap-[5px] rounded-[14px] border border-secondary bg-secondary text-neutral w-[150px] max-lg:w-[48%] max-md:max-w-[140px] max-md:text-xs h-[50px] p-[5px] max-lg:text-sm ${index != 0 && employmentDetails[index - 1].text === "" ? "min-w-full w-full max-w-full max-lg:w-full" : ""}`}
+                  className={`flex ${employmentDetail.text === "" ? "hidden" : ""} items-center gap-[5px] rounded-[14px] border border-secondary bg-secondary text-neutral max-w-[150px] w-[150px] max-lg:w-[48%] max-md:max-w-[140px] max-md:text-xs h-[50px] p-[5px] max-lg:text-sm ${index != 0 && employmentDetails[index - 1].text === "" ? "min-w-full w-full max-w-full max-lg:w-full" : ""}`}
                 >
                   <div className="bg-neutral rounded-full min-w-[35px] min-h-[35px] flex justify-center items-center">
                     <Image
@@ -444,7 +445,7 @@ const PreviewFeedbackCard = ({
         <div className="flex justify-between items-start flex-col">
           <div className="flex items-center gap-1">
             <div
-              className={`border-2 ${feedback.feedbackType === "Publicly" && isProfileHovering === true ? "border-primary cursor-pointer" : "border-secondary"} flex justify-center items-center mb-[5px] rounded-full w-[44px] h-[44px] relative z-[9] bg-neutral`}
+              className={`border-2 ${feedback.feedbackType === "Publicly" && isProfileHovering === true ? "border-primary cursor-pointer" : "border-secondary"} flex justify-center items-center mb-[10px] rounded-full w-[44px] h-[44px] relative z-[9] bg-neutral`}
               onClick={(e) => {
                 if (feedback.feedbackType === "Publicly") {
                   e.stopPropagation();
@@ -486,8 +487,10 @@ const PreviewFeedbackCard = ({
                 : "Anonymous Author"}
             </p>
           </div>
-          <div className="border-2 border-secondary p-2 rounded-2xl w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center h-[60px]">
-            <p className="w-full font-Inter leading-4 max-sm:leading-3">
+          <div className="border-2 border-secondary p-2 rounded-2xl rounded-tl-none w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center min-h-[60px]">
+            <p
+              className={`w-full font-Inter leading-4 max-sm:leading-3 ${isExpandFeedbackCard ? "overflow-auto" : "truncate font-light"}`}
+            >
               {feedback.authorComment}
             </p>
             {feedback.author.linkedAccountProfileUrl !== "" &&
@@ -605,7 +608,9 @@ const PreviewFeedbackCard = ({
             )}
         </div>
       )}
-      <div className="flex justify-between items-center">
+      <div
+        className={`flex justify-between items-center ${isExpandFeedbackCard ? "flex-wrap" : ""}`}
+      >
         <CustomizedTooltip
           placement="top"
           title={`[ ${feedback.trustScore}/10 ]`}
@@ -650,7 +655,9 @@ const PreviewFeedbackCard = ({
             })}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div
+          className={`flex gap-2 ${isExpandFeedbackCard ? "ml-auto" : "min-w-[116px]"} `}
+        >
           {isExpandFeedbackCard === true && (
             <div className="flex gap-2">
               <button

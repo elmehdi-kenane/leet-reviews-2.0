@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
   const state = url.searchParams.get("state");
   const error = url.searchParams.get("error");
 
-  // Validate the state cookie
   const storedState = cookies().get("state")?.value;
 
   if (
@@ -42,27 +41,104 @@ export async function GET(request: NextRequest) {
     const accountUserId = fortyTwoUser.id.toString();
     const fortyTwoUsername = fortyTwoUser.login;
     const fortyTwoFullName = fortyTwoUser.usual_full_name;
-    const existingUser = await prismaClient.account.findFirst({
+    let existingAccount = await prismaClient.account.findFirst({
       where: {
-        provider_account_id: accountUserId,
-        account_type: "AUTH",
+        username: fortyTwoUsername,
+        accountType: "AUTH",
         provider: "fortyTwo",
       },
     });
-    if (existingUser) {
-      const session = await lucia.createSession(existingUser.userId, {});
-      const sessionCookie = lucia.createSessionCookie(session.id);
-      cookies().set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes,
-      );
-      return new Response(null, {
-        status: 302,
-        headers: {
-          Location: "/home",
+    if (existingAccount) {
+      const existingUser = await prismaClient.user.findFirst({
+        where: {
+          username: fortyTwoUsername,
         },
       });
+
+      if (existingUser) {
+        const newUserId = crypto.randomUUID();
+        try {
+          await prismaClient.$transaction(async (prisma) => {
+            // Ensure newUserId exists (optional, to avoid breaking the database)
+            console.log("========================-1");
+            const userExists = await prisma.user.findUnique({
+              where: {
+                id: newUserId,
+              },
+            });
+
+            if (userExists) {
+              throw new Error(`User with ID ${newUserId} already exist`);
+            }
+
+            // Create a new user record with newUserId (optional, depends on use case)
+            console.log("========================0");
+            await prisma.user.create({
+              data: {
+                id: newUserId,
+                name: fortyTwoUser.usual_full_name,
+                email: "xd",
+                username: fortyTwoUser.login,
+                avatar: fortyTwoUser.image.link,
+                bio: "I'm just a chill guy",
+                accountDisplayedWithFeedbacks: "fortyTwo",
+              },
+            });
+
+            // Now update the Account record to reference newUserId
+            console.log("========================1");
+            await prisma.account.update({
+              where: {
+                id: existingAccount?.id,
+              },
+              data: {
+                userId: newUserId, // Link the account to the new user ID
+                providerAccountId: accountUserId, // Optionally update providerAccountId
+              },
+            });
+            console.log("========================2");
+            console.log(
+              `User ID updated and account linked with new user ID ${newUserId}`,
+            );
+
+            // Optionally, delete the old user record if needed
+            await prisma.user.delete({
+              where: {
+                id: existingUser.id,
+              },
+            });
+            await prisma.user.update({
+              where: {
+                id: newUserId,
+              },
+              data: {
+                email: fortyTwoUser.email,
+              },
+            });
+            console.log(`Old user ID ${existingUser.id} deleted`);
+          });
+        } catch (error) {
+          console.error(
+            "Error during user ID update and account linking:",
+            error,
+          );
+          // Optionally, rethrow the error if you want to propagate it
+          throw error;
+        }
+        const session = await lucia.createSession(newUserId, {});
+        const sessionCookie = lucia.createSessionCookie(session.id);
+        cookies().set(
+          sessionCookie.name,
+          sessionCookie.value,
+          sessionCookie.attributes,
+        );
+        return new Response(null, {
+          status: 302,
+          headers: {
+            Location: "/home",
+          },
+        });
+      }
     }
     const userEmail =
       fortyTwoUser.email !== undefined ? fortyTwoUser.email : "";
@@ -77,11 +153,11 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const existingAccount = await prismaClient.account.findUnique({
+    existingAccount = await prismaClient.account.findUnique({
       where: {
-        provider_provider_account_id: {
+        provider_providerAccountId: {
           provider: "fortyTwo",
-          provider_account_id: accountUserId,
+          providerAccountId: accountUserId,
         },
       },
     });
@@ -89,13 +165,13 @@ export async function GET(request: NextRequest) {
       await prismaClient.account.create({
         data: {
           userId: newUser.id,
-          account_type: "AUTH",
+          accountType: "AUTH",
           type: "oauth2",
           username: fortyTwoUsername,
           avatar: fortyTwoUser.image.link,
           provider: "fortyTwo",
-          provider_account_id: fortyTwoUser.id.toString(),
-          access_token: tokens.accessToken,
+          providerAccountId: fortyTwoUser.id.toString(),
+          accessToken: tokens.accessToken,
         },
       });
     } else {
@@ -104,7 +180,7 @@ export async function GET(request: NextRequest) {
           id: existingAccount.id,
         },
         data: {
-          access_token: tokens.accessToken,
+          accessToken: tokens.accessToken,
         },
       });
     }

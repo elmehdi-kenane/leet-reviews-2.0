@@ -41,7 +41,7 @@ export const DisplayAccounts = () => {
           <ul className="list-disc ml-5">
             {authAccounts.map((account, index) => (
               <li key={index}>
-                {account.provider}: {account.account_type}
+                {account.provider}: {account.accountType}
               </li>
             ))}
           </ul>
@@ -65,7 +65,7 @@ export const DisplayAccounts = () => {
                       height={50}
                     ></Image>
                   )}
-                  {account.provider}: {account.account_type}: {account.username}
+                  {account.provider}: {account.accountType}: {account.username}
                 </li>
               );
             })}

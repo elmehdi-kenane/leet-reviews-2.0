@@ -31,7 +31,7 @@ export type formDataType = {
 
 export interface userAccountInterface {
   provider: string;
-  account_type: string;
+  accountType: string;
   username: string;
   avatar: string;
 }
@@ -50,7 +50,7 @@ const Settings = () => {
   const defaultUserAccounts: userAccountInterface[] = [
     {
       provider: "",
-      account_type: "",
+      accountType: "",
       username: "",
       avatar: "",
     },
@@ -231,7 +231,7 @@ const Profile = ({
   };
 
   const authAccount = userAccounts.find(
-    (account) => account.account_type === "AUTH",
+    (account) => account.accountType === "AUTH",
   );
 
   return (
@@ -380,7 +380,7 @@ const AccountConnections = ({
         const userAccount = userAccounts.find(
           (userAccount) =>
             userAccount.provider === account.provider &&
-            userAccount.account_type === "AUTH",
+            userAccount.accountType === "AUTH",
         );
         return (
           userAccount === undefined || account.provider !== userAccount.provider
@@ -406,7 +406,7 @@ const AccountConnections = ({
         const userAccount = userAccounts.find(
           (userAccount) =>
             userAccount.provider === account.provider &&
-            userAccount.account_type === "CONNECTED",
+            userAccount.accountType === "CONNECTED",
         );
         if (userAccount) {
           account.isLinked = true;

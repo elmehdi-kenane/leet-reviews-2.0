@@ -31,7 +31,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[url('/bg.svg')] bg-cover bg-center bg-no-repeat text-neutral w-full h-screen flex flex-col`}
+        style={{
+          background: "linear-gradient(180deg, #141E46 55%, #314AAC 100%)",
+        }}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary text-neutral w-full h-screen flex flex-col`}
       >
         <Suspense>
           <UserProvider>
@@ -41,7 +44,7 @@ export default async function RootLayout({
             >
               <SideBar />
               <BottomBar />
-              <div className="h-max w-full mt-[100px] max-md:mt-[150px]">
+              <div className="h-max w-full mt-[100px] max-md:mt-[150px] mb-[70px]">
                 {children}
               </div>
             </div>

@@ -153,6 +153,7 @@ export default function Profile() {
           {profile.isOwn === true ? (
             <>
               <MyFeedbacksAndSavedWrapper
+                setProfile={setProfile}
                 feedbacks={profile.feedbacks}
                 saves={profile.saves}
               ></MyFeedbacksAndSavedWrapper>
@@ -166,6 +167,7 @@ export default function Profile() {
           ) : (
             <>
               <FeedbackAsVisitorWrapper
+                setProfile={setProfile}
                 isFeedbacksHidden={profile.user.isFeedbacksHidden}
                 feedbacks={profile.feedbacks}
               ></FeedbackAsVisitorWrapper>
@@ -310,11 +312,15 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
 };
 
 const MyFeedbacksAndSavedWrapper = ({
+  setProfile,
   feedbacks,
   saves,
 }: {
   feedbacks: FeedbackInterface[];
   saves: saveProfileInterface[];
+  setProfile: React.Dispatch<
+    React.SetStateAction<profileInterface | undefined>
+  >;
 }) => {
   const [selectedBtn, setSelectedBtn] = useState(1);
   const router = useRouter();
@@ -412,6 +418,7 @@ const MyFeedbacksAndSavedWrapper = ({
             feedbacks.map((feedback) => {
               return (
                 <FeedbackProfileCard
+                  setProfile={setProfile}
                   feedback={feedback}
                   key={feedback.id}
                 ></FeedbackProfileCard>
@@ -421,7 +428,11 @@ const MyFeedbacksAndSavedWrapper = ({
             saves.length > 0 &&
             saves.map((save) => {
               return (
-                <SaveProfileCard save={save} key={save.id}></SaveProfileCard>
+                <SaveProfileCard
+                  setProfile={setProfile}
+                  save={save}
+                  key={save.id}
+                ></SaveProfileCard>
               );
             })}
         </div>
@@ -433,9 +444,13 @@ const MyFeedbacksAndSavedWrapper = ({
 const FeedbackAsVisitorWrapper = ({
   feedbacks,
   isFeedbacksHidden,
+  setProfile,
 }: {
   feedbacks: FeedbackInterface[];
   isFeedbacksHidden: boolean;
+  setProfile: React.Dispatch<
+    React.SetStateAction<profileInterface | undefined>
+  >;
 }) => {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -514,6 +529,7 @@ const FeedbackAsVisitorWrapper = ({
                 .map((feedback) => {
                   return (
                     <FeedbackAsVisitorCard
+                      setProfile={setProfile}
                       feedback={feedback}
                       key={feedback.id}
                     ></FeedbackAsVisitorCard>
@@ -529,13 +545,19 @@ const FeedbackAsVisitorWrapper = ({
 const PopUpDeleteFeedback = ({
   setIsPopUpDeleteFeedbackOpen,
   feedbackId,
+  setProfile,
 }: {
   setIsPopUpDeleteFeedbackOpen: (value: boolean) => void;
   feedbackId: string;
+  setProfile: React.Dispatch<
+    React.SetStateAction<profileInterface | undefined>
+  >;
 }) => {
   const userContext = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const deleteFeedback = async (feedbackId: string) => {
+    setIsLoading(true);
     try {
       await fetch(
         `/api/feedback/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
@@ -545,36 +567,56 @@ const PopUpDeleteFeedback = ({
       );
     } catch (error) {
       console.error("Error", error);
+    } finally {
+      setProfile((prev) => {
+        if (prev) {
+          const updatedFeedbacks = prev.feedbacks.filter(
+            (feedback) => feedback.id !== feedbackId,
+          );
+          return {
+            ...prev,
+            feedbacks: updatedFeedbacks,
+          };
+        }
+        return prev;
+      });
+      setIsLoading(false);
+      setIsPopUpDeleteFeedbackOpen(false);
     }
   };
   return (
     <div className="flex justify-center items-center z-30 absolute inset-0 h-full backdrop-blur-sm rounded-[45px]">
-      <div className="flex justify-center items-center flex-col bg-secondary h-full bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
-        <p className="font-semibold mb-4 text-white">
-          Are you sure you want to delete feedback?
-        </p>
-        <div className="flex w-full justify-between gap-3 flex-col">
-          <button
-            className="w-full font-SpaceGrotesk rounded-lg p-2 border border-white text-white bg-transparent"
-            onClick={(e) => {
-              e.stopPropagation();
-              deleteFeedback(feedbackId);
-              setIsPopUpDeleteFeedbackOpen(false);
-            }}
-          >
-            Yes, delete
-          </button>
-          <button
-            className="w-full font-SpaceGrotesk rounded-lg p-2 border border-primary text-white bg-primary"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsPopUpDeleteFeedbackOpen(false);
-            }}
-          >
-            Cancel
-          </button>
+      {isLoading ? (
+        <div className="flex justify-center w-full items-center flex-col bg-secondary h-full bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
+          Deleting
         </div>
-      </div>
+      ) : (
+        <div className="flex justify-center items-center flex-col bg-secondary h-full bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
+          <p className="font-semibold mb-4 text-white">
+            Are you sure you want to delete feedback?
+          </p>
+          <div className="flex w-full justify-between gap-3 flex-col">
+            <button
+              className="w-full font-SpaceGrotesk rounded-lg p-2 border border-white text-white bg-transparent"
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteFeedback(feedbackId);
+              }}
+            >
+              Yes, delete
+            </button>
+            <button
+              className="w-full font-SpaceGrotesk rounded-lg p-2 border border-primary text-white bg-primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsPopUpDeleteFeedbackOpen(false);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -583,14 +625,20 @@ const PopUpUnSaveFeedback = ({
   setIsPopUpUnSaveFeedbackOpen,
   setIsSaved,
   feedbackId,
+  setProfile,
 }: {
   setIsPopUpUnSaveFeedbackOpen: (value: boolean) => void;
   setIsSaved: (value: boolean) => void;
   feedbackId: string;
+  setProfile: React.Dispatch<
+    React.SetStateAction<profileInterface | undefined>
+  >;
 }) => {
   const userContext = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const deleteSave = async (feedbackId: string) => {
+    setIsLoading(true);
     try {
       await fetch(
         `/api/feedback/save/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
@@ -600,42 +648,70 @@ const PopUpUnSaveFeedback = ({
       );
     } catch (error) {
       console.error("Error", error);
+    } finally {
+      setProfile((prev) => {
+        if (prev && prev.isOwn) {
+          const updatedSaves = prev.saves.filter(
+            (save) => save.feedbackId !== feedbackId,
+          );
+          return {
+            ...prev,
+            saves: updatedSaves,
+          };
+        }
+        return prev;
+      });
+      setIsLoading(false);
+      setIsPopUpUnSaveFeedbackOpen(false);
     }
   };
   return (
     <div className="flex justify-center items-center z-30 absolute inset-0 h-full backdrop-blur-sm rounded-[45px]">
-      <div className="flex justify-center items-center flex-col bg-secondary h-full bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
-        <p className="font-semibold mb-4 text-white">
-          Are you sure you want to un-save feedback?
-        </p>
-        <div className="flex w-full justify-between gap-3 flex-col">
-          <button
-            className="w-full font-SpaceGrotesk rounded-lg p-2 border border-white text-white bg-transparent"
-            onClick={(e) => {
-              e.stopPropagation();
-              deleteSave(feedbackId);
-              setIsSaved(false);
-              setIsPopUpUnSaveFeedbackOpen(false);
-            }}
-          >
-            Yes, un-save
-          </button>
-          <button
-            className="w-full font-SpaceGrotesk rounded-lg p-2 border border-primary text-white bg-primary"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsPopUpUnSaveFeedbackOpen(false);
-            }}
-          >
-            Cancel
-          </button>
+      {isLoading ? (
+        <div className="flex justify-center items-center w-full flex-col bg-secondary h-full bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
+          Un-saving...
         </div>
-      </div>
+      ) : (
+        <div className="flex justify-center items-center flex-col bg-secondary h-full bg-opacity-75 p-5 rounded-xl drop-shadow-xl PopUpUnSaveFeedback">
+          <p className="font-semibold mb-4 text-white">
+            Are you sure you want to un-save feedback?
+          </p>
+          <div className="flex w-full justify-between gap-3 flex-col">
+            <button
+              className="w-full font-SpaceGrotesk rounded-lg p-2 border border-white text-white bg-transparent"
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteSave(feedbackId);
+                setIsSaved(false);
+              }}
+            >
+              Yes, un-save
+            </button>
+            <button
+              className="w-full font-SpaceGrotesk rounded-lg p-2 border border-primary text-white bg-primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsPopUpUnSaveFeedbackOpen(false);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
+const SaveProfileCard = ({
+  save,
+  setProfile,
+}: {
+  setProfile: React.Dispatch<
+    React.SetStateAction<profileInterface | undefined>
+  >;
+  save: saveProfileInterface;
+}) => {
   const router = useRouter();
   const [isSaved, setIsSaved] = useState(true);
   const [isPopUpUnSaveFeedbackOpen, setIsPopUpUnSaveFeedbackOpen] =
@@ -754,6 +830,7 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
         </button>
         {isPopUpUnSaveFeedbackOpen === true && (
           <PopUpUnSaveFeedback
+            setProfile={setProfile}
             setIsSaved={setIsSaved}
             feedbackId={save.feedback.id}
             setIsPopUpUnSaveFeedbackOpen={setIsPopUpUnSaveFeedbackOpen}
@@ -766,8 +843,12 @@ const SaveProfileCard = ({ save }: { save: saveProfileInterface }) => {
 
 const FeedbackAsVisitorCard = ({
   feedback,
+  setProfile,
 }: {
   feedback: FeedbackInterface;
+  setProfile: React.Dispatch<
+    React.SetStateAction<profileInterface | undefined>
+  >;
 }) => {
   const userContext = useContext(UserContext);
   const userVote =
@@ -872,6 +953,7 @@ const FeedbackAsVisitorCard = ({
         </button>
         {isPopUpUnSaveFeedbackOpen === true && (
           <PopUpUnSaveFeedback
+            setProfile={setProfile}
             setIsSaved={setIsSaved}
             feedbackId={feedback.id}
             setIsPopUpUnSaveFeedbackOpen={setIsPopUpUnSaveFeedbackOpen}
@@ -882,7 +964,15 @@ const FeedbackAsVisitorCard = ({
   );
 };
 
-const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
+const FeedbackProfileCard = ({
+  feedback,
+  setProfile,
+}: {
+  feedback: FeedbackInterface;
+  setProfile: React.Dispatch<
+    React.SetStateAction<profileInterface | undefined>
+  >;
+}) => {
   const [isCross, setIsCross] = useState(false);
   const [isPopUpDeleteFeedbackOpen, setIsPopUpDeleteFeedbackOpen] =
     useState(false);
@@ -890,7 +980,7 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   return (
     <div
       onClick={() => router.push(`/home?feedbackId=${feedback.id}`)}
-      className="bg-secondary shadow-2xl cursor-pointer text-neutral min-w-[200px] flex rounded-lg flex-col items-center p-5 transition-transform duration-500 transform hover:scale-[1.05]"
+      className="bg-secondary shadow-2xl cursor-pointer text-neutral min-w-[200px] max-w-[200px] flex rounded-lg flex-col items-center p-5 transition-transform duration-500 transform hover:scale-[1.05]"
       key={feedback.id}
     >
       <Image
@@ -926,10 +1016,10 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
           />
         </svg>
       </div>
-      <p className="text-xl font-SpaceGrotesk w-full text-center truncate">
+      <p className="text-xl font-SpaceGrotesk max-w-full text-center truncate">
         {feedback.companyName}
       </p>
-      <p className="text-lg font-SpaceGrotesk w-full text-center truncate">
+      <p className="text-lg font-SpaceGrotesk max-w-full text-center truncate">
         {feedback.jobStatus}
       </p>
       <div className="mt-auto flex w-full gap-1 select-none">
@@ -995,6 +1085,7 @@ const FeedbackProfileCard = ({ feedback }: { feedback: FeedbackInterface }) => {
           <PopUpDeleteFeedback
             feedbackId={feedback.id}
             setIsPopUpDeleteFeedbackOpen={setIsPopUpDeleteFeedbackOpen}
+            setProfile={setProfile}
           ></PopUpDeleteFeedback>
         )}
         <button
@@ -1249,7 +1340,7 @@ const VoteProfileCard = ({ vote }: { vote: voteProfileInterface }) => {
     <div
       onClick={() => router.push(`/home?feedbackId=${vote.feedback.id}`)}
       key={vote.id}
-      className="w-[100%] shadow-2xl cursor-pointer text-neutral bg-secondary flex gap-2 items-center font-SpaceGrotesk p-1 rounded-lg"
+      className="w-[100%] shadow-2xl cursor-pointer text-neutral justify-between bg-secondary flex gap-2 items-center font-SpaceGrotesk p-1 rounded-lg"
     >
       <Image
         src={vote.isUp === true ? ArrowUpIcon : ArrowDownIcon}
@@ -1259,62 +1350,64 @@ const VoteProfileCard = ({ vote }: { vote: voteProfileInterface }) => {
         className="rounded-full min-w-[35px] min-h-[35px] bg-neutral max-w-[35px] max-h-[35px] p-2 ml-[6px]"
       />
       <div className="min-w-[1px] w-[1px] h-[55%] bg-neutral"></div>
-      <Image
-        src={vote.feedback.companyLogo}
-        alt={vote.feedback.companyLogo}
-        width={60}
-        height={60}
-        className="rounded-lg min-w-[60px] min-h-[60px] max-w-[60px] max-h-[60px] ml-[-8px] p-2"
-      />
-      <div
-        className={`w-[${circleRadius * 2}] h-[${
-          circleRadius * 2
-        }]  ml-[-30px] mt-[30px]`}
-      >
+      <div className="w-max flex">
         <Image
-          src={getExperienceRateIcon(vote.feedback.experienceRate)}
-          alt={getExperienceRateIcon(vote.feedback.experienceRate)}
-          width={15}
-          height={15}
-          className="ml-[2.5px] mb-[-18px] relative z-[9]"
+          src={vote.feedback.companyLogo}
+          alt={vote.feedback.companyLogo}
+          width={60}
+          height={60}
+          className="rounded-lg min-w-[60px] min-h-[60px] max-w-[60px] max-h-[60px] ml-[-8px] p-2"
         />
-        <svg
-          width={circleRadius * 2}
-          height={circleRadius * 2}
-          xmlns="http://www.w3.org/2000/svg"
-          // className="border border-[blue]"
+        <div
+          className={`w-[${circleRadius * 2}] h-[${
+            circleRadius * 2
+          }]  ml-[-20px] mt-[40px]`}
         >
-          <circle
-            r={circleRadius}
-            cx={circleRadius}
-            cy={circleRadius}
-            fill="#FFFFFF"
+          <Image
+            src={getExperienceRateIcon(vote.feedback.experienceRate)}
+            alt={getExperienceRateIcon(vote.feedback.experienceRate)}
+            width={15}
+            height={15}
+            className="ml-[2.5px] mb-[-18px] relative z-[9]"
           />
-        </svg>
+          <svg
+            width={circleRadius * 2}
+            height={circleRadius * 2}
+            xmlns="http://www.w3.org/2000/svg"
+            // className="border border-[blue]"
+          >
+            <circle
+              r={circleRadius}
+              cx={circleRadius}
+              cy={circleRadius}
+              fill="#FFFFFF"
+            />
+          </svg>
+        </div>
       </div>
-      <p className="font-semibold max-sm:hidden truncate font-SpaceGrotesk text-lg">
+      <p className="font-semibold max-md:hidden max-w-full font-SpaceGrotesk text-lg">
         {vote.feedback.companyName}
       </p>
-      <p className="max-sm:hidden">•</p>
-      <p className="font-medium font-SpaceGrotesk w-full text-center truncate text-md max-sm:hidden">
+      <p className="max-md:hidden">•</p>
+      <p className="font-medium font-SpaceGrotesk w-full text-center truncate text-md max-md:hidden">
         {vote.feedback.jobStatus}
       </p>
-      <div className="flex sm:hidden max-w-full flex-1 w-[40%] flex-col">
-        <p className="font-semibold font-SpaceGrotesk truncate text-lg">
+      <div className="flex md:hidden flex-1 flex-col mr-auto w-[30%]">
+        <p className="font-semibold font-SpaceGrotesk text-lg truncate">
           {vote.feedback.companyName}
         </p>
         <p className="font-Inter italic min-w-max text-[8px]">
-          time
-          {/* {formatDistanceToNow(new Date(vote.createdAt), {
+          {/* time */}
+          {formatDistanceToNow(new Date(vote.createdAt), {
             addSuffix: true,
-          })} */}
+          })}
         </p>
       </div>
-      <p className="font-Inter italic min-w-max text-[12px] max-sm:hidden mt-8 ml-auto mr-3">
-        time
-        {/* {formatDistanceToNow(new Date(vote.createdAt), {
+      <p className="font-Inter italic min-w-max text-[12px] max-md:hidden mt-8 ml-auto mr-3">
+        {/* time */}
+        {formatDistanceToNow(new Date(vote.createdAt), {
           addSuffix: true,
-        })} */}
+        })}
       </p>
       <div className="min-w-[1px] w-[1px] h-[55%] bg-neutral"></div>
       <Image

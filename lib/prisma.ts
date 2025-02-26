@@ -31,5 +31,6 @@ export interface FeedbackCreateInput {
   experienceRate: number;
   authorComment: string;
   createdAt: Date;
+  updatedAt: Date;
   authorId: string;
 }

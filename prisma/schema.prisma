@@ -1,17 +1,116 @@
-// schema.prisma
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("POSTGRES_URL")
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
 }
 
-enum account_type {
-  AUTH   // Used for logging in
-  CONNECTED // Just linked, not used for logging in
+model Account {
+  id                String       @id @default(uuid())
+  userId            String
+  type              String
+  provider          provider
+  providerAccountId String
+  accountType       account_type
+  username          String?
+  avatar            String?
+  refreshToken      String?
+  accessToken       String?
+  expiresAt         Int?
+  createdAt         Int?
+  secretValidUntil  Int?
+  tokenType         String?
+  scope             String?
+  idToken           String?
+  sessionState      String?
+  oauthTokenSecret  String?
+  oauthToken        String?
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([provider, providerAccountId], map: "Account_provider_account_id_unique")
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model User {
+  id String @id @default(uuid())
+  username                      String
+  name                          String?
+  isFeedbacksHidden             Boolean    @default(false)
+  isCommentsAndVotesHidden      Boolean    @default(false)
+  accountDisplayedWithFeedbacks provider?  @default(none)
+  email                         String     @unique
+  createdAt                     DateTime   @default(now())
+  avatar                        String?
+  bio                           String?
+  accounts                      Account[]
+  comments                      Comment[]
+  feedbacks                     Feedback[]
+  saves                         Save[]
+  sessions                      Session[]
+  votes                         Vote[]
+}
+
+model Feedback {
+  id String @id @default(uuid())
+  feedbackType    String?
+  trustScore      Int?
+  experienceRate  Int?      @default(1)
+  companyName     String
+  companyLogo     String?   @default("http://localhost:8000/uploads/1706546585198-178489636.png")
+  companyLinkedIn String?   @default("https://www.linkedin.com/school/1337-coding-school/")
+  companyLocation String?
+  jobProgressType String?
+  workingType     String?
+  contractType    String?
+  jobStatus       String?
+  authorComment   String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime
+  authorId        String
+  comments        Comment[]
+  author          User      @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  saves           Save[]
+  votes           Vote[]
+}
+
+model Vote {
+  id         String   @id @default(uuid())
+  feedbackId String
+  authorId   String
+  isUp       Boolean
+  createdAt  DateTime @default(now())
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  feedback   Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  feedbackId String
+  authorId   String
+  text       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  feedback   Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Save {
+  id         String   @id @default(uuid())
+  authorId   String
+  feedbackId String
+  createdAt  DateTime @default(now())
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  feedback   Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([authorId, feedbackId], map: "Save_unique")
 }
 
 enum provider {
@@ -19,127 +118,10 @@ enum provider {
   github
   discord
   linkedIn
-  none // for the accountDisplayedWithFeedbacks field if no account selected
+  none
 }
 
-
-model Account {
-    id                  String  @id @default(cuid())
-    userId              String
-    type                String
-    provider            provider
-    provider_account_id String
-    account_type        account_type
-    username            String? // needed for connect accounts appearance
-    avatar              String?
-    refresh_token       String? @db.Text
-    access_token        String? @db.Text
-    expires_at          Int?
-    created_at          Int?
-    secret_valid_until  Int?
-    token_type          String?
-    scope               String?
-    id_token            String? @db.Text
-    session_state       String?
-    oauth_token_secret  String?
-    oauth_token         String?
-
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@unique([provider, provider_account_id])
-}
-
-model Session {
-    id           String   @id
-    // sessionToken String   @unique
-    userId       String
-    expiresAt    DateTime
-    
-    user         User     @relation(references: [id], fields: [userId], onDelete: Cascade)
-}
-
-model User {
-    id                            String    @id @default(uuid())
-    username	                  String
-    name	                      String
-    isFeedbacksHidden                 Boolean @default(false)
-    isCommentsAndVotesHidden          Boolean @default(false)
-    accountDisplayedWithFeedbacks provider
-    email                         String   @unique
-    emailVerified                 DateTime?
-    createdAt                     DateTime  @default(now())
-    avatar                        String
-    bio                           String
-    accounts                      Account[]
-    sessions                      Session[]
-    feedbacks                     Feedback[]
-    votes                         Vote[]
-    comments                      Comment[]
-    saves                         Save[]
-}
-
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
-
-    @@unique([identifier, token])
-}
-
-model Feedback {
-    id                   String    @id @default(uuid())
-    feedbackType         String
-    trustScore           Int
-    companyName          String
-    companyLogo          String
-    companyLinkedIn      String
-    companyLocation      String
-    jobStatus            String
-    workingType          String
-    contractType         String
-    jobProgressType      String
-    experienceRate       Int
-    authorComment        String
-    createdAt            DateTime
-    votes                Vote[]
-    comments             Comment[]
-    authorId             String
-
-    author               User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    saves                Save[]
-}
-
-model Vote {
-    id                   String    @id @default(uuid())
-    feedbackId           String
-    authorId             String
-    isUp                 Boolean
-    createdAt  DateTime  @default(now())
-
-    author               User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    feedback             Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
-}
-
-model Comment {
-    id                   String    @id @default(uuid())
-    feedbackId           String
-    authorId             String
-    text                 String
-    createdAt            DateTime
-
-    author               User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    feedback             Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
-
-}
-
-model Save {
-    id         String    @id @default(uuid())
-    authorId   String
-    feedbackId String
-    createdAt  DateTime  @default(now())
-
-    author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    feedback   Feedback  @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
-
-    @@unique([authorId, feedbackId])
+enum account_type {
+  AUTH
+  CONNECTED
 }

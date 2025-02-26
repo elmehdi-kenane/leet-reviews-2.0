@@ -42,8 +42,8 @@ export async function GET(request: NextRequest) {
     const githubFullName = githubUser.name;
     const existingUser = await prismaClient.account.findFirst({
       where: {
-        provider_account_id: accountUserId,
-        account_type: "AUTH",
+        providerAccountId: accountUserId,
+        accountType: "AUTH",
         provider: "github",
       },
     });
@@ -76,9 +76,9 @@ export async function GET(request: NextRequest) {
 
     const existingAccount = await prismaClient.account.findUnique({
       where: {
-        provider_provider_account_id: {
+        provider_providerAccountId: {
           provider: "github",
-          provider_account_id: accountUserId,
+          providerAccountId: accountUserId,
         },
       },
     });
@@ -86,13 +86,13 @@ export async function GET(request: NextRequest) {
       await prismaClient.account.create({
         data: {
           userId: newUser.id,
-          account_type: "AUTH",
+          accountType: "AUTH",
           type: "oauth2",
           username: githubUsername,
           avatar: githubUser.avatar_url,
           provider: "github",
-          provider_account_id: accountUserId,
-          access_token: tokens.accessToken,
+          providerAccountId: accountUserId,
+          accessToken: tokens.accessToken,
         },
       });
     } else {
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
           id: existingAccount.id,
         },
         data: {
-          access_token: tokens.accessToken,
+          accessToken: tokens.accessToken,
         },
       });
     }

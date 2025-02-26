@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     experienceRate: 0,
     authorComment: "",
     createdAt: createAt,
+    updatedAt: createAt,
     authorId: userId,
   };
 
@@ -100,7 +101,7 @@ export async function POST(request: NextRequest) {
             select: {
               provider: true,
               username: true,
-              account_type: true,
+              accountType: true,
             },
           },
         },

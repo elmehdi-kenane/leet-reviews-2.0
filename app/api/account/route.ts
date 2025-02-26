@@ -4,11 +4,11 @@ import { prismaClient, validateRequest } from "@/lib/auth";
 export type Account = {
   id: string;
   username: string;
-  account_type: string;
-  access_token: string;
+  accountType: string;
+  accessToken: string;
   provider: string;
   avatar?: string;
-  provider_account_id: string;
+  providerAccountId: string;
 };
 
 // Define the response type
@@ -28,11 +28,11 @@ export async function GET() {
     const userId = result.user?.id;
 
     const authAccounts = await prismaClient.account.findMany({
-      where: { userId, account_type: "AUTH" },
+      where: { userId, accountType: "AUTH" },
     });
 
     const connectedAccounts = await prismaClient.account.findMany({
-      where: { userId, account_type: "CONNECTED" },
+      where: { userId, accountType: "CONNECTED" },
     });
 
     return NextResponse.json({ authAccounts, connectedAccounts });

@@ -14,7 +14,7 @@ export async function GET() {
       accounts: {
         select: {
           provider: true,
-          account_type: true,
+          accountType: true,
           username: true,
           avatar: true,
         },

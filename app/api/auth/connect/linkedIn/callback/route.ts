@@ -44,9 +44,9 @@ export async function GET(request: NextRequest) {
     const linkedInUser: linkedInUser = await linkedInUserResponse.json();
     const existingAccount = await prismaClient.account.findUnique({
       where: {
-        provider_provider_account_id: {
+        provider_providerAccountId: {
           provider: "linkedIn",
-          provider_account_id: linkedInUser.sub,
+          providerAccountId: linkedInUser.sub,
         },
       },
     });
@@ -69,12 +69,12 @@ export async function GET(request: NextRequest) {
         data: {
           provider: "linkedIn",
           type: "oauth2",
-          account_type: "CONNECTED",
+          accountType: "CONNECTED",
           avatar: avatar_url,
           username: linkedInUser.name,
-          provider_account_id: linkedInUser.sub,
+          providerAccountId: linkedInUser.sub,
           userId: authenticatedUser.id,
-          access_token: tokens.accessToken,
+          accessToken: tokens.accessToken,
         },
       });
     }
