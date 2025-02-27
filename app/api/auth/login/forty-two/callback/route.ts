@@ -65,6 +65,19 @@ export async function GET(request: NextRequest) {
         where: {
           username: fortyTwoUsername,
         },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          username: true,
+          avatar: true,
+          bio: true,
+          accountDisplayedWithFeedbacks: true,
+          feedbacks: true,
+          comments: true,
+          saves: true,
+          votes: true,
+        },
       });
 
       if (existingUser) {
@@ -92,6 +105,19 @@ export async function GET(request: NextRequest) {
                 avatar: fortyTwoUser.image.link,
                 bio: "I'm just a chill guy",
                 accountDisplayedWithFeedbacks: "fortyTwo",
+                feedbacks: {
+                  connect: existingUser.feedbacks.map((feedback) => ({
+                    id: feedback.id,
+                  })),
+                },
+                comments: {
+                  connect: existingUser.comments.map((comment) => ({
+                    id: comment.id,
+                  })),
+                },
+                votes: {
+                  connect: existingUser.votes.map((vote) => ({ id: vote.id })),
+                },
               },
             });
 
