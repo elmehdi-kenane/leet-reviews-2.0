@@ -441,7 +441,7 @@ const PreviewFeedbackCard = ({
           )}
         </div>
       </div>
-      {feedback.authorComment !== "" ? (
+      {feedback.authorComment !== "" && feedback.authorComment !== null ? (
         <div className="flex justify-between items-start flex-col">
           <div className="flex items-center gap-1">
             <div
