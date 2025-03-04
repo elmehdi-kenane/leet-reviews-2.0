@@ -59,8 +59,9 @@ const Navbar = () => {
   }, []);
 
   const fetchSearchResult = async (searchTerm: string) => {
-    if (searchTerm === "") return;
-    const response = await fetch(`/api/search?searchTerm=${searchTerm}`);
+    const cleanedInput = searchTerm.trim();
+    if (cleanedInput === "") return;
+    const response = await fetch(`/api/search?searchTerm=${cleanedInput}`);
     const responseData = await response.json();
     setSearchResults(responseData.results);
   };

@@ -121,7 +121,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   const PreviewFeedbackCardRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="h-max w-full flex justify-center">
+    <div className="h-max w-full max-md:w-[90%] flex justify-center">
       {isExpandFeedbackCard === true && (
         <div className="absolute font-SpaceGrotesk h-full min-w-[100%] top-0 z-[151] bg-white/50 backdrop-blur-xl flex justify-center">
           <div className="max-w-[860px] w-full flex justify-center h-full items-start overflow-auto">
@@ -489,7 +489,7 @@ const PreviewFeedbackCard = ({
           </div>
           <div className="border-2 border-secondary p-2 rounded-2xl rounded-tl-none w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center min-h-[60px]">
             <p
-              className={`w-full font-Inter min-h-[30px] max-h-[80px] ${isExpandFeedbackCard ? "overflow-auto dark-scroll small-scroll" : "truncate font-light"}`}
+              className={`w-full font-Inter min-h-[30px] max-md:min-h-[15px] max-h-[80px] ${isExpandFeedbackCard ? "overflow-auto dark-scroll small-scroll" : "truncate font-light"}`}
             >
               {feedback.authorComment}
             </p>
