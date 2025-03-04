@@ -77,12 +77,12 @@ const Settings = () => {
         toast.dismiss();
         if (connectionStatus === "success")
           toast.success(`${provider} account connected successfully!`, {
-            style: { background: "#fff5e0", color: "#141e46" },
+            style: { background: "#FFFFFF", color: "#141e46" },
           });
         else
           toast.error("Connection was cancelled or invalid.", {
             id: "Connection was cancelled or invalid.",
-            style: { background: "#fff5e0", color: "#141e46" },
+            style: { background: "#FFFFFF", color: "#141e46" },
           });
         Cookies.remove("connection_status");
         Cookies.remove("provider");
@@ -125,7 +125,7 @@ const Settings = () => {
     event.preventDefault();
     setIsDetailsChanged(UnSavedChangesPopUpState.CLOSING);
     toast.loading("update informations...", {
-      style: { background: "#fff5e0", color: "#141e46" },
+      style: { background: "#FFFFFF", color: "#141e46" },
     });
     const formData = new FormData(event.currentTarget);
     const formDataValues = Object.fromEntries(formData);
@@ -161,7 +161,7 @@ const Settings = () => {
     if (res.ok) {
       toast.dismiss();
       toast.success("Preferences updated successfully 👍", {
-        style: { background: "#fff5e0", color: "#141e46" },
+        style: { background: "#FFFFFF", color: "#141e46" },
       });
       setOriginalDetails(updatedDetails);
     }
@@ -457,13 +457,13 @@ const AccountDeletion = () => {
     if (confirmationText !== "DELETE") {
       toast.dismiss();
       toast.error("invalid confirmation text.", {
-        style: { background: "#fff5e0", color: "#141e46" },
+        style: { background: "#FFFFFF", color: "#141e46" },
       });
       return;
     }
     toast.dismiss();
     toast.loading("account deletion...", {
-      style: { background: "#fff5e0", color: "#141e46" },
+      style: { background: "#FFFFFF", color: "#141e46" },
       position: "bottom-center",
     });
     setIsPopUpDeleteAccount(popUpDeleteAccountState.deletionConfirmed);

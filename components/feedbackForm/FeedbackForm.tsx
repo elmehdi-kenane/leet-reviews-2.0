@@ -788,7 +788,7 @@ const MinimalPreviewFeedback = ({
 const MinimalPreviewFeedbackSkeleton = () => {
   return (
     <>
-      <SkeletonTheme baseColor="#D9D9D9" highlightColor="#fff5e0" height={395}>
+      <SkeletonTheme baseColor="#D9D9D9" highlightColor="#FFFFFF" height={395}>
         <div className="flex flex-col w-full h-full justify-between items-center gap-3">
           <div className="flex flex-col w-full justify-center items-center gap-3">
             <div className="flex w-full items-center justify-between">

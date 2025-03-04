@@ -274,13 +274,13 @@ function ControlledOpenSelect({
             minWidth: 120,
             maxHeight: 28,
             padding: 0,
-            backgroundColor: "#fff5e0",
+            backgroundColor: "#FFFFFF",
             color: "#141e46",
           }}
         >
           <MenuItem
             sx={{
-              backgroundColor: "#fff5e0",
+              backgroundColor: "#FFFFFF",
               color: "#141e46",
             }}
             value={"none"}
@@ -297,7 +297,7 @@ function ControlledOpenSelect({
               <MenuItem
                 key={index}
                 sx={{
-                  backgroundColor: "#fff5e0",
+                  backgroundColor: "#FFFFFF",
                   color: "#141e46",
                 }}
                 value={account.provider}
@@ -370,7 +370,7 @@ export const AccountCard = ({
   const handleRemoveLinkedAccount = async () => {
     toast.dismiss();
     toast.loading(`Removing ${account.provider} account`, {
-      style: { background: "#fff5e0", color: "#141e46" },
+      style: { background: "#FFFFFF", color: "#141e46" },
     });
     const res = await fetch(`/api/auth/disconnect/${account.provider}`, {
       method: "POST",
@@ -391,7 +391,7 @@ export const AccountCard = ({
       );
       toast.dismiss();
       toast.success(`${account.provider} account removed successfully!`, {
-        style: { background: "#fff5e0", color: "#141e46" },
+        style: { background: "#FFFFFF", color: "#141e46" },
       });
     }
   };

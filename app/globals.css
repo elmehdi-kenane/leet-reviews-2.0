@@ -44,7 +44,7 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
-  /* scrollbar-color: #141e46 #fff5e0;
+  /* scrollbar-color: #141e46 #FFFFFF;
   scrollbar-width: thin; */
 }
 
@@ -65,7 +65,7 @@ body {
 }
 
 .light-scroll::-webkit-scrollbar-thumb {
-  background: #fff5e0;
+  background: #ffffff;
   border-radius: 15px;
   width: 2px;
 }
@@ -76,7 +76,7 @@ body {
   margin: 0 0px;
 }
 .dark-scroll::-webkit-scrollbar-track {
-  background: #fff5e0;
+  background: #ffffff;
   /* background: yellow; */
   /* margin-top: 100px; */
   margin-top: 0px;
@@ -328,5 +328,5 @@ body {
 }
 
 ul {
-  background-color: #fff5e0;
+  background-color: #ffffff;
 }

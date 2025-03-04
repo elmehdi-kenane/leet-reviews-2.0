@@ -300,7 +300,7 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
             );
             toast.dismiss();
             toast.success("profile link copied!", {
-              style: { background: "#fff5e0", color: "#141e46" },
+              style: { background: "#FFFFFF", color: "#141e46" },
             });
           }}
         >
@@ -811,7 +811,7 @@ const SaveProfileCard = ({
             } else {
               toast.dismiss();
               toast.success("feedback saved!", {
-                style: { background: "#fff5e0", color: "#141e46" },
+                style: { background: "#FFFFFF", color: "#141e46" },
               });
               setIsSaved(true);
               createSave(save.feedback.id);
@@ -934,7 +934,7 @@ const FeedbackAsVisitorCard = ({
             } else {
               toast.dismiss();
               toast.success("feedback saved!", {
-                style: { background: "#fff5e0", color: "#141e46" },
+                style: { background: "#FFFFFF", color: "#141e46" },
               });
               setIsSaved(true);
               createSave(feedback.id);
@@ -1045,7 +1045,7 @@ const FeedbackProfileCard = ({
               );
               toast.dismiss();
               toast.success("feedback link copied!", {
-                style: { background: "#fff5e0", color: "#141e46" },
+                style: { background: "#FFFFFF", color: "#141e46" },
               });
             }}
           />

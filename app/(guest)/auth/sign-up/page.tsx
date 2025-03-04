@@ -37,7 +37,7 @@ export default function SignUp() {
       setTimeout(() => {
         toast.error("Authentication was cancelled or invalid.", {
           id: "Authentication was cancelled or invalid.",
-          style: { background: "#fff5e0", color: "#141e46" },
+          style: { background: "#FFFFFF", color: "#141e46" },
         });
       }, 300);
     }

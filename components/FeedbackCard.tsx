@@ -489,7 +489,7 @@ const PreviewFeedbackCard = ({
           </div>
           <div className="border-2 border-secondary p-2 rounded-2xl rounded-tl-none w-[98%] mt-[-20px] relative self-end max-lg:text-xs max-sm:text-[9px] max-sm:leading-[12px] flex items-center min-h-[60px]">
             <p
-              className={`w-full font-Inter leading-4 max-sm:leading-3 ${isExpandFeedbackCard ? "overflow-auto" : "truncate font-light"}`}
+              className={`w-full font-Inter min-h-[30px] max-h-[80px] ${isExpandFeedbackCard ? "overflow-auto dark-scroll small-scroll" : "truncate font-light"}`}
             >
               {feedback.authorComment}
             </p>

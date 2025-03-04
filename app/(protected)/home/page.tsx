@@ -29,7 +29,7 @@ export default function Home() {
           if (expandedFeedback.length === 0)
             toast.error("Feedback not found.", {
               id: "Feedback Not Found.",
-              style: { background: "#fff5e0", color: "#141e46" },
+              style: { background: "#FFFFFF", color: "#141e46" },
             });
         }
 
@@ -103,7 +103,7 @@ const FeedbackCardSkeleton = () => {
       <SkeletonTheme
         baseColor="#D9D9D9"
         //   baseColor="red"
-        highlightColor="#fff5e0"
+        highlightColor="#FFFFFF"
       >
         <div className="flex flex-col w-full justify-center items-center gap-3">
           <div className="flex w-full max-md:flex-col justify-center items-center gap-3">
