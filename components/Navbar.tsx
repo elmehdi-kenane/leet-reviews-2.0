@@ -397,7 +397,7 @@ const Navbar = () => {
         className={`md:hidden ${isSearchBarMobileOpen === false && "hidden"} top-20 absolute w-[97%] flex flex-col gap-2`}
       >
         <div
-          className={`md:hidden ${isSearchBarMobileOpen === false && "hidden"} flex rounded-xl bg-transparent pl-2 h-[60px] w-full border-2 border-primary hover:border-2 hover:border-primary`}
+          className={`md:hidden ${isSearchBarMobileOpen === false && "hidden"} flex rounded-xl pl-2 h-[60px] bg-secondary w-full border-2 border-primary hover:border-2 hover:border-primary`}
         >
           <input
             maxLength={inputMaxLength}
