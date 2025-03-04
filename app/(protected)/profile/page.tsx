@@ -392,7 +392,9 @@ const MyFeedbacksAndSavedWrapper = ({
           <div className="w-full h-full text-secondary font-SpaceGrotesk flex flex-col justify-center items-center font-semibold text-lg gap-3">
             <p>No {selectedBtn === 1 ? "feedbacks" : "saved"} available.</p>
             {selectedBtn === 1 ? (
-              <p>Do you have an experience to share? Create a feedback!</p>
+              <p className="text-center">
+                Do you have an experience to share? Create a feedback!
+              </p>
             ) : (
               <button
                 onClick={() => router.push(`/home`)}

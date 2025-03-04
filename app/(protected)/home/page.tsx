@@ -98,7 +98,7 @@ const FeedbackCardSkeleton = () => {
   return (
     <div
       ref={feedbackCardSkeletonRef}
-      className="text-neutral w-full text-center rounded-[16px] p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] h-full flex flex-wrap items-center justify-between bg-neutral max-w-[850px] gap-[10px] mb-[50px]"
+      className="text-neutral w-full text-center rounded-[16px] p-10 max-md:p-5 max-sm:px-[15px] max-sm:py-[15px] h-full flex flex-wrap items-center justify-between bg-neutral max-md:w-[90%] max-w-[850px] gap-[10px] mb-[50px]"
     >
       <SkeletonTheme
         baseColor="#D9D9D9"
