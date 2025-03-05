@@ -555,18 +555,14 @@ const PopUpDeleteFeedback = ({
     React.SetStateAction<profileInterface | undefined>
   >;
 }) => {
-  const userContext = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const deleteFeedback = async (feedbackId: string) => {
     setIsLoading(true);
     try {
-      await fetch(
-        `/api/feedback/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
-        {
-          method: "POST",
-        },
-      );
+      await fetch(`/api/feedback/delete?feedbackId=${feedbackId}`, {
+        method: "POST",
+      });
     } catch (error) {
       console.error("Error", error);
     } finally {
@@ -636,18 +632,14 @@ const PopUpUnSaveFeedback = ({
     React.SetStateAction<profileInterface | undefined>
   >;
 }) => {
-  const userContext = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const deleteSave = async (feedbackId: string) => {
     setIsLoading(true);
     try {
-      await fetch(
-        `/api/feedback/save/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
-        {
-          method: "POST",
-        },
-      );
+      await fetch(`/api/feedback/save/delete?feedbackId=${feedbackId}`, {
+        method: "POST",
+      });
     } catch (error) {
       console.error("Error", error);
     } finally {
@@ -718,15 +710,11 @@ const SaveProfileCard = ({
   const [isSaved, setIsSaved] = useState(true);
   const [isPopUpUnSaveFeedbackOpen, setIsPopUpUnSaveFeedbackOpen] =
     useState(false);
-  const userContext = useContext(UserContext);
   const createSave = async (feedbackId: string) => {
     try {
-      await fetch(
-        `/api/feedback/save/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
-        {
-          method: "POST",
-        },
-      );
+      await fetch(`/api/feedback/save/create?feedbackId=${feedbackId}`, {
+        method: "POST",
+      });
     } catch (error) {
       console.error("Error", error);
     }
@@ -866,12 +854,9 @@ const FeedbackAsVisitorCard = ({
   const router = useRouter();
   const createSave = async (feedbackId: string) => {
     try {
-      await fetch(
-        `/api/feedback/save/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}`,
-        {
-          method: "POST",
-        },
-      );
+      await fetch(`/api/feedback/save/create?feedbackId=${feedbackId}`, {
+        method: "POST",
+      });
     } catch (error) {
       console.error("Error", error);
     }

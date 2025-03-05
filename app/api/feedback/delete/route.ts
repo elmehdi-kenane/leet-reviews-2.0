@@ -13,17 +13,16 @@ export async function POST(request: NextRequest) {
   );
   const feedbackId = requestUrl.searchParams.get("feedbackId");
 
-  const feedbacks = await prismaClient.feedback.findMany({
+  const feedback = await prismaClient.feedback.findFirst({
     where: {
+      authorId: userId,
       id: feedbackId ? feedbackId : "",
     },
   });
-  if (feedbacks.length === 0)
-    return NextResponse.json({ message: "feedback not found" });
-
+  if (!feedback) return NextResponse.json({ message: "feedback not found" });
   await prismaClient.feedback.delete({
     where: {
-      id: feedbacks[0].id,
+      id: feedback.id,
     },
   });
 
