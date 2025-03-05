@@ -398,13 +398,13 @@ const PreviewFeedbackCard = ({
             </p>
           </div>
         </div>
-        <div className="flex items-center flex-wrap justify-end max-sm:justify-center min-w-[310px] max-w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
+        <div className="flex items-center flex-wrap justify-end max-sm:justify-center min-w-[310px] bg-secondary rounded-xl max-w-[310px] lg:w-[310px] max-md:min-w-full gap-[10px] max-sm:w-full max-sm:gap-[5px] h-max font-medium">
           {employmentDetails.map(
             (employmentDetail: employmentDetailInterface, index: number) => {
               return (
                 <div
                   key={index}
-                  className={`flex ${employmentDetail.text === "" ? "hidden" : ""} items-center gap-[5px] rounded-[14px] border border-secondary bg-secondary text-neutral max-w-[150px] w-[150px] max-lg:w-[48%] max-md:max-w-[140px] max-md:text-xs h-[50px] p-[5px] max-lg:text-sm ${index != 0 && employmentDetails[index - 1].text === "" ? "min-w-full w-full max-w-full max-lg:w-full" : ""}`}
+                  className={`flex ${employmentDetail.text === "" ? "hidden" : ""} items-center gap-[5px] rounded-[14px] border border-secondary bg-transparent text-neutral max-w-[150px] w-[150px] max-lg:w-[48%] max-md:max-w-[140px] max-md:text-xs h-[50px] p-[5px] max-lg:text-sm ${index != 0 && employmentDetails[index - 1].text === "" ? "min-w-full w-full max-w-full max-lg:w-full" : ""}`}
                 >
                   <div className="bg-neutral rounded-full min-w-[35px] min-h-[35px] flex justify-center items-center">
                     <Image

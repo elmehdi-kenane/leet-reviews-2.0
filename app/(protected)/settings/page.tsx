@@ -299,6 +299,14 @@ const Profile = ({
               className="opacity-0 absolute h-full w-full top-0 left-0"
               onChange={(e) => {
                 const files = e.target.files;
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (files && files[0].size > maxSize) {
+                  toast.error("File size is too large. Maximum size is 5MB.", {
+                    duration: 7000,
+                  });
+                  e.preventDefault();
+                  return;
+                }
                 if (files && files[0]) {
                   setUpdatedDetails((prev) => ({
                     ...prev!,

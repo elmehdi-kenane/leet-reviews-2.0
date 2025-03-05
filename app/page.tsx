@@ -119,6 +119,36 @@ const Navbar = ({
     { name: "Community", ref: communitySectionRef },
   ];
 
+  const [pageStatus, setPageStatus] = useState<"Get Started" | "Home">(
+    "Get Started",
+  );
+
+  useEffect(() => {
+    const validateSession = async () => {
+      try {
+        console.log("validateSession in useEffect");
+        const validateRes = await fetch("/api/auth/validate-session", {
+          credentials: "same-origin",
+        });
+        if (!validateRes.ok) {
+          setPageStatus("Get Started");
+          return;
+        }
+        const { authenticated } = await validateRes.json();
+        if (!authenticated) {
+          setPageStatus("Get Started");
+        } else {
+          setPageStatus("Home");
+        }
+      } catch (error) {
+        console.error("Error validating session:", error);
+        setPageStatus("Get Started");
+      }
+    };
+
+    validateSession();
+  }, []);
+
   useEffect(() => {
     const handleHashChange = (event: HashChangeEvent) => {
       setCurrentSection(event.newURL.split("#")[1]);
@@ -271,10 +301,10 @@ const Navbar = ({
               </Link>
             </div>
             <Link
-              href={"/auth/sign-up"}
+              href={pageStatus === "Get Started" ? "/auth/sign-up" : "/home"}
               className="p-2 border border-neutral text-center w-full rounded-md hover:bg-primary"
             >
-              Get Started
+              {pageStatus}
             </Link>
           </div>
         )}
@@ -316,10 +346,10 @@ const Navbar = ({
           </Link>
         </div>
         <Link
-          href={"/auth/sign-up"}
+          href={pageStatus === "Get Started" ? "/auth/sign-up" : "/home"}
           className="p-2 border max-md:hidden border-neutral rounded-md hover:bg-primary"
         >
-          Get Started
+          {pageStatus}
         </Link>
       </div>
     </>

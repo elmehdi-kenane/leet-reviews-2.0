@@ -12,6 +12,7 @@ import PublicIcon from "@/public/PublicIcon.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import Image from "next/image";
 import Tooltip from "@mui/material/Tooltip";
+import toast from "react-hot-toast";
 
 export const FormInputField: React.FC<FormInputFieldProps> = ({
   type,
@@ -92,12 +93,20 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
       | React.ChangeEvent<HTMLTextAreaElement>,
     type: string,
   ) => {
+    const maxSize = 5 * 1024 * 1024; // 5MB
     if (
       type === "file" &&
       e.target instanceof HTMLInputElement &&
       e.target.files?.[0]
     ) {
       handleFilePreviewChange(e as React.ChangeEvent<HTMLInputElement>);
+      if (e.target.files?.[0].size > maxSize) {
+        toast.error("File size is too large. Maximum size is 5MB.", {
+          duration: 7000,
+        });
+        e.preventDefault();
+        return;
+      }
       setValue("companyLogo", e.target.files?.[0]);
     } else onChange(e);
 
