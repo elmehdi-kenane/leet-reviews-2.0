@@ -648,15 +648,17 @@ const PreviewFeedbackCard = ({
             </div>
           </div>
         </CustomizedTooltip>
-        <div className="flex flex-col max-sm:ml-[7px]">
-          <p className="font-medium italic text-[12px]">
+        <div
+          className={`flex flex-col max-sm:ml-[7px] ${isExpandFeedbackCard ? "mx-auto" : ""}`}
+        >
+          <p className={`font-medium italic text-[12px]`}>
             {formatDistanceToNow(new Date(feedback.createdAt), {
               addSuffix: true,
             })}
           </p>
         </div>
         <div
-          className={`flex gap-2 ${isExpandFeedbackCard ? "ml-auto" : "min-w-[116px]"} `}
+          className={`flex gap-2 ${isExpandFeedbackCard ? "max-sm:ml-auto" : "min-w-[116px]"} `}
         >
           {isExpandFeedbackCard === true && (
             <div className="flex gap-2">
@@ -825,7 +827,7 @@ const PreviewFeedbackCard = ({
           <div className="w-full border-2 border-secondary h-[530px] p-3 rounded-xl flex flex-col">
             <CommentTextArea feedback={feedback}></CommentTextArea>
             {feedback.comments.length === 0 ? (
-              <div className="flex flex-col justify-center items-center m-auto bg-secondary text-neutral p-3 rounded-lg">
+              <div className="flex flex-col justify-center  items-center m-auto text-[gray] p-3 rounded-lg">
                 <p className="font-semibold text-xl mb-2">No comments yet!</p>
                 <p className="italic">
                   Be the first to share your thoughts and start the
