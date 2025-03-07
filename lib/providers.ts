@@ -1,4 +1,4 @@
-import { Discord, FortyTwo, GitHub, LinkedIn } from "arctic";
+import { Discord, FortyTwo, GitHub, LinkedIn, Google } from "arctic";
 
 // optional
 //   redirectURI, // required when multiple redirect URIs are defined
@@ -15,6 +15,13 @@ export const fortyTwo = new FortyTwo(
   process.env.FORTY_TWO_CLIENT_ID!,
   process.env.FORTY_TWO_CLIENT_SECRET!,
   fortyTwoRedirectURI,
+);
+
+const googleRedirectURI = `${process.env.DOMAIN_NAME}/api/auth/login/google/callback`;
+export const google = new Google(
+  process.env.GOOGLE_CLIENT_ID!,
+  process.env.GOOGLE_CLIENT_SECRET!,
+  googleRedirectURI,
 );
 
 // ================ CONNECT-PROVIDERS ================

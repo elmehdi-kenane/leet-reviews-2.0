@@ -116,6 +116,7 @@ model Save {
 enum provider {
   fortyTwo
   github
+  google
   discord
   linkedIn
   none

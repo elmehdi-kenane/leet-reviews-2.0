@@ -1,10 +1,13 @@
 "use client";
 
+import Cookies from "js-cookie";
 import lrLogoWhite from "@/public/lrLogoWhite.svg";
 import fortyTwoLogo from "@/public/42-logo.svg";
 import githubLogo from "@/public/brand-github.svg";
 import fortyTwoLogoBlack from "@/public/42-logo-black.svg";
 import githubLogoBlack from "@/public/brand-github-black.svg";
+import googleLogo from "@/public/brand-google.svg";
+import googleLogoBlack from "@/public/brand-google-black.svg";
 import asset6 from "@/public/asset6.svg";
 import asset7 from "@/public/asset7.svg";
 import Image from "next/image";
@@ -29,12 +32,19 @@ export default function SignIn() {
       icon: githubLogo,
       iconHovered: githubLogoBlack,
     },
+    {
+      href: "/api/auth/login/google",
+      provider: "Google",
+      icon: googleLogo,
+      iconHovered: googleLogoBlack,
+    },
   ];
 
   const searchParams = useSearchParams();
   useEffect(() => {
-    const error = searchParams.get("error");
-    if (error === "auth-cancelled") {
+    const authStatusCookie = Cookies.get("auth_status");
+    const error = authStatusCookie ? authStatusCookie.valueOf() : null;
+    if (error === "failure") {
       setTimeout(() => {
         toast.error("Authentication was cancelled or invalid.", {
           id: "Authentication was cancelled or invalid.",

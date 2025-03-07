@@ -1,8 +1,11 @@
 "use client";
 
+import Cookies from "js-cookie";
 import lrLogoWhite from "@/public/lrLogoWhite.svg";
 import fortyTwoLogo from "@/public/42-logo.svg";
 import githubLogo from "@/public/brand-github.svg";
+import googleLogo from "@/public/brand-google.svg";
+import googleLogoBlack from "@/public/brand-google-black.svg";
 import fortyTwoLogoBlack from "@/public/42-logo-black.svg";
 import githubLogoBlack from "@/public/brand-github-black.svg";
 import asset6 from "@/public/asset6.svg";
@@ -28,12 +31,19 @@ export default function SignUp() {
       icon: githubLogo,
       iconHovered: githubLogoBlack,
     },
+    {
+      href: "/api/auth/login/google",
+      provider: "Google",
+      icon: googleLogo,
+      iconHovered: googleLogoBlack,
+    },
   ];
 
   const searchParams = useSearchParams();
   useEffect(() => {
-    const error = searchParams.get("error");
-    if (error === "auth-cancelled") {
+    const authStatusCookie = Cookies.get("auth_status");
+    const error = authStatusCookie ? authStatusCookie.valueOf() : null;
+    if (error === "failure") {
       setTimeout(() => {
         toast.error("Authentication was cancelled or invalid.", {
           id: "Authentication was cancelled or invalid.",
@@ -71,6 +81,7 @@ export default function SignUp() {
           </p>
           <div className="flex flex-col gap-3 items-center w-full">
             {options.map((option, index) => {
+              console.log(option.href);
               return (
                 <Link
                   onMouseEnter={() => setHoveredIndex(index)}
