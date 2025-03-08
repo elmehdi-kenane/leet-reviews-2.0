@@ -9,7 +9,7 @@ datasource db {
 
 model Account {
   id                String       @id @default(uuid())
-  userId            String
+  userId            String       @db.Uuid
   type              String
   provider          provider
   providerAccountId String
@@ -34,13 +34,13 @@ model Account {
 
 model Session {
   id        String   @id
-  userId    String
+  userId    String   @db.Uuid
   expiresAt DateTime
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model User {
-  id String @id @default(uuid())
+  id                            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   username                      String
   name                          String?
   isFeedbacksHidden             Boolean    @default(false)
@@ -59,13 +59,13 @@ model User {
 }
 
 model Feedback {
-  id String @id @default(uuid())
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   feedbackType    String?
   trustScore      Int?
   experienceRate  Int?      @default(1)
   companyName     String
-  companyLogo     String?   @default("http://localhost:8000/uploads/1706546585198-178489636.png")
-  companyLinkedIn String?   @default("https://www.linkedin.com/school/1337-coding-school/")
+  companyLogo     String?   @default("")
+  companyLinkedIn String?   @default("")
   companyLocation String?
   jobProgressType String?
   workingType     String?
@@ -74,7 +74,7 @@ model Feedback {
   authorComment   String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime
-  authorId        String
+  authorId        String    @db.Uuid
   comments        Comment[]
   author          User      @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   saves           Save[]
@@ -82,9 +82,9 @@ model Feedback {
 }
 
 model Vote {
-  id         String   @id @default(uuid())
-  feedbackId String
-  authorId   String
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  feedbackId String   @db.Uuid
+  authorId   String   @db.Uuid
   isUp       Boolean
   createdAt  DateTime @default(now())
   author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -92,9 +92,9 @@ model Vote {
 }
 
 model Comment {
-  id         String   @id @default(uuid())
-  feedbackId String
-  authorId   String
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  feedbackId String   @db.Uuid
+  authorId   String   @db.Uuid
   text       String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
@@ -103,9 +103,9 @@ model Comment {
 }
 
 model Save {
-  id         String   @id @default(uuid())
-  authorId   String
-  feedbackId String
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  feedbackId String   @db.Uuid
+  authorId   String   @db.Uuid
   createdAt  DateTime @default(now())
   author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   feedback   Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -116,7 +116,6 @@ model Save {
 enum provider {
   fortyTwo
   github
-  google
   discord
   linkedIn
   none
