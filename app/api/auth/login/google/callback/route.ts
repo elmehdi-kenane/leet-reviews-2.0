@@ -13,7 +13,6 @@ export async function GET(request: NextRequest) {
   const error = url.searchParams.get("error");
   const cookieStore = cookies();
   const storedState = cookieStore.get("google_oauth_state")?.value ?? null;
-
   if (
     !code ||
     !storedCodeVerifier ||
@@ -72,16 +71,32 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-    const newUser = await prismaClient.user.create({
-      data: {
-        username: googleUsername,
-        avatar: googleUser.picture,
-        email: googleUser.email,
-        name: googleFullName,
-        bio: "I'm just a chill guy",
-        accountDisplayedWithFeedbacks: "google",
-      },
-    });
+    let newUser;
+    try {
+      newUser = await prismaClient.user.create({
+        data: {
+          username: googleUsername,
+          avatar: googleUser.picture,
+          email: googleUser.email,
+          name: googleFullName,
+          bio: "I'm just a chill guy",
+          accountDisplayedWithFeedbacks: "google",
+        },
+      });
+      console.log("User created successfully:", newUser);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: `${process.env.DOMAIN_NAME}/auth/sign-in`,
+          "Set-Cookie": [
+            `auth_status=email-failure; Path=/; Secure; SameSite=Lax`,
+            `provider=Google; Path=/; Secure; SameSite=Lax`,
+          ].join(", "),
+        },
+      });
+    }
     const existingAccount = await prismaClient.account.findUnique({
       where: {
         provider_providerAccountId: {

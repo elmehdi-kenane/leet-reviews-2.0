@@ -50,6 +50,13 @@ export default function SignUp() {
           style: { background: "#FFFFFF", color: "#141e46" },
         });
       }, 300);
+    } else if (error === "email-failure") {
+      setTimeout(() => {
+        toast.error("Error: A user with this email already exists.", {
+          id: "Error: A user with this email already exists.",
+          style: { background: "#FFFFFF", color: "#141e46" },
+        });
+      }, 300);
     }
   }, [searchParams]);
 
