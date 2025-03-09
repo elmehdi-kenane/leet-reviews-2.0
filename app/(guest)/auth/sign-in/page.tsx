@@ -14,7 +14,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useSearchParams } from "next/navigation";
 
 export default function SignIn() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -40,7 +39,6 @@ export default function SignIn() {
     },
   ];
 
-  const searchParams = useSearchParams();
   useEffect(() => {
     const authStatusCookie = Cookies.get("auth_status");
     const error = authStatusCookie ? authStatusCookie.valueOf() : null;
@@ -59,7 +57,8 @@ export default function SignIn() {
         });
       }, 300);
     }
-  }, [searchParams]);
+    Cookies.remove("auth_status");
+  }, []);
 
   return (
     <div className="w-full h-full bg-[url('/Noise&Texture.svg')] bg-cover bg-center bg-no-repeat flex items-center flex-col overflow-y-auto">

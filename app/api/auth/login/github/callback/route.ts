@@ -63,17 +63,19 @@ export async function GET(request: NextRequest) {
       });
     }
     const userEmail = githubUser.email !== undefined ? githubUser.email : "";
+    console.log("creating user");
+    
     const newUser = await prismaClient.user.create({
-      data: {
-        username: githubUsername,
-        avatar: githubUser.avatar_url,
-        email: userEmail,
-        name: githubFullName,
-        bio: "I'm just a chill guy",
-        accountDisplayedWithFeedbacks: "github",
-      },
+        data: {
+            username: githubUsername,
+            avatar: githubUser.avatar_url,
+            email: userEmail,
+            name: githubFullName,
+            bio: "I'm just a chill guy",
+            accountDisplayedWithFeedbacks: "github",
+        },
     });
-
+    console.log("user created", newUser);
     const existingAccount = await prismaClient.account.findUnique({
       where: {
         provider_providerAccountId: {
