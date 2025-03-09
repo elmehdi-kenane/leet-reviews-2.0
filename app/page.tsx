@@ -518,7 +518,7 @@ const CommunitySection = ({
               alt={discordAvatar}
             ></Image>
             <a
-              href="https://discord.gg/5BpBZ929"
+              href="https://discord.gg/8QwaqaS8"
               className="bg-primary p-2 rounded-md font-semibold text-lg select-none"
             >
               Join Us on Discord
