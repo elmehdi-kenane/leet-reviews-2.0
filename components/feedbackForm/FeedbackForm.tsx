@@ -96,6 +96,20 @@ const FeedbackForm = ({
     });
 
     let responseData: responseDataInterface;
+
+    interface companyNameFeedbacksInterface {
+      companyName: string;
+    }
+
+    const hasExistingFeedback = async (companyName: string) => {
+      const response = await fetch("/api/user/get/feedbacks");
+      const data = await response.json();
+      const userFeedbacks: companyNameFeedbacksInterface[] = data.feedbacks;
+      return userFeedbacks.some(
+        (feedback) => feedback.companyName === companyName,
+      );
+    };
+
     const addNewFeedback = async () => {
       try {
         const response = await fetch("/api/feedback/create", {
@@ -116,7 +130,12 @@ const FeedbackForm = ({
         });
       }
     };
-    addNewFeedback();
+    // change the message later... You’ve already submitted feedback for this company. If you’d like to make changes, you can edit your existing feedback.
+    if (await hasExistingFeedback(finalFormDataRhf.companyName))
+      toast.error("You've already submitted feedback for this company.", {
+        id: "You've already submitted feedback for this company.",
+      });
+    else addNewFeedback();
   };
 
   const formRef = useRef<HTMLFormElement>(null);
