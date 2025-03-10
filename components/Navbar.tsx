@@ -168,7 +168,7 @@ const Navbar = () => {
   const inputMaxLength = 30;
   return (
     <div
-      className={`${isHidden === true ? "hidden" : ""} bg-secondary fixed flex flex-wrap justify-center w-[99.3%] pl-[7px] z-[10]`}
+      className={`${isHidden === true ? "hidden" : ""} bg-secondary fixed flex flex-wrap justify-center w-[99.3%] max-md:w-[97.8%] pl-[7px] z-[10]`}
     >
       {(isSearchInputOnFocus === true || isSearchBarMobileOpen === true) && (
         <div className="w-full h-screen absolute bg-secondary/30 backdrop-blur-sm"></div>

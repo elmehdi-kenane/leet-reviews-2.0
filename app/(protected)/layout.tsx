@@ -1,11 +1,15 @@
+"use client";
+
 import localFont from "next/font/local";
 import "../globals.css";
 import Navbar from "@/components/Navbar";
 import SideBar from "@/components/SideBar";
 import BottomBar from "@/components/BottomBar";
 import { UserProvider } from "@/context/UserContext";
+import { ScrollContext } from "@/context/ScrollContext";
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
+import React, { useRef } from "react";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -18,15 +22,12 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  //   const { user } = await validateRequest();
-  //   if (!user) {
-  //     return redirect("/auth/sign-in");
-  //   }
+  const scrollableRef = useRef<HTMLDivElement>(null);
 
   return (
     <html lang="en">
@@ -38,16 +39,23 @@ export default async function RootLayout({
       >
         <Suspense>
           <UserProvider>
-            <Navbar />
-            <div
-              className={`flex overflow-y-auto overflow-x-hidden light-scroll`}
-            >
-              <SideBar />
-              <BottomBar />
-              <div className="h-max w-full mt-[100px] max-md:mt-[150px] mb-[70px]">
-                {children}
+            <ScrollContext.Provider value={{ scrollableRef }}>
+              <Navbar />
+              <div
+                ref={scrollableRef}
+                className={`flex overflow-y-scroll overflow-x-hidden light-scroll`}
+              >
+                <SideBar />
+                <BottomBar />
+                <div className="h-max w-full mt-[100px] max-md:mt-[150px] mb-[70px]">
+                  {React.isValidElement(children)
+                    ? React.cloneElement(children as React.ReactElement, {
+                        scrollableRef,
+                      })
+                    : children}
+                </div>
               </div>
-            </div>
+            </ScrollContext.Provider>
           </UserProvider>
           <Toaster
             toastOptions={{

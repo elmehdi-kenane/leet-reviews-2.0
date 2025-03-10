@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { RefObject } from "react";
+import { ScrollContext } from "@/context/ScrollContext";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import link from "@/public/link-green.svg";
 import arrowDown from "@/public/dislike.svg";
@@ -62,11 +63,30 @@ const getExperienceRateText = (experienceRate: number) => {
 export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   const searchParams = useSearchParams();
 
+  const { scrollableRef } = useContext(ScrollContext);
   const feedbackId = searchParams.get("feedbackId");
 
+  const scrollPosition = useRef(0);
   const [isExpandFeedbackCard, setIsExpandFeedbackCard] = useState(
     feedbackId === feedback.id ? true : false,
   );
+
+  useEffect(() => {
+    const preserveScrollPosition = () => {
+      if (!scrollableRef || !scrollableRef.current) return;
+      if (!isExpandFeedbackCard) {
+        scrollableRef.current.scrollTo(0, scrollPosition.current);
+        console.log("back to the saved one from 0 to", scrollPosition.current);
+      } else {
+        console.log(
+          "scrollableRef.current.scrollTop:",
+          scrollableRef.current.scrollTop,
+        );
+        scrollPosition.current = scrollableRef.current.scrollTop;
+      }
+    };
+    preserveScrollPosition();
+  }, [isExpandFeedbackCard]);
 
   let upVotesLength = 0;
   let downVotesLength = 0;
