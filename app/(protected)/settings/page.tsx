@@ -17,6 +17,7 @@ import { UserContext, User } from "@/context/UserContext";
 import { UnSavedChangesPopUpState } from "./utils";
 import { linkedAccountInterface } from "@/app/(protected)/settings/utils";
 import Cookies from "js-cookie";
+import { isValidImageFile } from "@/utils";
 
 export type formDataType = {
   name: string;
@@ -290,7 +291,7 @@ const Profile = ({
           />
           <button
             type="button"
-            className="bg-neutral hover:bg-primary rounded-md p-2 text-secondary font-SpaceGrotesk max-sm:ml-auto max-sm:flex-1 sm:w-full relative"
+            className="bg-neutral hover:bg-primary hover:text-neutral rounded-md p-2 text-secondary font-SpaceGrotesk max-sm:ml-auto max-sm:flex-1 sm:w-full relative"
           >
             <input
               type="file"
@@ -304,6 +305,10 @@ const Profile = ({
                   toast.error("File size is too large. Maximum size is 5MB.", {
                     duration: 7000,
                   });
+                  e.preventDefault();
+                  return;
+                } else if (files && !isValidImageFile(files[0])) {
+                  e.target.value = "";
                   e.preventDefault();
                   return;
                 }

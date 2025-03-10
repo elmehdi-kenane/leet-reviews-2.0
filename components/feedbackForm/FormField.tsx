@@ -13,6 +13,7 @@ import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import Image from "next/image";
 import Tooltip from "@mui/material/Tooltip";
 import toast from "react-hot-toast";
+import { isValidImageFile } from "@/utils";
 
 export const FormInputField: React.FC<FormInputFieldProps> = ({
   type,
@@ -99,14 +100,19 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
       e.target instanceof HTMLInputElement &&
       e.target.files?.[0]
     ) {
-      handleFilePreviewChange(e as React.ChangeEvent<HTMLInputElement>);
       if (e.target.files?.[0].size > maxSize) {
         toast.error("File size is too large. Maximum size is 5MB.", {
           duration: 7000,
         });
+        e.target.value = "";
+        e.preventDefault();
+        return;
+      } else if (!isValidImageFile(e.target.files?.[0])) {
+        e.target.value = "";
         e.preventDefault();
         return;
       }
+      handleFilePreviewChange(e as React.ChangeEvent<HTMLInputElement>);
       setValue("companyLogo", e.target.files?.[0]);
     } else onChange(e);
 
