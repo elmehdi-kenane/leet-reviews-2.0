@@ -62,7 +62,10 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-    const userEmail = githubUser.email !== undefined ? githubUser.email : "";
+    const userEmail =
+      githubUser.email !== undefined && githubUser.email !== null
+        ? githubUser.email
+        : "";
     const newUser = await prismaClient.user.create({
       data: {
         username: githubUsername,
