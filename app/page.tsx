@@ -211,6 +211,10 @@ const Navbar = ({
   //     };
   //   }, [navbarSectionsRef.current, ]);
 
+  interface NavigatorUAData {
+    platform: string;
+  }
+
   const handleSectionClick = (section: {
     name: string;
     ref: MutableRefObject<HTMLDivElement | null>;
@@ -227,12 +231,17 @@ const Navbar = ({
     } else if (topOfSection < scrollTop) topOfSection += scrollTop;
     else if (topOfSection > scrollTop) topOfSection += scrollTop;
     else if (topOfSection > containerHeight) topOfSection -= scrollTop;
-    console.log(`after topOfSection`, topOfSection - offset);
-    // container.scrollTo({
-    //   top: topOfSection - offset,
-    //   behavior: "smooth",
-    // });
-    container.scroll(0, topOfSection - offset) // works for linux
+    const isLinux =
+      "userAgentData" in navigator &&
+      (navigator.userAgentData as NavigatorUAData).platform === "Linux";
+    if (isLinux) {
+      container.scroll(0, topOfSection - offset);
+    } else {
+      container.scrollTo({
+        top: topOfSection - offset,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
