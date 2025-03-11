@@ -227,10 +227,12 @@ const Navbar = ({
     } else if (topOfSection < scrollTop) topOfSection += scrollTop;
     else if (topOfSection > scrollTop) topOfSection += scrollTop;
     else if (topOfSection > containerHeight) topOfSection -= scrollTop;
-    container.scrollTo({
-      top: topOfSection - offset,
-      behavior: "smooth",
-    });
+    console.log(`after topOfSection`, topOfSection - offset);
+    // container.scrollTo({
+    //   top: topOfSection - offset,
+    //   behavior: "smooth",
+    // });
+    container.scroll(0, topOfSection - offset) // works for linux
   };
 
   return (
