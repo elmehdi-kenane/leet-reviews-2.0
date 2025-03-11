@@ -65,7 +65,8 @@ export async function GET(request: NextRequest) {
     const userEmail =
       githubUser.email !== undefined && githubUser.email !== null
         ? githubUser.email
-        : "";
+        : githubUsername;
+    // try {
     const newUser = await prismaClient.user.create({
       data: {
         username: githubUsername,
@@ -76,6 +77,9 @@ export async function GET(request: NextRequest) {
         accountDisplayedWithFeedbacks: "github",
       },
     });
+    // } catch (e) {
+    //   console.log("e", e);
+    // }
 
     const existingAccount = await prismaClient.account.findUnique({
       where: {
