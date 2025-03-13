@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   const sessionId = req.cookies.get("auth_session")?.value;
   console.log("sessionId:", sessionId);
 
-  if (!sessionId) {
+  if (!sessionId || sessionId === undefined) {
     return NextResponse.json({ authenticated: false });
   }
   console.log("after !sessionId");
