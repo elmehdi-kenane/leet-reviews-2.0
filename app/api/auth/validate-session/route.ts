@@ -3,6 +3,7 @@ import { lucia } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   const sessionId = req.cookies.get("auth_session")?.value;
+  console.log("sessionId:", sessionId);
 
   if (!sessionId) {
     return NextResponse.json({ authenticated: false });
