@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
   if (!sessionId) {
     return NextResponse.json({ authenticated: false });
   }
+  console.log("after !sessionId");
 
   try {
     const { session } = await lucia.validateSession(sessionId);
