@@ -78,6 +78,7 @@ const FeedbackForm = ({
     useState<FeedbackInterface>(defaultNewFeedback);
   const userContext = useContext(UserContext);
   const [isResetFields, setIsResetFields] = useState([false, false, false]);
+  const [isHasExistingFeedback, setIsHasExistingFeedback] = useState(false);
 
   const onSubmit = async (data: FormDataRhf) => {
     const finalFormDataRhf = { trustScore: totalTrustScore, ...data };
@@ -117,7 +118,7 @@ const FeedbackForm = ({
           body: finalFormData,
         });
         if (!response.ok) {
-          throw new Error("Failed to fetch accounts");
+          throw new Error("Failed to create feedback");
         }
         responseData = await response.json();
       } catch (err: unknown) {
@@ -131,11 +132,18 @@ const FeedbackForm = ({
       }
     };
     // change the message later... You’ve already submitted feedback for this company. If you’d like to make changes, you can edit your existing feedback.
-    if (await hasExistingFeedback(finalFormDataRhf.companyName))
+    if (await hasExistingFeedback(finalFormDataRhf.companyName)) {
+      setIsHasExistingFeedback(true);
       toast.error("You've already submitted feedback for this company.", {
         id: "You've already submitted feedback for this company.",
       });
-    else addNewFeedback();
+      setIsFeedbackFormOpen(false);
+    } else {
+      addNewFeedback();
+      setCurrentStep((prevStep) => {
+        return prevStep + 1;
+      });
+    }
   };
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -186,13 +194,16 @@ const FeedbackForm = ({
   const jsConfetti = new JSConfetti();
 
   useEffect(() => {
-    if (currentStep === 5) {
-      jsConfetti.addConfetti({
-        confettiColors: ["#41B06E", "#141E46"],
-        confettiNumber: 100,
-      });
-    }
-  }, [currentStep]);
+    setTimeout(() => {
+      // a delay to set the state isHasExistingFeedback
+      if (currentStep === 6 && !isHasExistingFeedback) {
+        jsConfetti.addConfetti({
+          confettiColors: ["#41B06E", "#141E46"],
+          confettiNumber: 100,
+        });
+      }
+    }, 300);
+  }, [currentStep, isHasExistingFeedback]);
 
   const firstStep = 1;
   const lastStep = 4;
@@ -204,7 +215,7 @@ const FeedbackForm = ({
         await handleStepValidation();
         handleSubmit(onSubmit)(e);
       }}
-      className={`relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max mt-20 mb-20 rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
+      className={`${isHasExistingFeedback ? "hidden" : ""} relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max mt-20 mb-20 rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}
     >
       {isPopUpFeedbackFormOpen && (
@@ -296,7 +307,7 @@ const FeedbackForm = ({
             watch={watch}
           ></ExperienceInfosStep>
         )}
-        {currentStep >= 5 ? (
+        {currentStep >= 5 && !isHasExistingFeedback ? (
           <MinimalPreviewFeedback
             feedback={newFeedback}
             setIsClosingFeedbackForm={setIsClosingFeedbackForm}
