@@ -6,6 +6,7 @@ export async function middleware(req: NextRequest) {
   if (!sessionId) {
     return NextResponse.redirect(new URL("/auth/sign-in", req.url));
   }
+  console.log("req.nextUrl.origin", req.nextUrl.origin);
   const validateRes = await fetch(
     `${req.nextUrl.origin}/api/auth/validate-session`,
     {
