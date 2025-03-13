@@ -3,18 +3,18 @@ import { lucia } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   const sessionId = req.cookies.get("auth_session")?.value;
-  console.log("sessionId:", sessionId);
+  //   console.log("sessionId:", sessionId);
 
   if (!sessionId || sessionId === undefined) {
     return NextResponse.json({ authenticated: false });
   }
-  console.log("after !sessionId");
+  //   console.log("after !sessionId");
 
   try {
     const { session } = await lucia.validateSession(sessionId);
 
     if (!session) {
-      console.log("session invalid");
+      //   console.log("session invalid");
       return NextResponse.json({ authenticated: false });
     }
 

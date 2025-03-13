@@ -38,7 +38,6 @@ export async function GET(request: NextRequest) {
     });
     const fortyTwoUser: fortyTwoUser = await fortyTwoUserResponse.json();
 
-    console.log("==============>");
     const accountUserId = fortyTwoUser.id.toString();
     const fortyTwoUsername = fortyTwoUser.login;
     const fortyTwoFullName = fortyTwoUser.usual_full_name;
@@ -51,7 +50,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    console.log("Existing account found:", existingAccount);
+    // console.log("Existing account found:", existingAccount);
 
     existingAccount = await prismaClient.account.findFirst({
       where: {
@@ -131,9 +130,9 @@ export async function GET(request: NextRequest) {
                 providerAccountId: accountUserId, // Optionally update providerAccountId
               },
             });
-            console.log(
-              `User ID updated and account linked with new user ID ${newUserId}`,
-            );
+            // console.log(
+            //   `User ID updated and account linked with new user ID ${newUserId}`,
+            // );
 
             // Optionally, delete the old user record if needed
             await prisma.user.delete({
@@ -149,7 +148,7 @@ export async function GET(request: NextRequest) {
                 email: fortyTwoUser.email,
               },
             });
-            console.log(`Old user ID ${existingUser.id} deleted`);
+            // console.log(`Old user ID ${existingUser.id} deleted`);
           });
         } catch (error) {
           console.error(

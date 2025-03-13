@@ -81,7 +81,6 @@ export default function SignUp() {
           </p>
           <div className="flex flex-col gap-3 items-center w-full">
             {options.map((option, index) => {
-              console.log(option.href);
               return (
                 <Link
                   onMouseEnter={() => setHoveredIndex(index)}

@@ -126,7 +126,6 @@ const Navbar = ({
   useEffect(() => {
     const validateSession = async () => {
       try {
-        console.log("validateSession in useEffect");
         const validateRes = await fetch("/api/auth/validate-session", {
           credentials: "same-origin",
         });

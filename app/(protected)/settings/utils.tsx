@@ -19,6 +19,10 @@ export const allPossibleAccounts: Account[] = [
     icon: "/brand-github-black.svg",
   },
   {
+    provider: "google",
+    icon: "/brand-google-black.svg",
+  },
+  {
     provider: "fortyTwo",
     icon: "/42-logo-black.svg",
   },

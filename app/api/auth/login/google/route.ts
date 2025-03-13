@@ -26,12 +26,12 @@ export async function GET() {
     sameSite: "lax",
   });
   const locationUrl = url.toString();
-  console.log("Generating Google auth URL...", locationUrl);
+  //   console.log("Generating Google auth URL...", locationUrl);
 
   return new Response(null, {
     status: 302,
     headers: {
-      Location: url.toString(),
+      Location: locationUrl,
     },
   });
 }

@@ -76,12 +76,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
       if (!scrollableRef || !scrollableRef.current) return;
       if (!isExpandFeedbackCard) {
         scrollableRef.current.scrollTo(0, scrollPosition.current);
-        console.log("back to the saved one from 0 to", scrollPosition.current);
       } else {
-        console.log(
-          "scrollableRef.current.scrollTop:",
-          scrollableRef.current.scrollTop,
-        );
         scrollPosition.current = scrollableRef.current.scrollTop;
       }
     };
