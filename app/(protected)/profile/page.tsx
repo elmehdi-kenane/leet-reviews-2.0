@@ -266,8 +266,7 @@ const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
             const selectedIcon = accounts.find(
               (icon) => icon.provider === account.provider,
             );
-            if (selectedIcon === undefined)
-              return <div key={account.provider}>account not found!</div>;
+            if (selectedIcon === undefined) return null;
             return (
               <button
                 onClick={(e) => {
