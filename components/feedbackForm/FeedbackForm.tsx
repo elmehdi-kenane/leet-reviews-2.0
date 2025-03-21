@@ -74,11 +74,30 @@ const FeedbackForm = ({
     comments: [],
   };
 
+  enum errorTypes {
+    isHasExistingFeedback,
+    isMaxFeedbacksReached,
+    none,
+  }
+
   const [newFeedback, setNewFeedback] =
     useState<FeedbackInterface>(defaultNewFeedback);
   const userContext = useContext(UserContext);
   const [isResetFields, setIsResetFields] = useState([false, false, false]);
-  const [isHasExistingFeedback, setIsHasExistingFeedback] = useState(false);
+  const [isCreateFeedbackError, setIsCreateFeedbackError] = useState(
+    errorTypes.none,
+  );
+  const formRef = useRef<HTMLFormElement>(null);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isPopUpFeedbackFormOpen, setIsPopUpFeedbackFormOpen] = useState(false);
+  //   const [isProcessing, setIsProcessing] = useState(false);
+  const [trustScore, setTrustScore] = useState({
+    feedbackType: 0,
+    companyLogo: 0,
+    companyLinkedIn: 0,
+    companyLocation: 0,
+    authorComment: 0,
+  });
 
   const onSubmit = async (data: FormDataRhf) => {
     const finalFormDataRhf = { trustScore: totalTrustScore, ...data };
@@ -118,45 +137,49 @@ const FeedbackForm = ({
           body: finalFormData,
         });
         if (!response.ok) {
+          const errorData = await response.json();
+          if (errorData.error === process.env.NEXT_PUBLIC_MAX_FEEDBACKS_ERROR) {
+            setIsCreateFeedbackError(errorTypes.isMaxFeedbacksReached);
+          }
           throw new Error("Failed to create feedback");
+        } else {
+          responseData = await response.json();
+          setNewFeedback(responseData.newFeedback);
+          userContext?.setFeedbacks((prev: FeedbackInterface[]) => {
+            return [responseData.newFeedback, ...prev];
+          });
         }
-        responseData = await response.json();
       } catch (err: unknown) {
         if (err instanceof Error) {
         }
-      } finally {
-        setNewFeedback(responseData.newFeedback);
-        userContext?.setFeedbacks((prev: FeedbackInterface[]) => {
-          return [responseData.newFeedback, ...prev];
-        });
       }
     };
     // change the message later... You’ve already submitted feedback for this company. If you’d like to make changes, you can edit your existing feedback.
-    if (await hasExistingFeedback(finalFormDataRhf.companyName)) {
-      setIsHasExistingFeedback(true);
-      toast.error("You've already submitted feedback for this company.", {
-        id: "You've already submitted feedback for this company.",
-      });
-      setIsFeedbackFormOpen(false);
-    } else {
-      addNewFeedback();
+    if (await hasExistingFeedback(finalFormDataRhf.companyName))
+      setIsCreateFeedbackError(errorTypes.isHasExistingFeedback);
+    else addNewFeedback();
+  };
+
+  useEffect(() => {
+    if (isCreateFeedbackError === errorTypes.none)
       setCurrentStep((prevStep) => {
         return prevStep + 1;
       });
+    else {
+      setIsFeedbackFormOpen(false);
+      if (isCreateFeedbackError === errorTypes.isHasExistingFeedback)
+        toast.error("You've already submitted feedback for this company.", {
+          id: "You've already submitted feedback for this company.",
+        });
+      else if (isCreateFeedbackError === errorTypes.isMaxFeedbacksReached)
+        toast.error(
+          "You have reached the maximum number of feedback submissions.",
+          {
+            id: "You have reached the maximum number of feedback submissions.",
+          },
+        );
     }
-  };
-
-  const formRef = useRef<HTMLFormElement>(null);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isPopUpFeedbackFormOpen, setIsPopUpFeedbackFormOpen] = useState(false);
-  //   const [isProcessing, setIsProcessing] = useState(false);
-  const [trustScore, setTrustScore] = useState({
-    feedbackType: 0,
-    companyLogo: 0,
-    companyLinkedIn: 0,
-    companyLocation: 0,
-    authorComment: 0,
-  });
+  }, [isCreateFeedbackError]);
 
   const totalTrustScore = Object.values(trustScore).reduce(
     (total, score) => total + score,
@@ -196,14 +219,14 @@ const FeedbackForm = ({
   useEffect(() => {
     setTimeout(() => {
       // a delay to set the state isHasExistingFeedback
-      if (currentStep === 6 && !isHasExistingFeedback) {
+      if (currentStep === 6 && isCreateFeedbackError === errorTypes.none) {
         jsConfetti.addConfetti({
           confettiColors: ["#41B06E", "#141E46"],
           confettiNumber: 100,
         });
       }
     }, 300);
-  }, [currentStep, isHasExistingFeedback]);
+  }, [currentStep, isCreateFeedbackError]);
 
   const firstStep = 1;
   const lastStep = 4;
@@ -215,7 +238,7 @@ const FeedbackForm = ({
         await handleStepValidation();
         handleSubmit(onSubmit)(e);
       }}
-      className={`${isHasExistingFeedback ? "hidden" : ""} relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max mt-20 mb-20 rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
+      className={`${isCreateFeedbackError != errorTypes.none ? "hidden" : ""} relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max mt-20 mb-20 rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}
     >
       {isPopUpFeedbackFormOpen && (
@@ -307,7 +330,7 @@ const FeedbackForm = ({
             watch={watch}
           ></ExperienceInfosStep>
         )}
-        {currentStep >= 5 && !isHasExistingFeedback ? (
+        {currentStep >= 5 && isCreateFeedbackError === errorTypes.none ? (
           <MinimalPreviewFeedback
             feedback={newFeedback}
             setIsClosingFeedbackForm={setIsClosingFeedbackForm}

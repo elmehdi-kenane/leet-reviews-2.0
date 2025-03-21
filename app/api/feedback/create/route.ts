@@ -16,6 +16,19 @@ export async function POST(request: NextRequest) {
   if (userId === undefined)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const userFeedbacks = await prismaClient.user.findMany({
+    where: { id: userId },
+  });
+
+  const MAX_FEEDBACKS = Number(process.env.MAX_FEEDBACKS ?? 10);
+  console.log("MAX_FEEDBACKS", MAX_FEEDBACKS);
+  // You have reached the maximum number of feedback submissions.
+  if (userFeedbacks.length === MAX_FEEDBACKS)
+    return NextResponse.json(
+      { error: process.env.MAX_FEEDBACKS_ERROR },
+      { status: 400 },
+    );
+
   const createAt = new Date();
   const data: FeedbackCreateInput = {
     feedbackType: "",
