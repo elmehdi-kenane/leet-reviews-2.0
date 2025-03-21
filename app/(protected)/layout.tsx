@@ -10,6 +10,7 @@ import { ScrollContext } from "@/context/ScrollContext";
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import React, { useRef } from "react";
+import ReactAppzi from "react-appzi";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -28,6 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const scrollableRef = useRef<HTMLDivElement>(null);
+
+  ReactAppzi.initialize("iXszp");
 
   return (
     <html lang="en">
