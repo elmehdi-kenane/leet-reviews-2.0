@@ -21,7 +21,6 @@ export async function POST(request: NextRequest) {
   });
 
   const MAX_FEEDBACKS = Number(process.env.MAX_FEEDBACKS ?? 10);
-  console.log("MAX_FEEDBACKS", MAX_FEEDBACKS);
   // You have reached the maximum number of feedback submissions.
   if (userFeedbacks.length === MAX_FEEDBACKS)
     return NextResponse.json(

@@ -9,6 +9,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useSearchParams } from "next/navigation";
 import { FeedbackInterface } from "@/lib/types";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 export default function Home() {
   const userContext = useContext(UserContext);
@@ -16,6 +17,12 @@ export default function Home() {
 
   const searchParams = useSearchParams();
   const feedbackId = searchParams.get("feedbackId");
+  enum filters {
+    NEW,
+    POPULAR,
+    MOST_DISCUSSED,
+  }
+  const [selectedFilter, setSelectedFilter] = useState<filters>(filters.NEW);
   useEffect(() => {
     const getFeedbacks = async () => {
       try {
@@ -41,8 +48,50 @@ export default function Home() {
     getFeedbacks();
   }, []);
 
+  const feedbacksFilterOptions = [
+    {
+      text: "New",
+      icon: "/light.svg",
+      iconSize: 25,
+      type: filters.NEW,
+    },
+    {
+      text: "Popular",
+      icon: "/fire.svg",
+      iconSize: 15,
+      type: filters.POPULAR,
+    },
+    {
+      text: "Most Discussed",
+      icon: "/comment-up.svg",
+      iconSize: 25,
+      type: filters.MOST_DISCUSSED,
+    },
+  ];
+
   return (
     <div className={`w-full h-max`}>
+      <div className="w-full flex flex-col items-center pl-[6px] h-max mb-5">
+        <div className="h-max w-[100%] max-md:w-[90%] max-w-[850px] flex gap-3 overflow-auto">
+          {feedbacksFilterOptions.map((item) => {
+            return (
+              <button
+                className={`p-3 min-w-[95px] ${selectedFilter === item.type ? "bg-primary" : ""} max-md:min-w-max border border-neutral rounded-2xl font-semibold flex justify-center gap-2`}
+                key={item.text}
+                onClick={() => setSelectedFilter(item.type)}
+              >
+                <Image
+                  src={item.icon}
+                  alt={item.icon}
+                  width={item.iconSize}
+                  height={item.iconSize}
+                />
+                <span>{item.text}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
       {/* <h1>Welcome, {userInfo?.username}</h1>
       <Link href={"/api/auth/connect/discord"}>
         <button>connect with discord</button>
@@ -60,14 +109,36 @@ export default function Home() {
         </div>
       ) : (
         <div className="w-full flex flex-col items-center pl-[6px] h-max">
-          {userContext.feedbacks.map((feedback) => {
-            return (
-              <FeedbackCard
-                feedback={feedback}
-                key={feedback.id}
-              ></FeedbackCard>
-            );
-          })}
+          {selectedFilter === filters.NEW
+            ? userContext.feedbacks.map((feedback) => {
+                return (
+                  <FeedbackCard
+                    feedback={feedback}
+                    key={feedback.id}
+                  ></FeedbackCard>
+                );
+              })
+            : selectedFilter === filters.POPULAR
+              ? userContext.feedbacks
+                  .slice()
+                  .sort((a, b) => {
+                    const votesA = a.votes.length;
+                    const votesB = b.votes.length;
+                    return votesB - votesA;
+                  })
+                  .map((feedback) => (
+                    <FeedbackCard feedback={feedback} key={feedback.id} />
+                  ))
+              : userContext.feedbacks
+                  .slice()
+                  .sort((a, b) => {
+                    const commentsA = a.comments.length;
+                    const commentsB = b.comments.length;
+                    return commentsB - commentsA;
+                  })
+                  .map((feedback) => (
+                    <FeedbackCard feedback={feedback} key={feedback.id} />
+                  ))}
         </div>
       )}
     </div>
