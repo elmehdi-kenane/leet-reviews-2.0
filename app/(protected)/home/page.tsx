@@ -10,6 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { FeedbackInterface } from "@/lib/types";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import CustomizedTooltip from "@/components/CustomizedTooltip";
 
 export default function Home() {
   const userContext = useContext(UserContext);
@@ -54,18 +55,21 @@ export default function Home() {
       icon: "/light.svg",
       iconSize: 25,
       type: filters.NEW,
+      description: "Latest feedback first",
     },
     {
       text: "Popular",
       icon: "/fire.svg",
       iconSize: 15,
       type: filters.POPULAR,
+      description: "Most voted feedback",
     },
     {
       text: "Most Discussed",
       icon: "/comment-up.svg",
       iconSize: 25,
       type: filters.MOST_DISCUSSED,
+      description: "Feedback with the most comments",
     },
   ];
 
@@ -75,19 +79,25 @@ export default function Home() {
         <div className="h-max w-[100%] max-md:w-[90%] max-w-[850px] flex gap-3 overflow-auto">
           {feedbacksFilterOptions.map((item) => {
             return (
-              <button
-                className={`p-3 min-w-[95px] ${selectedFilter === item.type ? "bg-primary" : ""} max-md:min-w-max border border-neutral rounded-2xl font-semibold flex justify-center gap-2`}
+              <CustomizedTooltip
+                placement="bottom"
                 key={item.text}
-                onClick={() => setSelectedFilter(item.type)}
+                title={item.description}
+                arrow
               >
-                <Image
-                  src={item.icon}
-                  alt={item.icon}
-                  width={item.iconSize}
-                  height={item.iconSize}
-                />
-                <span>{item.text}</span>
-              </button>
+                <button
+                  className={`p-3 min-w-[95px] ${selectedFilter === item.type ? "bg-primary" : ""} max-md:min-w-max border border-neutral rounded-2xl font-semibold flex justify-center gap-2`}
+                  onClick={() => setSelectedFilter(item.type)}
+                >
+                  <Image
+                    src={item.icon}
+                    alt={item.icon}
+                    width={item.iconSize}
+                    height={item.iconSize}
+                  />
+                  <span>{item.text}</span>
+                </button>
+              </CustomizedTooltip>
             );
           })}
         </div>
