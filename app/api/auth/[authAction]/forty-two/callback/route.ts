@@ -43,10 +43,13 @@ export async function GET(request: NextRequest) {
     const user = await prismaClient.user.findFirst({
       where: { email: fortyTwoUser.email },
     });
+    const account = await prismaClient.account.findFirst({
+      where: { userId: user?.id },
+    });
     if (
       fortyTwoUser.email !== undefined &&
       fortyTwoUser.email !== null &&
-      user
+      account?.providerAccountId !== accountUserId
     ) {
       return new Response(null, {
         status: 302,
@@ -77,6 +80,18 @@ export async function GET(request: NextRequest) {
       },
     });
     if (existingAccount) {
+      if (storedAuthAction === "sign-up") {
+        return new Response(null, {
+          status: 302,
+          headers: {
+            Location: `${process.env.DOMAIN_NAME}/auth/${storedAuthAction}`,
+            "Set-Cookie": [
+              `auth_status=account_already_exist; Path=/; Secure; SameSite=Lax`,
+              `provider=Google; Path=/; Secure; SameSite=Lax`,
+            ].join(", "),
+          },
+        });
+      }
       const existingUser = await prismaClient.user.findFirst({
         where: {
           username: fortyTwoUsername,
@@ -132,7 +147,9 @@ export async function GET(request: NextRequest) {
                   })),
                 },
                 votes: {
-                  connect: existingUser.votes.map((vote) => ({ id: vote.id })),
+                  connect: existingUser.votes.map((vote) => ({
+                    id: vote.id,
+                  })),
                 },
               },
             });
@@ -189,6 +206,18 @@ export async function GET(request: NextRequest) {
           },
         });
       }
+    }
+    if (storedAuthAction === "sign-in") {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: `${process.env.DOMAIN_NAME}/auth/${storedAuthAction}`,
+          "Set-Cookie": [
+            `auth_status=account_no_exist; Path=/; Secure; SameSite=Lax`,
+            `provider=Google; Path=/; Secure; SameSite=Lax`,
+          ].join(", "),
+        },
+      });
     }
     const userEmail =
       fortyTwoUser.email !== undefined ? fortyTwoUser.email : "";
