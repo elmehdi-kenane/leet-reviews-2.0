@@ -43,9 +43,12 @@ export async function GET(request: NextRequest) {
     const user = await prismaClient.user.findFirst({
       where: { email: githubUser.email },
     });
-    const account = await prismaClient.account.findFirst({
-      where: { userId: user?.id },
-    });
+    const account =
+      user === null
+        ? null
+        : await prismaClient.account.findFirst({
+            where: { userId: user?.id },
+          });
     if (
       githubUser.email !== undefined &&
       githubUser.email !== null &&

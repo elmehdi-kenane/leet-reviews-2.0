@@ -55,9 +55,12 @@ export async function GET(request: NextRequest) {
     const user = await prismaClient.user.findFirst({
       where: { email: googleUser.email },
     });
-    const account = await prismaClient.account.findFirst({
-      where: { userId: user?.id },
-    });
+    const account =
+      user === null
+        ? null
+        : await prismaClient.account.findFirst({
+            where: { userId: user?.id },
+          });
     if (
       googleUser.email !== undefined &&
       googleUser.email !== null &&
@@ -174,7 +177,7 @@ export async function GET(request: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: `${process.env.DOMAIN_NAME}/home`,
+        Location: `${process.env.DOMAIN_NAME}/settings`,
         "Set-Cookie": [
           `auth_status=success; Path=/; Secure; SameSite=Lax`,
           `provider=Github; Path=/; Secure; SameSite=Lax`,

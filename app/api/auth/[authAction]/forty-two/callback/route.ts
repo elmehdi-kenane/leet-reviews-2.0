@@ -43,13 +43,17 @@ export async function GET(request: NextRequest) {
     const user = await prismaClient.user.findFirst({
       where: { email: fortyTwoUser.email },
     });
-    const account = await prismaClient.account.findFirst({
-      where: { userId: user?.id },
-    });
+    const account =
+      user === null
+        ? null
+        : await prismaClient.account.findFirst({
+            where: { userId: user?.id },
+          });
     if (
       fortyTwoUser.email !== undefined &&
       fortyTwoUser.email !== null &&
-      account?.providerAccountId !== accountUserId
+      account &&
+      account.providerAccountId !== accountUserId
     ) {
       return new Response(null, {
         status: 302,
@@ -275,7 +279,7 @@ export async function GET(request: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: `${process.env.DOMAIN_NAME}/home`,
+        Location: `${process.env.DOMAIN_NAME}/settings`,
         "Set-Cookie": [
           `auth_status=success; Path=/; Secure; SameSite=Lax`,
           `provider=FortyTwo; Path=/; Secure; SameSite=Lax`,
