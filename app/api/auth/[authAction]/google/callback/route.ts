@@ -8,6 +8,8 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const storedCodeVerifier = cookies().get("google_code_verifier")?.value;
+  const storedAuthAction = cookies().get("authAction")?.value;
+  cookies().delete("authAction");
 
   const state = url.searchParams.get("state");
   const error = url.searchParams.get("error");
@@ -50,6 +52,21 @@ export async function GET(request: NextRequest) {
     const accountUserId = googleUser.id.toString();
     const googleUsername = googleUser.name.replace(/\s+/g, "_");
     const googleFullName = googleUser.name;
+    const user = await prismaClient.user.findFirst({
+      where: { email: googleUser.email },
+    });
+    if (googleUser.email !== undefined && googleUser.email !== null && user) {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: `${process.env.DOMAIN_NAME}/auth/${storedAuthAction}`,
+          "Set-Cookie": [
+            `auth_status=email_already_used; Path=/; Secure; SameSite=Lax`,
+            `provider=Google; Path=/; Secure; SameSite=Lax`,
+          ].join(", "),
+        },
+      });
+    }
     const existingUser = await prismaClient.account.findFirst({
       where: {
         providerAccountId: accountUserId,
@@ -72,6 +89,7 @@ export async function GET(request: NextRequest) {
         },
       });
     }
+
     const newUser = await prismaClient.user.create({
       data: {
         username: googleUsername,

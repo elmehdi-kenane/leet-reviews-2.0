@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const error = url.searchParams.get("error");
-
+  const storedAuthAction = cookies().get("authAction")?.value;
   const storedState = cookies().get("state")?.value;
 
   if (
@@ -40,6 +40,21 @@ export async function GET(request: NextRequest) {
     const accountUserId = githubUser.id.toString();
     const githubUsername = githubUser.login;
     const githubFullName = githubUser.name;
+    const user = await prismaClient.user.findFirst({
+      where: { email: githubUser.email },
+    });
+    if (githubUser.email !== undefined && githubUser.email !== null && user) {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: `${process.env.DOMAIN_NAME}/auth/${storedAuthAction}`,
+          "Set-Cookie": [
+            `auth_status=email_already_used; Path=/; Secure; SameSite=Lax`,
+            `provider=Google; Path=/; Secure; SameSite=Lax`,
+          ].join(", "),
+        },
+      });
+    }
     const existingUser = await prismaClient.account.findFirst({
       where: {
         providerAccountId: accountUserId,

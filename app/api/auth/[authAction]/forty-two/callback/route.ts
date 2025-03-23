@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const error = url.searchParams.get("error");
-
+  const storedAuthAction = cookies().get("authAction")?.value;
   const storedState = cookies().get("state")?.value;
 
   if (
@@ -37,11 +37,28 @@ export async function GET(request: NextRequest) {
       },
     });
     const fortyTwoUser: fortyTwoUser = await fortyTwoUserResponse.json();
-
     const accountUserId = fortyTwoUser.id.toString();
     const fortyTwoUsername = fortyTwoUser.login;
     const fortyTwoFullName = fortyTwoUser.usual_full_name;
-
+    const user = await prismaClient.user.findFirst({
+      where: { email: fortyTwoUser.email },
+    });
+    if (
+      fortyTwoUser.email !== undefined &&
+      fortyTwoUser.email !== null &&
+      user
+    ) {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: `${process.env.DOMAIN_NAME}/auth/${storedAuthAction}`,
+          "Set-Cookie": [
+            `auth_status=email_already_used; Path=/; Secure; SameSite=Lax`,
+            `provider=Google; Path=/; Secure; SameSite=Lax`,
+          ].join(", "),
+        },
+      });
+    }
     let existingAccount = await prismaClient.account.findFirst({
       where: {
         username: fortyTwoUsername,

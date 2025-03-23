@@ -21,19 +21,19 @@ export default function SignIn() {
 
   const options = [
     {
-      href: "/api/auth/login/forty-two",
+      href: "/api/auth/sign-in/forty-two",
       provider: "Intra",
       icon: fortyTwoLogo,
       iconHovered: fortyTwoLogoBlack,
     },
     {
-      href: "/api/auth/login/github",
+      href: "/api/auth/sign-in/github",
       provider: "Github",
       icon: githubLogo,
       iconHovered: githubLogoBlack,
     },
     {
-      href: "/api/auth/login/google",
+      href: "/api/auth/sign-in/google",
       provider: "Google",
       icon: googleLogo,
       iconHovered: googleLogoBlack,
@@ -51,7 +51,15 @@ export default function SignIn() {
           style: { background: "#FFFFFF", color: "#141e46" },
         });
       }, 300);
+    } else if (error === "email_already_used") {
+      setTimeout(() => {
+        toast.error("This email is already in use.", {
+          id: "This email is already in use.",
+          style: { background: "#FFFFFF", color: "#141e46" },
+        });
+      }, 300);
     }
+    Cookies.remove("auth_status");
   }, [searchParams]);
 
   return (
