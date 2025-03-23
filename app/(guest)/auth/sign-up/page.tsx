@@ -57,6 +57,13 @@ export default function SignUp() {
           style: { background: "#FFFFFF", color: "#141e46" },
         });
       }, 300);
+    } else if (error === "account_already_exist") {
+      setTimeout(() => {
+        toast.error("An account already exists. Please log in instead.", {
+          id: "An account already exists. Please log in instead.",
+          style: { background: "#FFFFFF", color: "#141e46" },
+        });
+      }, 300);
     }
     Cookies.remove("auth_status");
   }, [searchParams]);

@@ -55,7 +55,14 @@ export async function GET(request: NextRequest) {
     const user = await prismaClient.user.findFirst({
       where: { email: googleUser.email },
     });
-    if (googleUser.email !== undefined && googleUser.email !== null && user) {
+    const account = await prismaClient.account.findFirst({
+      where: { userId: user?.id },
+    });
+    if (
+      googleUser.email !== undefined &&
+      googleUser.email !== null &&
+      account?.providerAccountId !== accountUserId
+    ) {
       return new Response(null, {
         status: 302,
         headers: {
@@ -75,6 +82,18 @@ export async function GET(request: NextRequest) {
       },
     });
     if (existingUser) {
+      if (storedAuthAction === "sign-up") {
+        return new Response(null, {
+          status: 302,
+          headers: {
+            Location: `${process.env.DOMAIN_NAME}/auth/${storedAuthAction}`,
+            "Set-Cookie": [
+              `auth_status=account_already_exist; Path=/; Secure; SameSite=Lax`,
+              `provider=Google; Path=/; Secure; SameSite=Lax`,
+            ].join(", "),
+          },
+        });
+      }
       const session = await lucia.createSession(existingUser.userId, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
       cookies().set(
@@ -89,7 +108,18 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-
+    if (storedAuthAction === "sign-in") {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: `${process.env.DOMAIN_NAME}/auth/${storedAuthAction}`,
+          "Set-Cookie": [
+            `auth_status=account_no_exist; Path=/; Secure; SameSite=Lax`,
+            `provider=Google; Path=/; Secure; SameSite=Lax`,
+          ].join(", "),
+        },
+      });
+    }
     const newUser = await prismaClient.user.create({
       data: {
         username: googleUsername,

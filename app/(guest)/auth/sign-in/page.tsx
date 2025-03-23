@@ -58,6 +58,13 @@ export default function SignIn() {
           style: { background: "#FFFFFF", color: "#141e46" },
         });
       }, 300);
+    } else if (error === "account_no_exist") {
+      setTimeout(() => {
+        toast.error("No account found. Please sign up first.", {
+          id: "No account found. Please sign up first.",
+          style: { background: "#FFFFFF", color: "#141e46" },
+        });
+      }, 300);
     }
     Cookies.remove("auth_status");
   }, [searchParams]);
