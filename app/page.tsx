@@ -210,9 +210,9 @@ const Navbar = ({
   //     };
   //   }, [navbarSectionsRef.current, ]);
 
-  interface NavigatorUAData {
-    platform: string;
-  }
+  //   interface NavigatorUAData {
+  //     platform: string;
+  //   }
 
   const handleSectionClick = (section: {
     name: string;
@@ -230,17 +230,17 @@ const Navbar = ({
     } else if (topOfSection < scrollTop) topOfSection += scrollTop;
     else if (topOfSection > scrollTop) topOfSection += scrollTop;
     else if (topOfSection > containerHeight) topOfSection -= scrollTop;
-    const isLinux =
-      "userAgentData" in navigator &&
-      (navigator.userAgentData as NavigatorUAData).platform === "Linux";
-    if (isLinux) {
-      container.scroll(0, topOfSection - offset);
-    } else {
-      container.scrollTo({
-        top: topOfSection - offset,
-        behavior: "smooth",
-      });
-    }
+    // const isLinux =
+    //   "userAgentData" in navigator &&
+    //   (navigator.userAgentData as NavigatorUAData).platform === "Linux";
+    // if (isLinux) {
+    //   container.scroll(0, topOfSection - offset);
+    // } else {
+    container.scrollTo({
+      top: topOfSection - offset,
+      behavior: "smooth",
+    });
+    // }
   };
 
   return (
