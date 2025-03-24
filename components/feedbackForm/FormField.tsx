@@ -148,9 +148,8 @@ export const FormInputField: React.FC<FormInputFieldProps> = ({
 
     setLocationResults([]);
     const fetchLocations = async () => {
-      const OpenCageEndpoint = "https://api.opencagedata.com/geocode/v1/json";
       const ResponsePromise = await fetch(
-        `${OpenCageEndpoint}?q=${e.target?.value}&key=${process.env.NEXT_PUBLIC_OPEN_CAGE_API_KEY}`,
+        `/api/search/locations?searchTerm=${e.target?.value}`,
       );
       const ResponseJson = await ResponsePromise.json();
       setLocationResults(ResponseJson.results);

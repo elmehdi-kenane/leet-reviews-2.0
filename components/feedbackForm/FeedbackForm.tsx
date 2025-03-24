@@ -163,10 +163,6 @@ const FeedbackForm = ({
   useEffect(() => {
     if (currentStep < 4) return;
     if (isCreateFeedbackError === errorTypes.none) {
-      console.log(
-        "call setCurrentStep in isCreateFeedbackError === errorTypes.none",
-      );
-
       setCurrentStep((prevStep) => {
         return prevStep + 1;
       });
@@ -205,7 +201,6 @@ const FeedbackForm = ({
   const handleStepValidation = async () => {
     const isValid = await trigger();
     if (isValid) {
-      console.log("call setCurrentStep in isValid");
       setCurrentStep((prevStep) => {
         return prevStep + 1;
       });
@@ -236,7 +231,6 @@ const FeedbackForm = ({
 
   const firstStep = 1;
   const lastStep = 4;
-  console.log("currentStep", currentStep);
 
   return (
     <form
@@ -245,7 +239,7 @@ const FeedbackForm = ({
         await handleStepValidation();
         handleSubmit(onSubmit)(e);
       }}
-      className={`${isCreateFeedbackError != errorTypes.none ? "hidden" : ""} relative w-[98%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max mt-20 mb-20 rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
+      className={`${isCreateFeedbackError != errorTypes.none ? "hidden" : ""} relative w-[95%] max-w-[700px] h-[750px] max-sm:h-[900px] min-h-max mt-20 mb-20 rounded-[45px] flex flex-col items-center bg-neutral border-b border-b-secondary drop-shadow-xl`}
       ref={formRef}
     >
       {isPopUpFeedbackFormOpen && (
@@ -366,7 +360,6 @@ const FeedbackForm = ({
                   type="button"
                   className={`p-3 font-bold font-SpaceGrotesk rounded-md w-[130px] bg-transparent text-primary border-2 border-primary max-sm:w-[48%] sm:ml-auto h-11 flex justify-center items-center`}
                   onClick={() => {
-                    console.log("call setCurrentStep in onclick");
                     setCurrentStep((prev) => {
                       return prev !== firstStep ? prev - 1 : prev;
                     });
@@ -415,7 +408,6 @@ const PopUpFormClose = ({
 }) => {
   useEffect(() => {
     if (currentStep >= 5) {
-      console.log("call setCurrentStep in currentStep >= 5");
       setCurrentStep(currentStep + 1);
       setIsClosingFeedbackForm(true);
       setIsPopUpFeedbackFormOpen(false);

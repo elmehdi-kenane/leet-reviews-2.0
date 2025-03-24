@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
       feedbackId: feedbackId ? feedbackId : "",
     },
   });
-  console.log("after the fetch");
   if (saves.length > 0)
     return NextResponse.json({ message: "save already exist" });
 

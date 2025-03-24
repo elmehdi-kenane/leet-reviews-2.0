@@ -473,7 +473,7 @@ const Navbar = () => {
         )}
       </div>
       {isFeedbackFormOpen && (
-        <div className="absolute w-full h-screen flex bg-white/30 backdrop-blur-sm justify-center py-5">
+        <div className="absolute w-[105%] h-screen flex bg-white/30 backdrop-blur-sm justify-center py-5">
           <div
             className={`absolute ${isClosingFeedbackForm === true ? "close-feedback-form" : ""} open-feedback-form w-[100%] max-w-[700px] h-full my-auto flex flex-col items-center pt-5 pb-10 overflow-auto small-scroll dark-scroll`}
             style={{
