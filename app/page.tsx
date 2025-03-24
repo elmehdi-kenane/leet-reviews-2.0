@@ -110,6 +110,7 @@ const Navbar = ({
   const [currentSection, setCurrentSection] = useState("");
   const [isMobileNavbarSectionsOpen, setIsMobileNavbarSectionsOpen] =
     useState(false);
+  const [isManualScrolling, setIsManualScrolling] = useState(false);
 
   const offset = 150;
 
@@ -155,24 +156,23 @@ const Navbar = ({
 
     const handleScroll = () => {
       const container = containerRef.current;
-      if (!container) return;
+      if (!container || isManualScrolling) return;
+      console.log("is not scrolling by click");
       const scrollTop = container.scrollTop;
       const containerHeight = container.clientHeight;
       let visibleSection = "";
-      sections.forEach((section) => {
+      for (const section of sections) {
         if (section.ref.current) {
           const sectionTop = section.ref.current.offsetTop;
           const sectionHeight = section.ref.current.offsetHeight;
-          // Check if the section is in view
           if (
-            visibleSection === "" &&
             scrollTop >= sectionTop - containerHeight / 2 &&
             scrollTop < sectionTop + sectionHeight - containerHeight / 2
           ) {
             visibleSection = section.name;
           }
         }
-      });
+      }
       if (currentSection !== visibleSection) {
         setCurrentSection(visibleSection);
       }
@@ -190,7 +190,7 @@ const Navbar = ({
       if (containerRef.current)
         containerRef.current.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [isManualScrolling]);
 
   //   useEffect(() => {
   //     const handleClickOutside = (e: MouseEvent) => {
@@ -218,9 +218,10 @@ const Navbar = ({
     name: string;
     ref: MutableRefObject<HTMLDivElement | null>;
   }) => {
+    setIsManualScrolling(true);
+    console.log("is scroll by click turn true");
     const container = containerRef.current;
     if (!section.ref.current || !container) return;
-    setCurrentSection(section.name);
     const scrollTop = container.scrollTop;
     const containerHeight = container.clientHeight;
     let topOfSection = section.ref.current.getBoundingClientRect().top;
@@ -241,6 +242,11 @@ const Navbar = ({
         behavior: "smooth",
       });
     }
+    setCurrentSection(section.name);
+    setTimeout(() => {
+      console.log("is scroll by click turn false");
+      setIsManualScrolling(false);
+    }, 800);
   };
 
   return (
