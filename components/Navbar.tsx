@@ -61,7 +61,9 @@ const Navbar = () => {
   const fetchSearchResult = async (searchTerm: string) => {
     const cleanedInput = searchTerm.trim();
     if (cleanedInput === "") return;
-    const response = await fetch(`/api/search?searchTerm=${cleanedInput}`);
+    const response = await fetch(
+      `/api/search/entities?searchTerm=${cleanedInput}`,
+    );
     const responseData = await response.json();
     setSearchResults(responseData.results);
   };

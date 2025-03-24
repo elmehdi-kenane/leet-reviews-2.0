@@ -12,8 +12,16 @@ export async function POST(request: NextRequest) {
     `http://${request.headers.get("host")}`,
   );
   const feedbackId = requestUrl.searchParams.get("feedbackId");
+  const feedback =
+    feedbackId === null || feedbackId === undefined
+      ? null
+      : await prismaClient.feedback.findFirst({ where: { id: feedbackId } });
   const text = requestUrl.searchParams.get("text");
-
+  if (!feedback || !text || text === "")
+    return NextResponse.json(
+      { error: "feedback not found or empty comment-text" },
+      { status: 400 },
+    );
   const createAt = new Date();
   const newComment = await prismaClient.comment.create({
     data: {

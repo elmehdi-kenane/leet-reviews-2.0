@@ -19,7 +19,11 @@ export async function POST(request: NextRequest) {
       id: feedbackId ? feedbackId : "",
     },
   });
-  if (!feedback) return NextResponse.json({ message: "feedback not found" });
+  if (!feedback)
+    return NextResponse.json(
+      { message: "feedback not found" },
+      { status: 400 },
+    );
   await prismaClient.feedback.delete({
     where: {
       id: feedback.id,

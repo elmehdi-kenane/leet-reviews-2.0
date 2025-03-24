@@ -502,8 +502,8 @@ const PreviewFeedbackCard = ({
             >
               {feedback.authorComment}
             </p>
-            {feedback.author.linkedAccountProfileUrl !== "" &&
-              feedback.feedbackType === "Publicly" && (
+            {feedback.feedbackType === "Publicly" &&
+              feedback.author.linkedAccountProfileUrl !== "" && (
                 <div className="h-max w-[40px] flex justify-end items-center ">
                   <a
                     href={feedback.author.linkedAccountProfileUrl}
@@ -582,8 +582,8 @@ const PreviewFeedbackCard = ({
                 : "Anonymous Author"}
             </p>
           </div>
-          {feedback.author.linkedAccountProfileUrl !== "" &&
-            feedback.feedbackType === "Publicly" && (
+          {feedback.feedbackType === "Publicly" &&
+            feedback.author.linkedAccountProfileUrl !== "" && (
               <div className="h-max w-[40px] flex justify-end items-center ">
                 <a
                   href={feedback.author.linkedAccountProfileUrl}

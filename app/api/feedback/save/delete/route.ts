@@ -12,7 +12,15 @@ export async function POST(request: NextRequest) {
     `http://${request.headers.get("host")}`,
   );
   const feedbackId = requestUrl.searchParams.get("feedbackId");
-
+  const feedback =
+    feedbackId === null || feedbackId === undefined
+      ? null
+      : await prismaClient.feedback.findFirst({ where: { id: feedbackId } });
+  if (!feedback)
+    return NextResponse.json(
+      { message: "feedback not found" },
+      { status: 400 },
+    );
   const saves = await prismaClient.save.findMany({
     where: {
       authorId: userId,

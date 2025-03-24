@@ -59,10 +59,21 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  profileData = {
-    ...profileData,
-    feedbacks: feedbacks,
-  };
+  if (isOwn) {
+    profileData = {
+      ...profileData,
+      feedbacks: feedbacks,
+    };
+  } else {
+    const sanitizedFeedbacks = feedbacks.filter(
+      (feedback) => feedback.feedbackType !== "Anonymously",
+    );
+
+    profileData = {
+      ...profileData,
+      feedbacks: sanitizedFeedbacks,
+    };
+  }
 
   const comments = await prismaClient.comment.findMany({
     where: {

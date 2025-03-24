@@ -54,7 +54,15 @@ export async function GET() {
     },
   });
 
-  const updatedFeedbacks = feedbacks.map((feedback) => {
+  const sanitizedFeedbacks = feedbacks.map((feedback) => {
+    if (feedback.feedbackType === "Anonymous") {
+      return { ...feedback, author: null, authorId: null };
+    }
+    return feedback;
+  });
+
+  const updatedFeedbacks = sanitizedFeedbacks.map((feedback) => {
+    if (feedback.author === null) return feedback;
     const linkedAccountProvider = feedback.author.accountDisplayedWithFeedbacks;
     const linkedAccountUsername = feedback.author.accounts.find(
       (account) => account.provider === linkedAccountProvider,

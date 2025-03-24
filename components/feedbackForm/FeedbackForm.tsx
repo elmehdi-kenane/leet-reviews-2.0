@@ -161,11 +161,16 @@ const FeedbackForm = ({
   };
 
   useEffect(() => {
-    if (isCreateFeedbackError === errorTypes.none)
+    if (currentStep < 4) return;
+    if (isCreateFeedbackError === errorTypes.none) {
+      console.log(
+        "call setCurrentStep in isCreateFeedbackError === errorTypes.none",
+      );
+
       setCurrentStep((prevStep) => {
         return prevStep + 1;
       });
-    else {
+    } else {
       setIsFeedbackFormOpen(false);
       if (isCreateFeedbackError === errorTypes.isHasExistingFeedback)
         toast.error("You've already submitted feedback for this company.", {
@@ -200,6 +205,7 @@ const FeedbackForm = ({
   const handleStepValidation = async () => {
     const isValid = await trigger();
     if (isValid) {
+      console.log("call setCurrentStep in isValid");
       setCurrentStep((prevStep) => {
         return prevStep + 1;
       });
@@ -230,6 +236,7 @@ const FeedbackForm = ({
 
   const firstStep = 1;
   const lastStep = 4;
+  console.log("currentStep", currentStep);
 
   return (
     <form
@@ -358,11 +365,12 @@ const FeedbackForm = ({
                 <button
                   type="button"
                   className={`p-3 font-bold font-SpaceGrotesk rounded-md w-[130px] bg-transparent text-primary border-2 border-primary max-sm:w-[48%] sm:ml-auto h-11 flex justify-center items-center`}
-                  onClick={() =>
+                  onClick={() => {
+                    console.log("call setCurrentStep in onclick");
                     setCurrentStep((prev) => {
                       return prev !== firstStep ? prev - 1 : prev;
-                    })
-                  }
+                    });
+                  }}
                 >
                   BACK
                 </button>
@@ -407,6 +415,7 @@ const PopUpFormClose = ({
 }) => {
   useEffect(() => {
     if (currentStep >= 5) {
+      console.log("call setCurrentStep in currentStep >= 5");
       setCurrentStep(currentStep + 1);
       setIsClosingFeedbackForm(true);
       setIsPopUpFeedbackFormOpen(false);
