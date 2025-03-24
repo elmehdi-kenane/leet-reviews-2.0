@@ -181,7 +181,9 @@ export default function Profile() {
           )}
         </>
       ) : (
-        <h1>LOADING...</h1>
+        <div className="absolute w-full h-full left-0 top-0 flex justify-center items-center">
+          <h1 className="font-semibold text-xl">Loading...</h1>
+        </div>
       )}
     </div>
   );
