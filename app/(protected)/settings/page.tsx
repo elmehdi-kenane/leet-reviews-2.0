@@ -9,13 +9,13 @@ import {
   UnSavedChangesPopUp,
   HeaderSection,
   SelectCard,
-  AccountCard,
+  //   AccountCard,
   SignedAsCard,
-  accountsArr,
+  //   accountsArr,
 } from "@/app/(protected)/settings/utils";
 import { UserContext, User } from "@/context/UserContext";
 import { UnSavedChangesPopUpState } from "./utils";
-import { linkedAccountInterface } from "@/app/(protected)/settings/utils";
+// import { linkedAccountInterface } from "@/app/(protected)/settings/utils";
 import Cookies from "js-cookie";
 import { isValidImageFile } from "@/utils";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
@@ -195,7 +195,7 @@ const Settings = () => {
               ></UnSavedChangesPopUp>
             </div>
           </form>
-          <AccountConnections userAccounts={userAccounts}></AccountConnections>
+          {/* <AccountConnections userAccounts={userAccounts}></AccountConnections> */}
           <AccountDeletion></AccountDeletion>
         </>
       ) : (
@@ -429,90 +429,90 @@ const Visibility = ({
   );
 };
 
-const AccountConnections = ({
-  userAccounts,
-}: {
-  userAccounts: userAccountInterface[];
-}) => {
-  const [accounts, setAccounts] =
-    useState<linkedAccountInterface[]>(userAccounts);
-  useEffect(() => {
-    // Find missing items from accountsArr that are not in the current state
-    setAccounts((prev) => {
-      const missingItems = accountsArr.filter(
-        (item) =>
-          !prev.some((acc) => {
-            if (acc.provider === item.provider) return { ...item };
-          }),
-      );
-      return missingItems.length > 0 ? [...prev, ...missingItems] : prev;
-    });
-    // remove the auth account from the list
-    setAccounts((prev) => {
-      const updatedAccounts = prev.filter((account) => {
-        const userAccount = userAccounts.find(
-          (userAccount) =>
-            userAccount.provider === account.provider &&
-            userAccount.accountType === "AUTH",
-        );
-        return (
-          userAccount === undefined || account.provider !== userAccount.provider
-        );
-      });
-      return updatedAccounts;
-    });
-    // remove the 42 and github account from the list *will be added later
-    // remove the linkedIn account also (linkedin doesn't provide the username)
-    setAccounts((prev) => {
-      const updatedAccounts = prev.filter((account) => {
-        return (
-          account.provider !== "fortyTwo" &&
-          account.provider !== "github" &&
-          account.provider !== "linkedIn"
-        );
-      });
-      return updatedAccounts;
-    });
-    // update with already linked accounts
-    setAccounts((prev) => {
-      const updatedAccounts = prev.map((account) => {
-        const userAccount = userAccounts.find(
-          (userAccount) =>
-            userAccount.provider === account.provider &&
-            userAccount.accountType === "CONNECTED",
-        );
-        if (userAccount) {
-          account.isLinked = true;
-          account.username = userAccount.username;
-          account.avatar = userAccount.avatar;
-        }
-        return account;
-      });
-      return updatedAccounts;
-    });
-  }, [userAccounts]);
+// const AccountConnections = ({
+//   userAccounts,
+// }: {
+//   userAccounts: userAccountInterface[];
+// }) => {
+//   const [accounts, setAccounts] =
+//     useState<linkedAccountInterface[]>(userAccounts);
+//   useEffect(() => {
+//     // Find missing items from accountsArr that are not in the current state
+//     setAccounts((prev) => {
+//       const missingItems = accountsArr.filter(
+//         (item) =>
+//           !prev.some((acc) => {
+//             if (acc.provider === item.provider) return { ...item };
+//           }),
+//       );
+//       return missingItems.length > 0 ? [...prev, ...missingItems] : prev;
+//     });
+//     // remove the auth account from the list
+//     setAccounts((prev) => {
+//       const updatedAccounts = prev.filter((account) => {
+//         const userAccount = userAccounts.find(
+//           (userAccount) =>
+//             userAccount.provider === account.provider &&
+//             userAccount.accountType === "AUTH",
+//         );
+//         return (
+//           userAccount === undefined || account.provider !== userAccount.provider
+//         );
+//       });
+//       return updatedAccounts;
+//     });
+//     // remove the 42 and github account from the list *will be added later
+//     // remove the linkedIn account also (linkedin doesn't provide the username)
+//     setAccounts((prev) => {
+//       const updatedAccounts = prev.filter((account) => {
+//         return (
+//           account.provider !== "fortyTwo" &&
+//           account.provider !== "github" &&
+//           account.provider !== "linkedIn"
+//         );
+//       });
+//       return updatedAccounts;
+//     });
+//     // update with already linked accounts
+//     setAccounts((prev) => {
+//       const updatedAccounts = prev.map((account) => {
+//         const userAccount = userAccounts.find(
+//           (userAccount) =>
+//             userAccount.provider === account.provider &&
+//             userAccount.accountType === "CONNECTED",
+//         );
+//         if (userAccount) {
+//           account.isLinked = true;
+//           account.username = userAccount.username;
+//           account.avatar = userAccount.avatar;
+//         }
+//         return account;
+//       });
+//       return updatedAccounts;
+//     });
+//   }, [userAccounts]);
 
-  return (
-    <div className="flex flex-col gap-5">
-      <HeaderSection headerText="Linked Accounts"></HeaderSection>
-      <div className="border border-neutral p-3 flex flex-col rounded-xl min-h-[66px]">
-        {accounts.map((account, index) => {
-          return (
-            <div key={account.provider}>
-              <AccountCard
-                setAccounts={setAccounts}
-                account={account}
-              ></AccountCard>
-              {index + 1 < accounts.length && (
-                <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="flex flex-col gap-5">
+//       <HeaderSection headerText="Linked Accounts"></HeaderSection>
+//       <div className="border border-neutral p-3 flex flex-col rounded-xl min-h-[66px]">
+//         {accounts.map((account, index) => {
+//           return (
+//             <div key={account.provider}>
+//               <AccountCard
+//                 setAccounts={setAccounts}
+//                 account={account}
+//               ></AccountCard>
+//               {index + 1 < accounts.length && (
+//                 <div className="h-[1px] w-[100%] my-4 mx-auto bg-neutral"></div>
+//               )}
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// };
 
 const AccountDeletion = () => {
   const router = useRouter();
