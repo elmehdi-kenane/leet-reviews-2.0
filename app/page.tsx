@@ -157,7 +157,6 @@ const Navbar = ({
     const handleScroll = () => {
       const container = containerRef.current;
       if (!container || isManualScrolling) return;
-      console.log("is not scrolling by click");
       const scrollTop = container.scrollTop;
       const containerHeight = container.clientHeight;
       let visibleSection = "";
@@ -219,7 +218,6 @@ const Navbar = ({
     ref: MutableRefObject<HTMLDivElement | null>;
   }) => {
     setIsManualScrolling(true);
-    console.log("is scroll by click turn true");
     const container = containerRef.current;
     if (!section.ref.current || !container) return;
     const scrollTop = container.scrollTop;
@@ -244,7 +242,6 @@ const Navbar = ({
     }
     setCurrentSection(section.name);
     setTimeout(() => {
-      console.log("is scroll by click turn false");
       setIsManualScrolling(false);
     }, 800);
   };
