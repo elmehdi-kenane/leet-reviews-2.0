@@ -28,6 +28,7 @@ import commentIcon from "@/public/CommentIconBlue.svg";
 import commentFilledIcon from "@/public/CommentIconFilledBlue.svg";
 import saveFilledBlueIcon from "@/public/save-filled-icon-blue.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 export interface feedbackProfileInterface {
   id: string;
@@ -181,13 +182,64 @@ export default function Profile() {
           )}
         </>
       ) : (
-        <div className="absolute w-full h-full left-0 top-0 flex justify-center items-center">
-          <h1 className="font-semibold text-xl">Loading...</h1>
-        </div>
+        <LoadingState></LoadingState>
       )}
     </div>
   );
 }
+
+const LoadingState = () => {
+  return (
+    <SkeletonTheme baseColor="#D9D9D9" highlightColor="#FFFFFF">
+      <div className="flex flex-col gap-8">
+        <Skeleton
+          containerClassName="flex-1"
+          style={{
+            width: "100%",
+            borderRadius: "24px",
+            minHeight: "227px",
+          }}
+        />
+        <div className="flex gap-3 flex-col">
+          <Skeleton
+            containerClassName="flex-1"
+            style={{
+              width: "25%",
+              borderRadius: "8px",
+              minHeight: "50px",
+            }}
+          />
+          <Skeleton
+            containerClassName="flex-1"
+            style={{
+              width: "100%",
+              borderRadius: "24px",
+              minHeight: "227px",
+            }}
+          />
+        </div>
+        <div className="flex gap-3 flex-col">
+          <Skeleton
+            containerClassName="flex-1"
+            style={{
+              width: "25%",
+              borderRadius: "8px",
+              minHeight: "50px",
+            }}
+          />
+          <Skeleton
+            containerClassName="flex-1"
+            style={{
+              width: "100%",
+              borderRadius: "24px",
+              minHeight: "227px",
+            }}
+          />
+        </div>
+      </div>
+    </SkeletonTheme>
+  );
+};
 
 const ProfileHeader = ({ user }: { user: userProfileInterface }) => {
   const router = useRouter();

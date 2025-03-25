@@ -18,6 +18,7 @@ import { UnSavedChangesPopUpState } from "./utils";
 import { linkedAccountInterface } from "@/app/(protected)/settings/utils";
 import Cookies from "js-cookie";
 import { isValidImageFile } from "@/utils";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 export type formDataType = {
   name: string;
@@ -198,11 +199,68 @@ const Settings = () => {
           <AccountDeletion></AccountDeletion>
         </>
       ) : (
-        <div className="absolute w-full h-full left-0 top-0 flex justify-center items-center">
-          <h1 className="font-semibold text-xl">Loading...</h1>
-        </div>
+        <LoadingState></LoadingState>
       )}
     </div>
+  );
+};
+
+const LoadingState = () => {
+  return (
+    <SkeletonTheme baseColor="#D9D9D9" highlightColor="#FFFFFF">
+      <div className="flex gap-3 flex-col">
+        <Skeleton
+          containerClassName="flex-1"
+          style={{
+            width: "25%",
+            borderRadius: "8px",
+            minHeight: "50px",
+          }}
+        />
+        <Skeleton
+          containerClassName="flex-1"
+          style={{
+            width: "100%",
+            borderRadius: "24px",
+            minHeight: "227px",
+          }}
+        />
+      </div>
+      <div className="flex gap-3 flex-col">
+        <Skeleton
+          containerClassName="flex-1"
+          style={{
+            width: "25%",
+            borderRadius: "8px",
+            minHeight: "50px",
+          }}
+        />
+        <Skeleton
+          containerClassName="flex-1"
+          style={{
+            width: "100%",
+            borderRadius: "24px",
+            minHeight: "227px",
+          }}
+        />
+      </div>
+      <Skeleton
+        containerClassName="flex-1"
+        style={{
+          width: "100%",
+          borderRadius: "12px",
+          minHeight: "90px",
+        }}
+      />
+      <Skeleton
+        containerClassName="flex-1"
+        style={{
+          width: "100%",
+          borderRadius: "12px",
+          minHeight: "90px",
+        }}
+      />
+    </SkeletonTheme>
   );
 };
 
