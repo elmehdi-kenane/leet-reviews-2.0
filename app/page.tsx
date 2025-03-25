@@ -238,7 +238,7 @@ const Navbar = ({
     // } else {
     container.scrollTo({
       top: topOfSection - offset,
-      //   behavior: "smooth",
+      behavior: "smooth",
     });
     // }
   };
