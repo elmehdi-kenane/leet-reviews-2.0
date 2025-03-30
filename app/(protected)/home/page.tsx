@@ -86,7 +86,7 @@ export default function Home() {
                 arrow
               >
                 <button
-                  className={`p-3 min-w-[95px] ${selectedFilter === item.type ? "bg-primary" : ""} max-md:min-w-max border border-neutral rounded-2xl font-semibold flex justify-center gap-2`}
+                  className={`p-3 min-w-[95px] ${selectedFilter === item.type ? "bg-primary" : ""} max-md:min-w-max border-2 border-neutral rounded-2xl font-semibold flex justify-center gap-2`}
                   onClick={() => setSelectedFilter(item.type)}
                 >
                   <Image

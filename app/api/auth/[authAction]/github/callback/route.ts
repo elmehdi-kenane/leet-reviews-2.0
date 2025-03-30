@@ -29,6 +29,7 @@ export async function GET(request: NextRequest) {
       },
     });
   }
+
   try {
     const tokens = await github.validateAuthorizationCode(code);
     const githubUserResponse = await fetch("https://api.github.com/user", {
@@ -40,9 +41,12 @@ export async function GET(request: NextRequest) {
     const accountUserId = githubUser.id.toString();
     const githubUsername = githubUser.login;
     const githubFullName = githubUser.name;
-    const user = await prismaClient.user.findFirst({
-      where: { email: githubUser.email },
-    });
+    const user =
+      githubUser.email === null
+        ? null
+        : await prismaClient.user.findFirst({
+            where: { email: githubUser.email },
+          });
     const account =
       user === null
         ? null
@@ -52,7 +56,8 @@ export async function GET(request: NextRequest) {
     if (
       githubUser.email !== undefined &&
       githubUser.email !== null &&
-      account?.providerAccountId !== accountUserId
+      account &&
+      account.providerAccountId !== accountUserId
     ) {
       return new Response(null, {
         status: 302,
@@ -65,6 +70,7 @@ export async function GET(request: NextRequest) {
         },
       });
     }
+
     const existingUser = await prismaClient.account.findFirst({
       where: {
         providerAccountId: accountUserId,

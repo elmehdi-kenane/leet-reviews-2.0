@@ -64,7 +64,8 @@ export async function GET(request: NextRequest) {
     if (
       googleUser.email !== undefined &&
       googleUser.email !== null &&
-      account?.providerAccountId !== accountUserId
+      account &&
+      account.providerAccountId !== accountUserId
     ) {
       return new Response(null, {
         status: 302,
