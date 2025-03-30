@@ -38,29 +38,9 @@ import Link from "next/link";
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const navbarSectionsRef = useRef<HTMLDivElement>(null);
-  const [navbarSectionsWidth, setNavbarSectionsWidth] = useState(0);
   const howItWorksSectionRef = useRef<HTMLDivElement>(null);
   const whySectionRef = useRef<HTMLDivElement>(null);
   const communitySectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (navbarSectionsRef.current) {
-      setNavbarSectionsWidth(
-        navbarSectionsRef.current.getBoundingClientRect().width,
-      );
-    }
-    const handleResize = () => {
-      if (navbarSectionsRef.current) {
-        setNavbarSectionsWidth(
-          navbarSectionsRef.current.getBoundingClientRect().width,
-        );
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   return (
     <div
@@ -75,17 +55,12 @@ export default function LandingPage() {
           whySectionRef={whySectionRef}
           communitySectionRef={communitySectionRef}
         ></Navbar>
-        <Header navbarSectionsWidth={navbarSectionsWidth}></Header>
+        <Header></Header>
         <HowItWorksSection
-          navbarSectionsWidth={navbarSectionsWidth}
           howItWorksSectionRef={howItWorksSectionRef}
         ></HowItWorksSection>
-        <WhySection
-          whySectionRef={whySectionRef}
-          navbarSectionsWidth={navbarSectionsWidth}
-        ></WhySection>
+        <WhySection whySectionRef={whySectionRef}></WhySection>
         <CommunitySection
-          navbarSectionsWidth={navbarSectionsWidth}
           communitySectionRef={communitySectionRef}
         ></CommunitySection>
         <FooterSection containerRef={containerRef}></FooterSection>
@@ -371,10 +346,8 @@ const Navbar = ({
 
 const WhySection = ({
   whySectionRef,
-  navbarSectionsWidth,
 }: {
   whySectionRef: MutableRefObject<HTMLDivElement | null>;
-  navbarSectionsWidth: number;
 }) => {
   const [comparisonIndex, setComparisonIndex] = useState(0);
   const comparisons = [
@@ -402,7 +375,6 @@ const WhySection = ({
       ref={whySectionRef}
       //   id="Why"
       className="mt-[150px] max-w-[730px] mx-auto flex flex-col items-center text-secondary"
-      style={{ width: navbarSectionsWidth - 3 }}
     >
       <SectionHeader headerText="Why"></SectionHeader>
       <div className="flex justify-center w-full items-center flex-col gap-5 relative">
@@ -496,15 +468,12 @@ const WhySection = ({
 
 const CommunitySection = ({
   communitySectionRef,
-  navbarSectionsWidth,
 }: {
   communitySectionRef: MutableRefObject<HTMLDivElement | null>;
-  navbarSectionsWidth: number;
 }) => {
   return (
     <div
       ref={communitySectionRef}
-      style={{ width: navbarSectionsWidth - 112 }}
       //   id="Community"
       className="w-full mt-[150px] flex flex-col items-center justify-center text-secondary mx-auto"
     >
@@ -660,10 +629,8 @@ const FooterSection = ({
 
 const HowItWorksSection = ({
   howItWorksSectionRef,
-  navbarSectionsWidth,
 }: {
   howItWorksSectionRef: MutableRefObject<HTMLDivElement | null>;
-  navbarSectionsWidth: number;
 }) => {
   const features = [
     {
@@ -691,7 +658,7 @@ const HowItWorksSection = ({
       <SectionHeader headerText="How It Works?"></SectionHeader>
       <div
         className="flex w-full max-w-[730px] gap-3 justify-center flex-wrap"
-        style={{ width: navbarSectionsWidth - 3 }}
+        // style={{ width: navbarSectionsWidth - 3 }}
       >
         {features.map((feature) => {
           return (
@@ -756,13 +723,10 @@ const SectionHeader = ({ headerText }: { headerText: string }) => {
   );
 };
 
-const Header = ({ navbarSectionsWidth }: { navbarSectionsWidth: number }) => {
+const Header = () => {
   const [isExampleHovered, setIsExampleHovered] = useState(false);
   return (
-    <div
-      className="w-full flex flex-col justify-center max-md:items-start items-center mt-24 gap-5 text-neutral mx-auto"
-      style={{ width: navbarSectionsWidth - 112 }}
-    >
+    <div className="w-full flex flex-col justify-center max-md:items-start items-center mt-24 gap-5 text-neutral mx-auto">
       <div className="font-SpaceGrotesk text-[40px] max-lg:text-[22px] max-md:text-[18px] max-w-full font-normal flex mx-auto max-md:flex-col max-md:justify-center items-center mb-10">
         <p className="min-w-max mr-2">The Truth About Tech Jobs,</p>
         <div className="flex w-max flex-col gap-[6px] max-md:gap-1 flex-wrap mt-3 max-md:mt-3">
