@@ -125,14 +125,11 @@ const Settings = () => {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsDetailsChanged(UnSavedChangesPopUpState.CLOSING);
-    toast.loading("update informations...", {
-      style: { background: "#FFFFFF", color: "#141e46" },
-    });
     const formData = new FormData(event.currentTarget);
     const formDataValues = Object.fromEntries(formData);
 
     if (formDataValues.name === "") {
+      toast.dismiss();
       toast.error("Name cannot be empty");
       return;
     }
@@ -155,6 +152,11 @@ const Settings = () => {
       if (updatedDetails[key] === originalDetails[key]) {
         formData.delete(key); // Remove unchanged fields from FormData
       }
+    });
+    setIsDetailsChanged(UnSavedChangesPopUpState.CLOSING);
+    toast.dismiss();
+    toast.loading("update informations...", {
+      style: { background: "#FFFFFF", color: "#141e46" },
     });
     const res = await fetch("/api/user/update", {
       method: "POST",
