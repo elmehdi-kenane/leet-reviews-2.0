@@ -236,6 +236,16 @@ export interface saveInterface {
   createdAt: string;
 }
 
+export interface NotificationInterface {
+  id: string;
+  isRead: boolean;
+  type: string;
+  voteIsUp: boolean;
+  userId: string;
+  createdAt: string;
+  feedbackId: string;
+}
+
 export interface FeedbackInterface {
   experienceRate: number;
   trustScore: number;

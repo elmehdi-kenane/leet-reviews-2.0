@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
+import { pusher, pusherEventTypes } from "@/lib/pusher";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -9,7 +10,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const requestUrl = new URL(
     request.nextUrl,
-    `http://${request.headers.get("host")}`,
+    `http://${request.headers.get("host")}`
   );
   const feedbackId = requestUrl.searchParams.get("feedbackId");
   const feedback =
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
   if (!feedback || (isUpParam !== "true" && isUpParam !== "false"))
     return NextResponse.json(
       { message: "feedback not found or invalid isUp param" },
-      { status: 400 },
+      { status: 400 }
     );
   const isUp = isUpParam === "true" ? true : false;
   const votes = await prismaClient.vote.findMany({
@@ -32,6 +33,23 @@ export async function POST(request: NextRequest) {
   });
   if (votes.length > 0)
     return NextResponse.json({ message: "vote already exist" });
+  let notification;
+  if (feedbackId) {
+    pusher.trigger(feedbackId, pusherEventTypes.newVote, {
+      authorId: userId,
+      feedbackId: feedbackId,
+      isUp: isUp,
+    });
+    notification = await prismaClient.notification.create({
+      data: {
+        type: "vote",
+        voteIsUp: isUp,
+        userId: userId,
+        feedbackId: feedbackId,
+        isRead: false,
+      },
+    });
+  } else console.log("invalid feedbackId for pusher-trigger");
 
   await prismaClient.vote.create({
     data: {
@@ -41,5 +59,8 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  return NextResponse.json({ message: "vote created" });
+  return NextResponse.json({
+    message: "vote created",
+    notification: notification,
+  });
 }

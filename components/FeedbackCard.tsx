@@ -32,6 +32,7 @@ import arrowUp from "@/public/like.svg";
 import arrowUpFilled from "@/public/like-filled.svg";
 import { UserContext } from "@/context/UserContext";
 import { tooltipClasses } from "@mui/material/Tooltip";
+import pusherClient from "@/lib/pusher";
 
 const getExperienceRateIcon = (experienceRate: number) => {
   const icons = [
@@ -68,7 +69,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
 
   const scrollPosition = useRef(0);
   const [isExpandFeedbackCard, setIsExpandFeedbackCard] = useState(
-    feedbackId === feedback.id ? true : false,
+    feedbackId === feedback.id ? true : false
   );
 
   useEffect(() => {
@@ -88,10 +89,10 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
 
   if (feedback.votes) {
     upVotesLength = feedback.votes.filter(
-      (vote: voteInterface) => vote.isUp === true,
+      (vote: voteInterface) => vote.isUp === true
     ).length;
     downVotesLength = feedback.votes.filter(
-      (vote: voteInterface) => vote.isUp === false,
+      (vote: voteInterface) => vote.isUp === false
     ).length;
   }
 
@@ -111,14 +112,14 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
   useEffect(() => {
     if (feedback.saves) {
       const userSave = feedback.saves.find(
-        (save: saveInterface) => save.authorId === userContext.userInfo?.id,
+        (save: saveInterface) => save.authorId === userContext.userInfo?.id
       );
 
       setIsSaved(userSave === undefined ? false : true);
     }
     if (feedback.votes) {
       const userVote = feedback.votes.find(
-        (vote: voteInterface) => vote.authorId === userContext.userInfo?.id,
+        (vote: voteInterface) => vote.authorId === userContext.userInfo?.id
       );
 
       setSelectedVote(
@@ -126,7 +127,7 @@ export const FeedbackCard = ({ feedback }: { feedback: FeedbackInterface }) => {
           ? vote.NONE
           : userVote.isUp === true
             ? vote.UP
-            : vote.DOWN,
+            : vote.DOWN
       );
     }
   }, [userContext.userInfo?.id]);
@@ -249,7 +250,7 @@ const PreviewFeedbackCard = ({
   }, []);
 
   const closeExpandedFeedbackCard = (
-    e: MouseEvent | React.MouseEvent<HTMLButtonElement>,
+    e: MouseEvent | React.MouseEvent<HTMLButtonElement>
   ) => {
     if (isExpandFeedbackCard === false) return;
     router.push(`/home`);
@@ -266,10 +267,10 @@ const PreviewFeedbackCard = ({
       | MouseEvent
       | React.MouseEvent<HTMLButtonElement>
       | React.MouseEvent<HTMLDivElement>,
-    isCommentAreaFocused: boolean,
+    isCommentAreaFocused: boolean
   ) => {
     router.push(
-      `/home?feedbackId=${feedback.id}&isCommentAreaFocused=${isCommentAreaFocused}`,
+      `/home?feedbackId=${feedback.id}&isCommentAreaFocused=${isCommentAreaFocused}`
     );
     setIsExpandFeedbackCard(true);
     if (PreviewFeedbackCardRef.current) {
@@ -284,12 +285,15 @@ const PreviewFeedbackCard = ({
 
   const createVote = async (feedbackId: string, isUp: boolean) => {
     try {
-      await fetch(
+      const res = await fetch(
         `/api/feedback/vote/create?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
         {
           method: "POST",
-        },
+        }
       );
+      if (res.ok) {
+        pusherClient.subscribe(feedbackId);
+      }
     } catch (error) {
       console.error("Error", error);
     }
@@ -321,7 +325,7 @@ const PreviewFeedbackCard = ({
         `/api/feedback/vote/delete?userId=${userContext.userInfo?.id}&feedbackId=${feedbackId}&isUp=${isUp}`,
         {
           method: "POST",
-        },
+        }
       );
     } catch (error) {
       console.error("Error", error);
@@ -446,7 +450,7 @@ const PreviewFeedbackCard = ({
                   )}
                 </div>
               );
-            },
+            }
           )}
         </div>
       </div>
@@ -517,7 +521,7 @@ const PreviewFeedbackCard = ({
                         accountsArr.find(
                           (acc) =>
                             acc.provider ===
-                            feedback.author.accountDisplayedWithFeedbacks,
+                            feedback.author.accountDisplayedWithFeedbacks
                         )?.avatar || ""
                       }
                       className="select-none"
@@ -525,7 +529,7 @@ const PreviewFeedbackCard = ({
                         accountsArr.find(
                           (acc) =>
                             acc.provider ===
-                            feedback.author.accountDisplayedWithFeedbacks,
+                            feedback.author.accountDisplayedWithFeedbacks
                         )?.avatar || ""
                       }
                       width={20}
@@ -598,7 +602,7 @@ const PreviewFeedbackCard = ({
                       accountsArr.find(
                         (acc) =>
                           acc.provider ===
-                          feedback.author.accountDisplayedWithFeedbacks,
+                          feedback.author.accountDisplayedWithFeedbacks
                       )?.avatar || ""
                     }
                     className="select-none"
@@ -606,7 +610,7 @@ const PreviewFeedbackCard = ({
                       accountsArr.find(
                         (acc) =>
                           acc.provider ===
-                          feedback.author.accountDisplayedWithFeedbacks,
+                          feedback.author.accountDisplayedWithFeedbacks
                       )?.avatar || ""
                     }
                     width={20}
@@ -704,7 +708,7 @@ const PreviewFeedbackCard = ({
                 onClick={(e) => {
                   e.stopPropagation();
                   navigator.clipboard.writeText(
-                    `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/home?feedbackId=${feedback.id}`,
+                    `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/home?feedbackId=${feedback.id}`
                   );
                   toast.dismiss();
                   toast.success("feedback link copied!");

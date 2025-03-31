@@ -33,9 +33,11 @@ export async function GET(request: NextRequest) {
   });
   if (user === null)
     return NextResponse.json({ error: "User Not Found" }, { status: 400 });
+  
+  const { email, ...sanitizedUser } = user;
   profileData = {
     isOwn: isOwn,
-    user: user,
+    user: sanitizedUser,
   };
 
   const feedbacks = await prismaClient.feedback.findMany({

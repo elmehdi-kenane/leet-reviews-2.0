@@ -2,7 +2,8 @@
 
 import React, { createContext, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { FeedbackInterface } from "@/lib/types";
+import { FeedbackInterface, NotificationInterface } from "@/lib/types";
+import pusherClient, { pusherEventTypes } from "@/lib/pusher";
 
 export interface User {
   username: string;
@@ -17,7 +18,13 @@ export interface UserContextType {
   setFeedbacks: (
     value:
       | FeedbackInterface[]
-      | ((prevFeedbacks: FeedbackInterface[]) => FeedbackInterface[]),
+      | ((prevFeedbacks: FeedbackInterface[]) => FeedbackInterface[])
+  ) => void;
+  notifications: NotificationInterface[];
+  setNotifications: (
+    value:
+      | NotificationInterface[]
+      | ((prevFeedbacks: NotificationInterface[]) => NotificationInterface[])
   ) => void;
   setUserInfo: (user: User | ((prevUser: User) => User)) => void;
 }
@@ -33,6 +40,8 @@ const defaultUserContext: UserContextType = {
   userInfo: defaultUser,
   feedbacks: [],
   setFeedbacks: () => {},
+  notifications: [],
+  setNotifications: () => {},
   setUserInfo: () => {},
 };
 
@@ -43,6 +52,9 @@ export const UserProvider: React.FC<{
 }> = ({ children }) => {
   const [userInfo, setUserInfo] = useState<User>(defaultUser);
   const [feedbacks, setFeedbacks] = useState<FeedbackInterface[] | []>([]);
+  const [notifications, setNotifications] = useState<
+    NotificationInterface[] | []
+  >([]);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -54,7 +66,30 @@ export const UserProvider: React.FC<{
       // Skip user fetching when the route is hidden
       return;
     }
-
+    const createNotification = async (data: {
+      type: string;
+      voteIsUp: boolean;
+      authorId: string;
+      feedbackId: string;
+    }) => {
+      const res = await fetch("/api/notifications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "vote",
+          voteIsUp: data.voteIsUp,
+          authorId: data.authorId,
+          feedbackId: data.feedbackId,
+          isRead: false,
+        }),
+      });
+    };
+    const newVoteCallback = (data: string) => {
+      console.log("data", data);
+    };
+    pusherClient.bind(pusherEventTypes.newVote, newVoteCallback);
     const fetchUser = async () => {
       const response = await fetch("/api/user/get");
       if (!response.ok) {
@@ -67,7 +102,9 @@ export const UserProvider: React.FC<{
       }
 
       const data = await response.json();
-      setUserInfo(data);
+      console.log(data);
+
+      setUserInfo(data.userInfos);
     };
 
     fetchUser();
@@ -75,7 +112,14 @@ export const UserProvider: React.FC<{
 
   return (
     <UserContext.Provider
-      value={{ userInfo, setUserInfo, feedbacks, setFeedbacks }}
+      value={{
+        userInfo,
+        setUserInfo,
+        feedbacks,
+        setFeedbacks,
+        notifications,
+        setNotifications,
+      }}
     >
       {children}
     </UserContext.Provider>
