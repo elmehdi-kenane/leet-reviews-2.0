@@ -132,7 +132,7 @@ const BottomBar = () => {
             <Link
               key={index}
               href={item.link}
-              className={`w-full flex items-center justify-center ${item.text === "Notifications" ? "pointer-events-none" : ""}`}
+              className={`w-full flex items-center justify-center`}
             >
               <div className="flex flex-col items-center gap-1">
                 <button
@@ -152,7 +152,7 @@ const BottomBar = () => {
                   ></Image>
                   {item.text === "Notifications" && (
                     <div className="p-1 bg-primary text-neutral absolute rounded-md text-[7px] left-5 top-5">
-                      SOON
+                      NEW
                     </div>
                   )}
                 </button>

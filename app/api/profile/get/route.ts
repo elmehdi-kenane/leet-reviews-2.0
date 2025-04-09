@@ -33,8 +33,9 @@ export async function GET(request: NextRequest) {
   });
   if (user === null)
     return NextResponse.json({ error: "User Not Found" }, { status: 400 });
-  
+
   const { email, ...sanitizedUser } = user;
+  void email;
   profileData = {
     isOwn: isOwn,
     user: sanitizedUser,

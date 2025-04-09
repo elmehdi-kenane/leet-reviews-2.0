@@ -100,7 +100,7 @@ const SideBar = () => {
           <Link
             key={index}
             href={item.link === "/profile" ? `/profile` : item.link}
-            className={`w-full flex items-center justify-center ${item.text === "Notifications" ? "pointer-events-none" : ""}`}
+            className={`w-full flex items-center justify-center`}
           >
             <button
               className={`flex items-center rounded-xl gap-1 relative border-2 border-transparent hover:border-secondary ${
@@ -119,7 +119,7 @@ const SideBar = () => {
               ></Image>
               {item.text === "Notifications" && (
                 <div className="p-1 bg-primary text-neutral absolute rounded-md text-[7px] left-5 top-5">
-                  SOON
+                  NEW
                 </div>
               )}
             </button>

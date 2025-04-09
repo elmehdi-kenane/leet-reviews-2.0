@@ -40,35 +40,48 @@ model Session {
 }
 
 model User {
-  id                            String         @id @default(uuid())
+  id                            String                 @id @default(uuid())
   username                      String
   name                          String?
-  isFeedbacksHidden             Boolean        @default(false)
-  isCommentsAndVotesHidden      Boolean        @default(false)
-  accountDisplayedWithFeedbacks provider?      @default(none)
-  email                         String         @unique
-  createdAt                     DateTime       @default(now())
+  isFeedbacksHidden             Boolean                @default(false)
+  isCommentsAndVotesHidden      Boolean                @default(false)
+  accountDisplayedWithFeedbacks provider?              @default(none)
+  email                         String                 @unique
+  createdAt                     DateTime               @default(now())
   avatar                        String?
   bio                           String?
   accounts                      Account[]
   comments                      Comment[]
   feedbacks                     Feedback[]
-  notifications                 Notification[]
+  sentNotifications             Notification[]
   saves                         Save[]
   sessions                      Session[]
   votes                         Vote[]
+  receivedNotifications         NotificationReceiver[]
 }
 
 model Notification {
-  id         String           @id @default(uuid())
+  id         String                 @id @default(uuid())
   isRead     Boolean
   type       notificationType
   voteIsUp   Boolean?
-  userId     String
-  createdAt  DateTime         @default(now())
+  authorId   String
+  createdAt  DateTime               @default(now())
   feedbackId String
-  feedback   Feedback         @relation(fields: [feedbackId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  user       User             @relation(fields: [userId], references: [id])
+  User       User                   @relation(fields: [authorId], references: [id])
+  feedback   Feedback               @relation(fields: [feedbackId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  receivers  NotificationReceiver[]
+}
+
+model NotificationReceiver {
+  userId         String
+  notificationId String
+  isRead         Boolean @default(false)
+
+  user         User         @relation(fields: [userId], references: [id])
+  notification Notification @relation(fields: [notificationId], references: [id])
+
+  @@id([userId, notificationId])
 }
 
 model Feedback {

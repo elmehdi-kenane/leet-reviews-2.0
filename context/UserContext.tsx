@@ -18,13 +18,13 @@ export interface UserContextType {
   setFeedbacks: (
     value:
       | FeedbackInterface[]
-      | ((prevFeedbacks: FeedbackInterface[]) => FeedbackInterface[])
+      | ((prevFeedbacks: FeedbackInterface[]) => FeedbackInterface[]),
   ) => void;
   notifications: NotificationInterface[];
   setNotifications: (
     value:
       | NotificationInterface[]
-      | ((prevFeedbacks: NotificationInterface[]) => NotificationInterface[])
+      | ((prevFeedbacks: NotificationInterface[]) => NotificationInterface[]),
   ) => void;
   setUserInfo: (user: User | ((prevUser: User) => User)) => void;
 }
@@ -82,12 +82,15 @@ export const UserProvider: React.FC<{
           voteIsUp: data.voteIsUp,
           authorId: data.authorId,
           feedbackId: data.feedbackId,
-          isRead: false,
         }),
       });
     };
-    const newVoteCallback = (data: string) => {
-      console.log("data", data);
+    const newVoteCallback = (data: {
+      voteIsUp: boolean;
+      authorId: string;
+      feedbackId: string;
+    }) => {
+      if (userInfo.id !== data.authorId) console.log("new event", data);
     };
     pusherClient.bind(pusherEventTypes.newVote, newVoteCallback);
     const fetchUser = async () => {
@@ -103,7 +106,7 @@ export const UserProvider: React.FC<{
 
       const data = await response.json();
       console.log(data);
-
+      setNotifications(data.notifications);
       setUserInfo(data.userInfos);
     };
 
