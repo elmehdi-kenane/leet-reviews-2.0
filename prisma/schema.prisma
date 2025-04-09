@@ -54,10 +54,10 @@ model User {
   comments                      Comment[]
   feedbacks                     Feedback[]
   sentNotifications             Notification[]
+  receivedNotifications         NotificationReceiver[]
   saves                         Save[]
   sessions                      Session[]
   votes                         Vote[]
-  receivedNotifications         NotificationReceiver[]
 }
 
 model Notification {
@@ -76,10 +76,9 @@ model Notification {
 model NotificationReceiver {
   userId         String
   notificationId String
-  isRead         Boolean @default(false)
-
-  user         User         @relation(fields: [userId], references: [id])
-  notification Notification @relation(fields: [notificationId], references: [id])
+  isRead         Boolean      @default(false)
+  notification   Notification @relation(fields: [notificationId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
 
   @@id([userId, notificationId])
 }

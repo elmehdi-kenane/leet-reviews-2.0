@@ -66,31 +66,50 @@ export const UserProvider: React.FC<{
       // Skip user fetching when the route is hidden
       return;
     }
-    const createNotification = async (data: {
+
+    interface receivedNotificationInterface {
       type: string;
       voteIsUp: boolean;
       authorId: string;
       feedbackId: string;
-    }) => {
-      const res = await fetch("/api/notifications", {
+    }
+
+    const addReceivedNotification = async (
+      data: receivedNotificationInterface,
+    ) => {
+      const res = await fetch("/api/received-notification/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type: "vote",
+          type: data.type,
           voteIsUp: data.voteIsUp,
           authorId: data.authorId,
           feedbackId: data.feedbackId,
         }),
       });
+      if (res.ok) {
+        const newReceivedNotification = await res.json();
+        console.log("newReceivedNotification", newReceivedNotification);
+      }
     };
+
     const newVoteCallback = (data: {
       voteIsUp: boolean;
       authorId: string;
       feedbackId: string;
     }) => {
-      if (userInfo.id !== data.authorId) console.log("new event", data);
+      if (userInfo.id !== data.authorId) {
+        const receivedNotification: receivedNotificationInterface = {
+          type: "vote",
+          voteIsUp: data.voteIsUp,
+          feedbackId: data.feedbackId,
+          authorId: data.authorId,
+        };
+        addReceivedNotification(receivedNotification);
+        // add the new notification to the state
+      }
     };
     pusherClient.bind(pusherEventTypes.newVote, newVoteCallback);
     const fetchUser = async () => {

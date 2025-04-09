@@ -173,6 +173,11 @@ export async function GET(request: NextRequest) {
             // );
 
             // Optionally, delete the old user record if needed
+            await prisma.notification.deleteMany({
+              where: {
+                authorId: existingUser.id, // The ID of the user you're trying to delete
+              },
+            });
             await prisma.user.delete({
               where: {
                 id: existingUser.id,

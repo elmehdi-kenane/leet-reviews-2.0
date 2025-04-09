@@ -35,12 +35,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "vote already exist" });
   let notification;
   if (feedbackId) {
-    await pusher.trigger(feedbackId, pusherEventTypes.newVote, {
-      authorId: userId,
-      feedbackId: feedbackId,
-      isUp: isUp,
-    });
-
     notification = await prismaClient.notification.create({
       data: {
         type: "vote",
@@ -49,6 +43,11 @@ export async function POST(request: NextRequest) {
         feedbackId: feedbackId,
         isRead: false,
       },
+    });
+    await pusher.trigger(feedbackId, pusherEventTypes.newVote, {
+      authorId: userId,
+      feedbackId: feedbackId,
+      isUp: isUp,
     });
   } else console.log("invalid feedbackId for pusher-trigger");
 
