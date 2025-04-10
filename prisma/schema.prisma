@@ -74,13 +74,12 @@ model Notification {
 }
 
 model NotificationReceiver {
+  id             String       @id @default(uuid())
   userId         String
   notificationId String
   isRead         Boolean      @default(false)
   notification   Notification @relation(fields: [notificationId], references: [id])
   user           User         @relation(fields: [userId], references: [id])
-
-  @@id([userId, notificationId])
 }
 
 model Feedback {
