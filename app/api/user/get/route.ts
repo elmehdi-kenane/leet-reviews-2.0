@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
+import { getUserNotificationReason } from "@/lib/utils";
 
 export async function GET() {
   const result = await validateRequest();
@@ -12,8 +13,41 @@ export async function GET() {
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
-  const notifications = await prismaClient.notificationReceiver.findMany({
-    where: { userId: userId },
-  });
+  const receivedNotifications =
+    await prismaClient.notificationReceiver.findMany({
+      orderBy: {
+        notification: {
+          createdAt: "desc",
+        },
+      },
+      where: { userId: userId },
+      select: {
+        notification: {
+          select: {
+            feedback: true,
+            createdAt: true,
+            voteIsUp: true,
+            author: { select: { username: true, avatar: true, id: true } },
+          },
+        },
+        id: true,
+        isRead: true,
+      },
+    });
+  const notifications = await Promise.all(
+    receivedNotifications.map(async (notification) => {
+      const reason = await getUserNotificationReason(
+        userId,
+        notification.notification.feedback.id,
+      );
+
+      return {
+        reason: reason,
+        ...notification,
+      };
+    }),
+  );
+  //   console.log("notifications", notifications);
+
   return NextResponse.json({ userInfos: user, notifications: notifications });
 }

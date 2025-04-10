@@ -41,13 +41,12 @@ export async function POST(request: NextRequest) {
         voteIsUp: isUp,
         authorId: userId,
         feedbackId: feedbackId,
-        isRead: false,
       },
     });
     await pusher.trigger(feedbackId, pusherEventTypes.newVote, {
       authorId: userId,
       feedbackId: feedbackId,
-      isUp: isUp,
+      voteIsUp: isUp,
     });
   } else console.log("invalid feedbackId for pusher-trigger");
 

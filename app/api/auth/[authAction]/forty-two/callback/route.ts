@@ -108,6 +108,8 @@ export async function GET(request: NextRequest) {
           avatar: true,
           bio: true,
           accountDisplayedWithFeedbacks: true,
+          sentNotifications: true,
+          receivedNotifications: true,
           feedbacks: true,
           comments: true,
           saves: true,
@@ -144,6 +146,20 @@ export async function GET(request: NextRequest) {
                   connect: existingUser.feedbacks.map((feedback) => ({
                     id: feedback.id,
                   })),
+                },
+                sentNotifications: {
+                  connect: existingUser.sentNotifications.map(
+                    (notification) => ({
+                      id: notification.id,
+                    }),
+                  ),
+                },
+                receivedNotifications: {
+                  connect: existingUser.receivedNotifications.map(
+                    (notification) => ({
+                      id: notification.id,
+                    }),
+                  ),
                 },
                 comments: {
                   connect: existingUser.comments.map((comment) => ({

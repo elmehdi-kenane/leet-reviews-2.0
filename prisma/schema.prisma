@@ -62,13 +62,12 @@ model User {
 
 model Notification {
   id         String                 @id @default(uuid())
-  isRead     Boolean
   type       notificationType
   voteIsUp   Boolean?
   authorId   String
   createdAt  DateTime               @default(now())
   feedbackId String
-  User       User                   @relation(fields: [authorId], references: [id])
+  author       User                   @relation(fields: [authorId], references: [id])
   feedback   Feedback               @relation(fields: [feedbackId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   receivers  NotificationReceiver[]
 }
@@ -78,8 +77,8 @@ model NotificationReceiver {
   userId         String
   notificationId String
   isRead         Boolean      @default(false)
-  notification   Notification @relation(fields: [notificationId], references: [id])
-  user           User         @relation(fields: [userId], references: [id])
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Feedback {

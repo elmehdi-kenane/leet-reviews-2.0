@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { validateRequest } from "@/lib/auth";
+import { getUserNotificationReason } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -18,11 +19,31 @@ export async function POST(request: NextRequest) {
       { error: "notification not found" },
       { status: 400 },
     );
-  const receivedNotification = await prisma.notificationReceiver.create({
+  const newReceivedNotification = await prisma.notificationReceiver.create({
     data: { isRead: false, userId: userId, notificationId: notification.id },
+    select: {
+      notification: {
+        select: {
+          feedback: true,
+          createdAt: true,
+          voteIsUp: true,
+          author: { select: { username: true, avatar: true, id: true } },
+        },
+      },
+      id: true,
+      isRead: true,
+    },
   });
+  const reason = await getUserNotificationReason(
+    userId,
+    newReceivedNotification.notification.feedback.id,
+  );
+  const newReceivedNotificationWithReason = {
+    reason: reason,
+    ...newReceivedNotification,
+  };
   return NextResponse.json(
-    { newReceivedNotification: receivedNotification },
+    { newReceivedNotification: newReceivedNotificationWithReason },
     { status: 200 },
   );
 }

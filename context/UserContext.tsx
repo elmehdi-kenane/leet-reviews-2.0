@@ -2,7 +2,11 @@
 
 import React, { createContext, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { FeedbackInterface, NotificationInterface } from "@/lib/types";
+import {
+  FeedbackInterface,
+  NotificationInterface,
+  ReceivedNotificationInterface,
+} from "@/lib/types";
 import pusherClient, { pusherEventTypes } from "@/lib/pusher";
 
 export interface User {
@@ -20,11 +24,13 @@ export interface UserContextType {
       | FeedbackInterface[]
       | ((prevFeedbacks: FeedbackInterface[]) => FeedbackInterface[]),
   ) => void;
-  notifications: NotificationInterface[];
+  notifications: ReceivedNotificationInterface[];
   setNotifications: (
     value:
-      | NotificationInterface[]
-      | ((prevFeedbacks: NotificationInterface[]) => NotificationInterface[]),
+      | ReceivedNotificationInterface[]
+      | ((
+          prevFeedbacks: ReceivedNotificationInterface[],
+        ) => ReceivedNotificationInterface[]),
   ) => void;
   setUserInfo: (user: User | ((prevUser: User) => User)) => void;
 }
@@ -53,7 +59,7 @@ export const UserProvider: React.FC<{
   const [userInfo, setUserInfo] = useState<User>(defaultUser);
   const [feedbacks, setFeedbacks] = useState<FeedbackInterface[] | []>([]);
   const [notifications, setNotifications] = useState<
-    NotificationInterface[] | []
+    ReceivedNotificationInterface[] | []
   >([]);
   const pathname = usePathname();
   const router = useRouter();
@@ -67,7 +73,7 @@ export const UserProvider: React.FC<{
       return;
     }
 
-    interface receivedNotificationInterface {
+    interface receivedNotificationDataInterface {
       type: string;
       voteIsUp: boolean;
       authorId: string;
@@ -75,7 +81,7 @@ export const UserProvider: React.FC<{
     }
 
     const addReceivedNotification = async (
-      data: receivedNotificationInterface,
+      data: receivedNotificationDataInterface,
     ) => {
       const res = await fetch("/api/received-notification/create", {
         method: "POST",
@@ -90,8 +96,13 @@ export const UserProvider: React.FC<{
         }),
       });
       if (res.ok) {
-        const newReceivedNotification = await res.json();
-        console.log("newReceivedNotification", newReceivedNotification);
+        const data = await res.json();
+        console.log(
+          "data.newReceivedNotification",
+          data.newReceivedNotification,
+        );
+        setNotifications([data.newReceivedNotification, ...notifications]);
+        console.log("add", data.newReceivedNotification, "to", notifications);
       }
     };
 
@@ -100,8 +111,11 @@ export const UserProvider: React.FC<{
       authorId: string;
       feedbackId: string;
     }) => {
+      console.log(userInfo.id, "xx", data.authorId);
+      console.log("data.voteIsUp", data.voteIsUp);
+
       if (userInfo.id !== data.authorId) {
-        const receivedNotification: receivedNotificationInterface = {
+        const receivedNotification: receivedNotificationDataInterface = {
           type: "vote",
           voteIsUp: data.voteIsUp,
           feedbackId: data.feedbackId,
@@ -111,6 +125,8 @@ export const UserProvider: React.FC<{
         // add the new notification to the state
       }
     };
+    console.log("all subscribed channels");
+    pusherClient.allChannels().forEach((channel) => console.log(channel.name));
     pusherClient.bind(pusherEventTypes.newVote, newVoteCallback);
     const fetchUser = async () => {
       const response = await fetch("/api/user/get");
@@ -130,6 +146,9 @@ export const UserProvider: React.FC<{
     };
 
     fetchUser();
+    return () => {
+      pusherClient.unbind_all(); // Unbind all event listeners
+    };
   }, [pathname]);
 
   return (

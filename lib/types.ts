@@ -236,14 +236,26 @@ export interface saveInterface {
   createdAt: string;
 }
 
+export interface NotificationAuthorInterface {
+  id: string;
+  avatar: string;
+  username: string;
+}
+
 export interface NotificationInterface {
   id: string;
-  isRead: boolean;
   type: string;
   voteIsUp: boolean;
-  userId: string;
+  author: NotificationAuthorInterface;
   createdAt: string;
-  feedbackId: string;
+  feedback: FeedbackInterface;
+}
+
+export interface ReceivedNotificationInterface {
+  id: string;
+  isRead: boolean;
+  reason: string;
+  notification: NotificationInterface;
 }
 
 export interface FeedbackInterface {
