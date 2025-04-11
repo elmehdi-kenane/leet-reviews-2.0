@@ -47,7 +47,17 @@ export async function GET() {
       };
     }),
   );
-  //   console.log("notifications", notifications);
-
-  return NextResponse.json({ userInfos: user, notifications: notifications });
+  const subscribedPusherChannels = await prismaClient.notification.findMany({
+    where: { authorId: userId },
+  });
+  const subscribedPusherChannelNames = subscribedPusherChannels.map(
+    (channel) => {
+      return channel.feedbackId;
+    },
+  );
+  return NextResponse.json({
+    userInfos: user,
+    notifications: notifications,
+    subscribedPusherChannelNames: subscribedPusherChannelNames,
+  });
 }
