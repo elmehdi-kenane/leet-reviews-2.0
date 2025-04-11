@@ -24,12 +24,13 @@ export interface UserContextType {
       | FeedbackInterface[]
       | ((prevFeedbacks: FeedbackInterface[]) => FeedbackInterface[]),
   ) => void;
-  notifications: ReceivedNotificationInterface[];
+  notifications: ReceivedNotificationInterface[] | null;
   setNotifications: (
     value:
+      | null
       | ReceivedNotificationInterface[]
       | ((
-          prevFeedbacks: ReceivedNotificationInterface[],
+          prevNotifications: ReceivedNotificationInterface[] | null,
         ) => ReceivedNotificationInterface[]),
   ) => void;
   setUserInfo: (user: User | ((prevUser: User) => User)) => void;
@@ -59,8 +60,8 @@ export const UserProvider: React.FC<{
   const [userInfo, setUserInfo] = useState<User>(defaultUser);
   const [feedbacks, setFeedbacks] = useState<FeedbackInterface[] | []>([]);
   const [notifications, setNotifications] = useState<
-    ReceivedNotificationInterface[] | []
-  >([]);
+    ReceivedNotificationInterface[] | [] | null
+  >(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -101,7 +102,10 @@ export const UserProvider: React.FC<{
           "data.newReceivedNotification",
           data.newReceivedNotification,
         );
-        setNotifications([data.newReceivedNotification, ...notifications]);
+        setNotifications([
+          data.newReceivedNotification,
+          ...(notifications ?? []),
+        ]);
         console.log("add", data.newReceivedNotification, "to", notifications);
       }
     };
