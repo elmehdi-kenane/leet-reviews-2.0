@@ -335,6 +335,7 @@ const PreviewFeedbackCard = ({
     } catch (error) {
       console.error("Error", error);
     }
+    pusherClient.unsubscribe(feedbackId);
   };
 
   return (

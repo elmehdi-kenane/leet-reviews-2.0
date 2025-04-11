@@ -35,14 +35,24 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "vote already exist" });
   let notification;
   if (feedbackId) {
-    notification = await prismaClient.notification.create({
-      data: {
-        type: "vote",
-        voteIsUp: isUp,
-        authorId: userId,
-        feedbackId: feedbackId,
-      },
+    const existingNotification = await prismaClient.notification.findFirst({
+      where: { authorId: userId, feedbackId: feedbackId, type: "vote" },
     });
+    if (existingNotification)
+      await prismaClient.notification.update({
+        where: { id: existingNotification.id },
+        data: { voteIsUp: isUp, createdAt: new Date() },
+      });
+    else
+      notification = await prismaClient.notification.create({
+        data: {
+          type: "vote",
+          voteIsUp: isUp,
+          authorId: userId,
+          feedbackId: feedbackId,
+        },
+      });
+    console.log("trigger a new vote event");
     await pusher.trigger(feedbackId, pusherEventTypes.newVote, {
       authorId: userId,
       feedbackId: feedbackId,

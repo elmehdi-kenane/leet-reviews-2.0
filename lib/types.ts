@@ -245,6 +245,8 @@ export interface NotificationAuthorInterface {
 export interface NotificationInterface {
   id: string;
   type: string;
+  feedbackId: string;
+  authorId: string;
   voteIsUp: boolean;
   author: NotificationAuthorInterface;
   createdAt: string;

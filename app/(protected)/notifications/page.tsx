@@ -13,6 +13,8 @@ import seenChecks from "@/public/seen-checks.svg";
 import trash from "@/public/trash.svg";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import toast from "react-hot-toast";
+import likeFilled from "@/public/like-filled-white.svg";
+import dislikeFilled from "@/public/dislike-filled-white.svg";
 
 const NotificationsPage = () => {
   const userContext = useContext(UserContext);
@@ -43,6 +45,7 @@ const NotificationsPage = () => {
       (notification) => (notification.isRead === false ? true : false),
     );
     if (!hasUnReadNotifications) {
+      toast.dismiss();
       toast("No unread notifications.", {
         style: { background: "#FFFFFF", color: "#141e46" },
       });
@@ -77,12 +80,14 @@ const NotificationsPage = () => {
   const actionButtons = [
     {
       text: "Clear All Notifications",
+      shortText: "Clear All",
       icon: trash,
       iconSize: 15,
       handler: handleClearAllNotifications,
     },
     {
       text: "Mark All as Read",
+      shortText: "Mark Read",
       icon: seenChecks,
       iconSize: 20,
       handler: handleMarkAllAsRead,
@@ -145,7 +150,7 @@ const NotificationsPage = () => {
         </SkeletonTheme>
       ) : (
         <>
-          <div className="flex justify-end gap-3 font-SpaceGrotesk font-semibold">
+          <div className="flex justify-end gap-3 font-SpaceGrotesk flex-wrap font-semibold">
             {actionButtons.map((button) => {
               return (
                 <button
@@ -160,7 +165,8 @@ const NotificationsPage = () => {
                     width={button.iconSize}
                     alt={button.icon}
                   ></Image>
-                  {button.text}
+                  <span className="max-md:hidden">{button.text}</span>
+                  <span className="md:hidden">{button.shortText}</span>
                 </button>
               );
             })}
@@ -184,41 +190,71 @@ const NotificationsPage = () => {
               <div className="flex flex-col w-full gap-3 max-md:text-[10px]">
                 {userContext.notifications.map((receivedNotification) => {
                   console.log("receivedNotification", receivedNotification);
+                  let reactionIcon = undefined;
+                  if (
+                    receivedNotification.notification.type === "vote" &&
+                    receivedNotification.notification.voteIsUp === true
+                  )
+                    reactionIcon = likeFilled;
+                  else if (
+                    receivedNotification.notification.type === "vote" &&
+                    receivedNotification.notification.voteIsUp === false
+                  )
+                    reactionIcon = dislikeFilled;
+                  else if (receivedNotification.notification.type === "comment")
+                    reactionIcon = "";
+                  else if (receivedNotification.notification.type === "save")
+                    reactionIcon = "";
                   return (
                     <Link
                       href={`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/home?feedbackId=${receivedNotification.notification.feedback.id}`}
                       key={receivedNotification.id}
                       className={`w-full text-secondary flex items-center h-14 ${receivedNotification.isRead === false ? "bg-gray" : "bg-neutral"} hover:bg-neutral rounded-2xl border p-2 border-neutral`}
                     >
-                      <Image
-                        className="min-w-[40px] w-[40px] mr-2 select-none rounded-full border border-secondary"
-                        src={receivedNotification.notification.author.avatar}
-                        height={30}
-                        width={30}
-                        alt={receivedNotification.notification.author.avatar}
-                      ></Image>
-                      <span className="">
-                        <span
-                          className="hover:text-primary hover:underline cursor-pointer font-semibold"
-                          onClick={(e) =>
-                            handleProfileClick(e, receivedNotification)
-                          }
-                        >
-                          {receivedNotification.notification.author.username}
-                        </span>{" "}
-                        {receivedNotification.notification.voteIsUp === true
-                          ? "agreed"
-                          : "disagreed"}{" "}
-                        with a feedback {receivedNotification.reason}.
-                      </span>
-                      <p className="ml-auto text-[10px] mt-auto">
-                        {formatDistanceToNow(
-                          new Date(receivedNotification.notification.createdAt),
-                          {
-                            addSuffix: true,
-                          },
-                        )}
-                      </p>
+                      <div className="flex mr-2 relative">
+                        <Image
+                          className="min-w-[40px] w-[40px] select-none rounded-full border border-secondary"
+                          src={receivedNotification.notification.author.avatar}
+                          height={30}
+                          width={30}
+                          alt={receivedNotification.notification.author.avatar}
+                        ></Image>
+                        <div className="rounded-full w-5 h-5 bg-secondary absolute bottom-[-5px] right-[-5px] p-1 flex justify-center items-center">
+                          <Image
+                            className=""
+                            src={reactionIcon}
+                            height={30}
+                            width={30}
+                            alt={reactionIcon}
+                          ></Image>
+                        </div>
+                      </div>
+                      <div className="flex max-md:flex-col w-full h-full">
+                        <span className="my-auto">
+                          <span
+                            className="hover:text-primary hover:underline cursor-pointer font-semibold"
+                            onClick={(e) =>
+                              handleProfileClick(e, receivedNotification)
+                            }
+                          >
+                            {receivedNotification.notification.author.username}
+                          </span>{" "}
+                          {receivedNotification.notification.voteIsUp === true
+                            ? "agreed"
+                            : "disagreed"}{" "}
+                          with a feedback {receivedNotification.reason}.
+                        </span>
+                        <p className="ml-auto text-[10px] mt-auto">
+                          {formatDistanceToNow(
+                            new Date(
+                              receivedNotification.notification.createdAt,
+                            ),
+                            {
+                              addSuffix: true,
+                            },
+                          )}
+                        </p>
+                      </div>
                     </Link>
                   );
                 })}

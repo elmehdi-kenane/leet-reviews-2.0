@@ -35,7 +35,10 @@ export async function POST(request: NextRequest) {
   if (votes.length === 0) {
     return NextResponse.json({ message: "vote not found" }, { status: 400 });
   }
-
+  const notification = await prismaClient.notification.findFirst({
+    where: { authorId: userId, type: "vote", feedbackId: votes[0].feedbackId },
+  });
+  await prismaClient.notification.delete({ where: { id: notification?.id } });
   await prismaClient.vote.delete({
     where: {
       id: votes[0].id,

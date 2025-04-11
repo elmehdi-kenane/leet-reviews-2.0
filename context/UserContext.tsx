@@ -25,6 +25,10 @@ export interface UserContextType {
       | ((prevFeedbacks: FeedbackInterface[]) => FeedbackInterface[]),
   ) => void;
   notifications: ReceivedNotificationInterface[] | null;
+  pusherSubscriptions: string[];
+  setPusherSubscriptions: (
+    value: string[] | ((prevNotifications: string[] | null) => string[]),
+  ) => void;
   setNotifications: (
     value:
       | null
@@ -49,6 +53,8 @@ const defaultUserContext: UserContextType = {
   setFeedbacks: () => {},
   notifications: [],
   setNotifications: () => {},
+  pusherSubscriptions: [],
+  setPusherSubscriptions: () => {},
   setUserInfo: () => {},
 };
 
@@ -62,6 +68,7 @@ export const UserProvider: React.FC<{
   const [notifications, setNotifications] = useState<
     ReceivedNotificationInterface[] | [] | null
   >(null);
+  const [pusherSubscriptions, setPusherSubscriptions] = useState<string[]>([]);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -74,13 +81,41 @@ export const UserProvider: React.FC<{
       return;
     }
 
+    const fetchUser = async () => {
+      const response = await fetch("/api/user/get");
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error fetching user:", errorData.error);
+        if (response.status === 401) {
+          router.push("/auth/sign-in");
+        }
+        return;
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setNotifications(data.notifications);
+      console.log("set user info", data.userInfos);
+      setUserInfo((_prev) => data.userInfos);
+      data.subscribedPusherChannelNames.forEach((channelName: string) => {
+        console.log("subscribe to", channelName);
+        pusherClient.subscribe(channelName);
+      });
+      setPusherSubscriptions(data.subscribedPusherChannelNames);
+    };
+    fetchUser();
+    return () => {
+      pusherClient.unbind_all(); // Unbind all event listeners
+    };
+  }, [pathname]);
+
+  useEffect(() => {
     interface receivedNotificationDataInterface {
       type: string;
       voteIsUp: boolean;
       authorId: string;
       feedbackId: string;
     }
-
     const addReceivedNotification = async (
       data: receivedNotificationDataInterface,
     ) => {
@@ -102,23 +137,28 @@ export const UserProvider: React.FC<{
           "data.newReceivedNotification",
           data.newReceivedNotification,
         );
-        setNotifications([
-          data.newReceivedNotification,
-          ...(notifications ?? []),
-        ]);
+        setNotifications((prevNotifications) => {
+          const updatedList = (prevNotifications ?? []).filter(
+            (notification) =>
+              notification.id !== data.newReceivedNotification.id,
+          );
+
+          return [data.newReceivedNotification, ...updatedList];
+        });
+
         console.log("add", data.newReceivedNotification, "to", notifications);
       }
     };
-
     const newVoteCallback = (data: {
       voteIsUp: boolean;
       authorId: string;
       feedbackId: string;
     }) => {
+      console.log("userInfo", userInfo);
       console.log(userInfo.id, "xx", data.authorId);
       console.log("data.voteIsUp", data.voteIsUp);
 
-      if (userInfo.id !== data.authorId) {
+      if (userInfo.id !== data.authorId && userInfo.id !== "default_id") {
         const receivedNotification: receivedNotificationDataInterface = {
           type: "vote",
           voteIsUp: data.voteIsUp,
@@ -126,34 +166,10 @@ export const UserProvider: React.FC<{
           authorId: data.authorId,
         };
         addReceivedNotification(receivedNotification);
-        // add the new notification to the state
       }
     };
-    console.log("all subscribed channels");
-    pusherClient.allChannels().forEach((channel) => console.log(channel.name));
     pusherClient.bind(pusherEventTypes.newVote, newVoteCallback);
-    const fetchUser = async () => {
-      const response = await fetch("/api/user/get");
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error fetching user:", errorData.error);
-        if (response.status === 401) {
-          router.push("/auth/sign-in");
-        }
-        return;
-      }
-
-      const data = await response.json();
-      console.log(data);
-      setNotifications(data.notifications);
-      setUserInfo(data.userInfos);
-    };
-
-    fetchUser();
-    return () => {
-      pusherClient.unbind_all(); // Unbind all event listeners
-    };
-  }, [pathname]);
+  }, [userInfo]);
 
   return (
     <UserContext.Provider
@@ -164,6 +180,8 @@ export const UserProvider: React.FC<{
         setFeedbacks,
         notifications,
         setNotifications,
+        pusherSubscriptions,
+        setPusherSubscriptions,
       }}
     >
       {children}

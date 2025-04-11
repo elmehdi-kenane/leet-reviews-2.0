@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { validateRequest } from "@/lib/auth";
+import { prismaClient, validateRequest } from "@/lib/auth";
 import { getUserNotificationReason } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
@@ -11,7 +11,11 @@ export async function POST(request: NextRequest) {
   const data = await request.json();
   console.log("data create received notification", data);
 
+  if (userId === data.authorId)
+    console.log("create to the same one====================");
+
   const notification = await prisma.notification.findFirst({
+    orderBy: { createdAt: "desc" },
     where: { authorId: data.authorId, feedbackId: data.feedbackId },
   });
   if (!notification)
@@ -19,21 +23,52 @@ export async function POST(request: NextRequest) {
       { error: "notification not found" },
       { status: 400 },
     );
-  const newReceivedNotification = await prisma.notificationReceiver.create({
-    data: { isRead: false, userId: userId, notificationId: notification.id },
-    select: {
-      notification: {
-        select: {
-          feedback: true,
-          createdAt: true,
-          voteIsUp: true,
-          author: { select: { username: true, avatar: true, id: true } },
-        },
+  // update the notification with "vote" type instead of creating a new one
+  const existingReceivedNotification =
+    await prismaClient.notificationReceiver.findFirst({
+      where: {
+        userId: userId,
+        notificationId: notification.id,
+        notification: { type: "vote", feedbackId: notification.feedbackId },
       },
-      id: true,
-      isRead: true,
-    },
-  });
+    });
+  let newReceivedNotification;
+  if (existingReceivedNotification)
+    newReceivedNotification = await prisma.notificationReceiver.update({
+      where: { id: existingReceivedNotification.id },
+      data: {
+        isRead: false,
+      },
+      select: {
+        notification: {
+          select: {
+            feedback: true,
+            createdAt: true,
+            voteIsUp: true,
+            type: true,
+            author: { select: { username: true, avatar: true, id: true } },
+          },
+        },
+        id: true,
+        isRead: true,
+      },
+    });
+  else
+    newReceivedNotification = await prisma.notificationReceiver.create({
+      data: { isRead: false, userId: userId, notificationId: notification.id },
+      select: {
+        notification: {
+          select: {
+            feedback: true,
+            createdAt: true,
+            voteIsUp: true,
+            author: { select: { username: true, avatar: true, id: true } },
+          },
+        },
+        id: true,
+        isRead: true,
+      },
+    });
   const reason = await getUserNotificationReason(
     userId,
     newReceivedNotification.notification.feedback.id,
