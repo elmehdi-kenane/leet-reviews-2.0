@@ -16,4 +16,5 @@ export default pusherClient;
 
 export enum pusherEventTypes {
   newVote = "newVote",
+  deleteNotification = "deleteNotification",
 }

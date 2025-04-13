@@ -93,12 +93,11 @@ export const UserProvider: React.FC<{
       }
 
       const data = await response.json();
-      console.log(data);
+      //   console.log(data);
       setNotifications(data.notifications);
-      console.log("set user info", data.userInfos);
       setUserInfo((_prev) => data.userInfos);
       data.subscribedPusherChannelNames.forEach((channelName: string) => {
-        console.log("subscribe to", channelName);
+        // console.log("subscribe to", channelName);
         pusherClient.subscribe(channelName);
       });
       setPusherSubscriptions(data.subscribedPusherChannelNames);
@@ -110,6 +109,8 @@ export const UserProvider: React.FC<{
   }, [pathname]);
 
   useEffect(() => {
+    if (userInfo.id === "default_id") return;
+
     interface receivedNotificationDataInterface {
       type: string;
       voteIsUp: boolean;
@@ -133,20 +134,18 @@ export const UserProvider: React.FC<{
       });
       if (res.ok) {
         const data = await res.json();
-        console.log(
-          "data.newReceivedNotification",
-          data.newReceivedNotification,
-        );
+        // console.log(
+        //   "data.newReceivedNotification",
+        //   data.newReceivedNotification
+        // );
         setNotifications((prevNotifications) => {
           const updatedList = (prevNotifications ?? []).filter(
             (notification) =>
               notification.id !== data.newReceivedNotification.id,
           );
-
           return [data.newReceivedNotification, ...updatedList];
         });
-
-        console.log("add", data.newReceivedNotification, "to", notifications);
+        // console.log("add", data.newReceivedNotification, "to", notifications);
       }
     };
     const newVoteCallback = (data: {
@@ -154,11 +153,8 @@ export const UserProvider: React.FC<{
       authorId: string;
       feedbackId: string;
     }) => {
-      console.log("userInfo", userInfo);
-      console.log(userInfo.id, "xx", data.authorId);
-      console.log("data.voteIsUp", data.voteIsUp);
-
       if (userInfo.id !== data.authorId && userInfo.id !== "default_id") {
+        // console.log("add new received notification");
         const receivedNotification: receivedNotificationDataInterface = {
           type: "vote",
           voteIsUp: data.voteIsUp,
@@ -168,8 +164,34 @@ export const UserProvider: React.FC<{
         addReceivedNotification(receivedNotification);
       }
     };
+
+    const deleteNotificationCallback = (data: { notificationId: string }) => {
+      //   console.log(
+      //     "deleteNotificationCallback notificationId",
+      //     data.notificationId
+      //   );
+      //   console.log("deleteNotificationCallback notifications", notifications);
+      setNotifications((prevNotifications) => {
+        const updatedList = (prevNotifications ?? []).filter(
+          (notification) =>
+            notification.notification.id !== data.notificationId,
+        );
+        return updatedList;
+      });
+    };
     pusherClient.bind(pusherEventTypes.newVote, newVoteCallback);
-  }, [userInfo]);
+    pusherClient.bind(
+      pusherEventTypes.deleteNotification,
+      deleteNotificationCallback,
+    );
+    return () => {
+      pusherClient.unbind(pusherEventTypes.newVote, newVoteCallback);
+      pusherClient.unbind(
+        pusherEventTypes.deleteNotification,
+        deleteNotificationCallback,
+      );
+    };
+  }, [userInfo, notifications]);
 
   return (
     <UserContext.Provider

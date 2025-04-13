@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
+import { deleteNotifications } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -25,23 +26,25 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   const isUp = isUpParam === "true" ? true : false;
-  const votes = await prismaClient.vote.findMany({
+  const vote = await prismaClient.vote.findFirst({
     where: {
       authorId: userId,
       feedbackId: feedbackId ? feedbackId : "",
       isUp: isUp,
     },
   });
-  if (votes.length === 0) {
+  if (!vote) {
     return NextResponse.json({ message: "vote not found" }, { status: 400 });
   }
+  const voteFeedbackId = vote.feedbackId;
   const notification = await prismaClient.notification.findFirst({
-    where: { authorId: userId, type: "vote", feedbackId: votes[0].feedbackId },
+    where: { authorId: userId, type: "vote", feedbackId: voteFeedbackId },
   });
-  await prismaClient.notification.delete({ where: { id: notification?.id } });
+  if (notification)
+    await deleteNotifications(voteFeedbackId, notification, userId);
   await prismaClient.vote.delete({
     where: {
-      id: votes[0].id,
+      id: vote.id,
     },
   });
   return NextResponse.json({ message: "vote deleted" });

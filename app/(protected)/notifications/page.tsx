@@ -18,11 +18,11 @@ import dislikeFilled from "@/public/dislike-filled-white.svg";
 
 const NotificationsPage = () => {
   const userContext = useContext(UserContext);
-  console.log("userContext.notifications", userContext.notifications);
 
   const handleClearAllNotifications = async () => {
     if (userContext.notifications?.length === 0) return;
     try {
+      toast.dismiss();
       toast.loading("Deleting notifications…", {
         style: { background: "#FFFFFF", color: "#141e46" },
       });
@@ -52,6 +52,7 @@ const NotificationsPage = () => {
       return;
     }
     try {
+      toast.dismiss();
       toast.loading("Updating notifications…", {
         style: { background: "#FFFFFF", color: "#141e46" },
       });
@@ -79,18 +80,18 @@ const NotificationsPage = () => {
 
   const actionButtons = [
     {
-      text: "Clear All Notifications",
-      shortText: "Clear All",
-      icon: trash,
-      iconSize: 15,
-      handler: handleClearAllNotifications,
-    },
-    {
       text: "Mark All as Read",
       shortText: "Mark Read",
       icon: seenChecks,
       iconSize: 20,
       handler: handleMarkAllAsRead,
+    },
+    {
+      text: "Clear All Notifications",
+      shortText: "Clear All",
+      icon: trash,
+      iconSize: 15,
+      handler: handleClearAllNotifications,
     },
   ];
 
@@ -155,7 +156,7 @@ const NotificationsPage = () => {
               return (
                 <button
                   onClick={button.handler}
-                  className={`p-3 border-2 flex items-center gap-1 rounded-xl ${userContext.notifications?.length === 0 ? "cursor-not-allowed border-[gray]" : "border-primary hover:bg-primary"}`}
+                  className={`p-3 border-2 flex select-none items-center gap-1 rounded-xl ${userContext.notifications?.length === 0 ? "cursor-not-allowed border-[gray]" : "border-primary hover:bg-primary"}`}
                   key={button.text}
                 >
                   <Image
@@ -189,7 +190,6 @@ const NotificationsPage = () => {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col w-full gap-3 max-md:text-[10px]">
                 {userContext.notifications.map((receivedNotification) => {
-                  console.log("receivedNotification", receivedNotification);
                   let reactionIcon = undefined;
                   if (
                     receivedNotification.notification.type === "vote" &&

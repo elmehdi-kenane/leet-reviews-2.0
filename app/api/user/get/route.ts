@@ -27,6 +27,7 @@ export async function GET() {
             feedback: true,
             createdAt: true,
             voteIsUp: true,
+            id: true,
             type: true,
             author: { select: { username: true, avatar: true, id: true } },
           },

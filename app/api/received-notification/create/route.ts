@@ -9,10 +9,14 @@ export async function POST(request: NextRequest) {
   if (userId === undefined)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const data = await request.json();
+  console.log("the current userId", userId);
+
   console.log("data create received notification", data);
 
-  if (userId === data.authorId)
-    console.log("create to the same one====================");
+  if (userId === data.authorId) {
+    console.log("create to the same one");
+    return;
+  }
 
   const notification = await prisma.notification.findFirst({
     orderBy: { createdAt: "desc" },
@@ -28,11 +32,16 @@ export async function POST(request: NextRequest) {
     await prismaClient.notificationReceiver.findFirst({
       where: {
         userId: userId,
-        notificationId: notification.id,
-        notification: { type: "vote", feedbackId: notification.feedbackId },
+        notification: {
+          type: "vote",
+          feedbackId: notification.feedbackId,
+          authorId: data.authorId,
+        },
       },
     });
   let newReceivedNotification;
+  console.log("existingReceivedNotification", existingReceivedNotification);
+
   if (existingReceivedNotification)
     newReceivedNotification = await prisma.notificationReceiver.update({
       where: { id: existingReceivedNotification.id },
@@ -45,6 +54,7 @@ export async function POST(request: NextRequest) {
             feedback: true,
             createdAt: true,
             voteIsUp: true,
+            id: true,
             type: true,
             author: { select: { username: true, avatar: true, id: true } },
           },
@@ -61,6 +71,8 @@ export async function POST(request: NextRequest) {
           select: {
             feedback: true,
             createdAt: true,
+            type: true,
+            id: true,
             voteIsUp: true,
             author: { select: { username: true, avatar: true, id: true } },
           },
