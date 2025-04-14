@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
-import { deleteNotifications } from "@/lib/utils";
+// import { deleteNotifications } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -41,11 +41,11 @@ export async function POST(request: NextRequest) {
     where: { authorId: userId, type: "vote", feedbackId: voteFeedbackId },
   });
   if (notification)
-    await deleteNotifications(voteFeedbackId, notification, userId);
-  await prismaClient.vote.delete({
-    where: {
-      id: vote.id,
-    },
-  });
+    // await deleteNotifications(voteFeedbackId, notification, userId);
+    await prismaClient.vote.delete({
+      where: {
+        id: vote.id,
+      },
+    });
   return NextResponse.json({ message: "vote deleted" });
 }
