@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
-import { deleteNotifications } from "@/lib/utils";
+// import { deleteNotifications } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   });
   if (notification) {
     console.log("delete", notification);
-    await deleteNotifications(saveFeedbackId, notification, userId);
+    // await deleteNotifications(saveFeedbackId, notification, userId);
   }
   await prismaClient.save.delete({
     where: {
