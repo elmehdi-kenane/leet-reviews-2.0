@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { prismaClient, validateRequest } from "@/lib/auth";
-// import { getUserNotificationReason } from "@/lib/utils";
+import { getUserNotificationReason } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -81,12 +81,12 @@ export async function POST(request: NextRequest) {
         isRead: true,
       },
     });
-  //   const reason = await getUserNotificationReason(
-  //     userId,
-  //     newReceivedNotification.notification.feedback.id,
-  //   );
+  const reason = await getUserNotificationReason(
+    userId,
+    newReceivedNotification.notification.feedback.id,
+  );
   const newReceivedNotificationWithReason = {
-    // reason: reason,
+    reason: reason,
     ...newReceivedNotification,
   };
   return NextResponse.json(

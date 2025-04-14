@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
-// import { getUserNotificationReason } from "@/lib/utils";
+import { getUserNotificationReason } from "@/lib/utils";
 
 export async function GET() {
   const result = await validateRequest();
@@ -38,13 +38,13 @@ export async function GET() {
     });
   const notifications = await Promise.all(
     receivedNotifications.map(async (notification) => {
-      //   const reason = await getUserNotificationReason(
-      //     userId,
-      //     notification.notification.feedback.id,
-      //   );
+      const reason = await getUserNotificationReason(
+        userId,
+        notification.notification.feedback.id,
+      );
 
       return {
-        // reason: reason,
+        reason: reason,
         ...notification,
       };
     }),
