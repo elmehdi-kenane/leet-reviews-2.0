@@ -141,7 +141,7 @@ export const UserProvider: React.FC<{
       feedbackId: string;
     }
     const addReceivedNotification = async (
-      data: receivedNotificationDataInterface,
+      receivedNotification: receivedNotificationDataInterface,
     ) => {
       const res = await fetch("/api/received-notification/create", {
         method: "POST",
@@ -149,10 +149,10 @@ export const UserProvider: React.FC<{
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type: data.type,
-          voteIsUp: data.voteIsUp,
-          authorId: data.authorId,
-          feedbackId: data.feedbackId,
+          type: receivedNotification.type,
+          voteIsUp: receivedNotification.voteIsUp,
+          authorId: receivedNotification.authorId,
+          feedbackId: receivedNotification.feedbackId,
         }),
       });
       if (res.ok) {
@@ -171,16 +171,17 @@ export const UserProvider: React.FC<{
         // console.log("add", data.newReceivedNotification, "to", notifications);
       }
     };
-    const newVoteCallback = (data: {
+    const newReactionCallback = (data: {
       voteIsUp: boolean;
       authorId: string;
       feedbackId: string;
+      type: string;
     }) => {
       if (userInfo.id !== data.authorId && userInfo.id !== "default_id") {
         // console.log("add new received notification");
         setHasNewNotifications(true);
         const receivedNotification: receivedNotificationDataInterface = {
-          type: "vote",
+          type: data.type,
           voteIsUp: data.voteIsUp,
           feedbackId: data.feedbackId,
           authorId: data.authorId,
@@ -189,12 +190,11 @@ export const UserProvider: React.FC<{
       }
     };
 
+    /** the author of the notification has (unlike - delete comment - un save) the feedback */
     const deleteNotificationCallback = (data: { notificationId: string }) => {
-      //   console.log(
-      //     "deleteNotificationCallback notificationId",
-      //     data.notificationId
-      //   );
-      //   console.log("deleteNotificationCallback notifications", notifications);
+      console.log("delete notification from the state", data.notificationId);
+      console.log("notifications", notifications);
+
       setNotifications((prevNotifications) => {
         const updatedList = (prevNotifications ?? []).filter(
           (notification) =>
@@ -203,13 +203,13 @@ export const UserProvider: React.FC<{
         return updatedList;
       });
     };
-    pusherClient.bind(pusherEventTypes.newVote, newVoteCallback);
+    pusherClient.bind(pusherEventTypes.newReaction, newReactionCallback);
     pusherClient.bind(
       pusherEventTypes.deleteNotification,
       deleteNotificationCallback,
     );
     return () => {
-      pusherClient.unbind(pusherEventTypes.newVote, newVoteCallback);
+      pusherClient.unbind(pusherEventTypes.newReaction, newReactionCallback);
       pusherClient.unbind(
         pusherEventTypes.deleteNotification,
         deleteNotificationCallback,

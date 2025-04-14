@@ -15,6 +15,6 @@ const pusherClient = new PusherClient(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
 export default pusherClient;
 
 export enum pusherEventTypes {
-  newVote = "newVote",
+  newReaction = "newReaction",
   deleteNotification = "deleteNotification",
 }

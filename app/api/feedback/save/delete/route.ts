@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
+import { deleteNotifications } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -21,18 +22,25 @@ export async function POST(request: NextRequest) {
       { message: "feedback not found" },
       { status: 400 },
     );
-  const saves = await prismaClient.save.findMany({
+  const save = await prismaClient.save.findFirst({
     where: {
       authorId: userId,
       feedbackId: feedbackId ? feedbackId : "",
     },
   });
-  if (saves.length === 0)
-    return NextResponse.json({ message: "save not found" });
+  if (!save) return NextResponse.json({ message: "save not found" });
 
+  const saveFeedbackId = save.feedbackId;
+  const notification = await prismaClient.notification.findFirst({
+    where: { authorId: userId, type: "save", feedbackId: saveFeedbackId },
+  });
+  if (notification) {
+    console.log("delete", notification);
+    await deleteNotifications(saveFeedbackId, notification, userId);
+  }
   await prismaClient.save.delete({
     where: {
-      id: saves[0].id,
+      id: save.id,
     },
   });
 

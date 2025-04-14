@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
+import { createNotification } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -31,12 +32,16 @@ export async function POST(request: NextRequest) {
   if (saves.length > 0)
     return NextResponse.json({ message: "save already exist" });
 
-  await prismaClient.save.create({
-    data: {
-      authorId: userId,
-      feedbackId: feedbackId ? feedbackId : "",
-    },
-  });
+  if (feedbackId) {
+    await createNotification("save", undefined, userId, feedbackId);
+    await prismaClient.save.create({
+      data: {
+        authorId: userId,
+        feedbackId: feedbackId,
+      },
+    });
+    return NextResponse.json({ message: "save created" });
+  } else console.log("invalid feedbackId for pusher-trigger");
 
-  return NextResponse.json({ message: "save created" });
+  return NextResponse.json({ status: 400 });
 }
