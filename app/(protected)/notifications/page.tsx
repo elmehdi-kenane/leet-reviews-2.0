@@ -7,13 +7,17 @@ import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ReceivedNotificationInterface } from "@/lib/types";
+import {
+  NotificationInterface,
+  ReceivedNotificationInterface,
+} from "@/lib/types";
 import bellOff from "@/public/bell-off.svg";
 import seenChecks from "@/public/seen-checks.svg";
 import trash from "@/public/trash.svg";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import toast from "react-hot-toast";
 import likeFilled from "@/public/like-filled-white.svg";
+import saveFilled from "@/public/save-filled-icon-white.svg";
 import dislikeFilled from "@/public/dislike-filled-white.svg";
 
 const NotificationsPage = () => {
@@ -107,6 +111,27 @@ const NotificationsPage = () => {
       `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/profile?userId=${receivedNotification.notification.author.id}`,
     );
   };
+  const getReactionIconSize = (icon: string) => {
+    if (icon === likeFilled || icon === dislikeFilled) return 30;
+    else if (icon === saveFilled) return 7;
+  };
+  const getReactionIcon = (notification: NotificationInterface) => {
+    if (notification.type === "vote" && notification.voteIsUp === true)
+      return likeFilled;
+    else if (notification.type === "vote" && notification.voteIsUp === false)
+      return dislikeFilled;
+    else if (notification.type === "comment") return "";
+    else if (notification.type === "save") return saveFilled;
+  };
+
+  const getReactionVerb = (notification: NotificationInterface) => {
+    if (notification.type === "vote" && notification.voteIsUp === true)
+      return "agreed with a feedback";
+    else if (notification.type === "vote" && notification.voteIsUp === false)
+      return "disagreed with a feedback";
+    else if (notification.type === "comment") return "commented on a feedback";
+    else if (notification.type === "save") return "saved a feedback";
+  };
 
   return (
     <div className="text-neutral max-lg:w-[90%] w-full h-full flex flex-col max-w-[850px] mx-auto max-lg:mb-24 gap-6 md:mt-8">
@@ -190,24 +215,12 @@ const NotificationsPage = () => {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col w-full gap-3 max-md:text-[10px]">
                 {userContext.notifications.map((receivedNotification) => {
-                  let reactionIcon = undefined;
-                  if (
-                    receivedNotification.notification.type === "vote" &&
-                    receivedNotification.notification.voteIsUp === true
-                  )
-                    reactionIcon = likeFilled;
-                  else if (
-                    receivedNotification.notification.type === "vote" &&
-                    receivedNotification.notification.voteIsUp === false
-                  )
-                    reactionIcon = dislikeFilled;
-                  else if (receivedNotification.notification.type === "comment")
-                    reactionIcon = "";
-                  else if (receivedNotification.notification.type === "save")
-                    reactionIcon = "";
+                  const reactionIcon = getReactionIcon(
+                    receivedNotification.notification,
+                  );
                   return (
                     <Link
-                      href={`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/home?feedbackId=${receivedNotification.notification.feedback.id}`}
+                      href={`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/home?feedbackId=${receivedNotification.notification.feedbackId}`}
                       key={receivedNotification.id}
                       className={`w-full text-secondary flex items-center h-14 ${receivedNotification.isRead === false ? "bg-gray" : "bg-neutral"} hover:bg-neutral rounded-2xl border p-2 border-neutral`}
                     >
@@ -223,8 +236,8 @@ const NotificationsPage = () => {
                           <Image
                             className=""
                             src={reactionIcon}
-                            height={30}
-                            width={30}
+                            height={getReactionIconSize(reactionIcon)}
+                            width={getReactionIconSize(reactionIcon)}
                             alt={reactionIcon}
                           ></Image>
                         </div>
@@ -239,10 +252,8 @@ const NotificationsPage = () => {
                           >
                             {receivedNotification.notification.author.username}
                           </span>{" "}
-                          {receivedNotification.notification.voteIsUp === true
-                            ? "agreed"
-                            : "disagreed"}{" "}
-                          with a feedback {receivedNotification.reason}.
+                          {getReactionVerb(receivedNotification.notification)}{" "}
+                          {receivedNotification.reason}.
                         </span>
                         <p className="ml-auto text-[10px] mt-auto">
                           {formatDistanceToNow(

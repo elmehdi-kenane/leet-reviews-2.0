@@ -44,7 +44,7 @@ export async function getUserNotificationReason(
 
 export async function createNotification(
   type: notificationType,
-  isUp: boolean,
+  isUp: boolean | undefined,
   authorId: string,
   feedbackId: string,
 ) {
@@ -64,7 +64,7 @@ export async function createNotification(
   if (feedbackNotifications) {
     feedbackNotifications.forEach(async (feedbackNotification) => {
       if (authorId !== feedbackNotification.authorId)
-        // except the author of the new
+        // except the author of the new notification
         await prismaClient.notificationReceiver.create({
           data: {
             userId: feedbackNotification.authorId,
@@ -74,11 +74,12 @@ export async function createNotification(
     });
   } else console.log("this notification is the first one");
 
-  console.log("trigger a new vote event");
-  await pusher.trigger(feedbackId, pusherEventTypes.newVote, {
+  console.log(`trigger a new ${type} event`);
+  await pusher.trigger(feedbackId, pusherEventTypes.newReaction, {
     authorId: authorId,
     feedbackId: feedbackId,
     voteIsUp: isUp,
+    type: type,
   });
 }
 
@@ -100,6 +101,8 @@ export async function deleteNotifications(
     });
   }
   await prismaClient.notification.delete({ where: { id: notification.id } });
+  // before delete the received notifications related to the given feedback check if there's other notifications
+  // if the user like and comment a feedback then he remove the comment and the like still so he's still subscribe to the given feedback
   await prismaClient.notificationReceiver.deleteMany({
     where: {
       notification: { feedbackId: feedbackId },

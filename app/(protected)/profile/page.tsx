@@ -26,7 +26,7 @@ import saveFilledIcon from "@/public/save-filled-icon.svg";
 import saveBlueIcon from "@/public/save-icon-blue.svg";
 import commentIcon from "@/public/CommentIconBlue.svg";
 import commentFilledIcon from "@/public/CommentIconFilledBlue.svg";
-import saveFilledBlueIcon from "@/public/save-filled-icon-blue.svg";
+import saveFilledWhiteIcon from "@/public/save-filled-icon-white.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
@@ -429,8 +429,8 @@ const MyFeedbacksAndSavedWrapper = ({
           className={`rounded-xl sm:hidden w-[47px] h-[47px] flex justify-center items-center ${selectedBtn === 2 ? "text-neutral bg-secondary" : "text-secondary border-2 border-secondary"}`}
         >
           <Image
-            src={selectedBtn === 2 ? saveFilledBlueIcon : saveBlueIcon}
-            alt={selectedBtn === 2 ? saveFilledBlueIcon : saveBlueIcon}
+            src={selectedBtn === 2 ? saveFilledWhiteIcon : saveBlueIcon}
+            alt={selectedBtn === 2 ? saveFilledWhiteIcon : saveBlueIcon}
             width={13}
             height={13}
             className=""
