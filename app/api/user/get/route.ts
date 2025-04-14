@@ -57,9 +57,11 @@ export async function GET() {
       return channel.feedbackId;
     },
   );
+  const hasNewNotifications = user.notificationsCounter < notifications.length;
   return NextResponse.json({
     userInfos: user,
     notifications: notifications,
+    hasNewNotifications: hasNewNotifications,
     subscribedPusherChannelNames: subscribedPusherChannelNames,
   });
 }

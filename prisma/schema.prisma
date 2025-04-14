@@ -45,6 +45,7 @@ model User {
   name                          String?
   isFeedbacksHidden             Boolean                @default(false)
   isCommentsAndVotesHidden      Boolean                @default(false)
+  notificationsCounter          Int                    @default(0)
   accountDisplayedWithFeedbacks provider?              @default(none)
   email                         String                 @unique
   createdAt                     DateTime               @default(now())
@@ -67,7 +68,7 @@ model Notification {
   authorId   String
   createdAt  DateTime               @default(now())
   feedbackId String
-  author       User                   @relation(fields: [authorId], references: [id])
+  author     User                   @relation(fields: [authorId], references: [id])
   feedback   Feedback               @relation(fields: [feedbackId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   receivers  NotificationReceiver[]
 }

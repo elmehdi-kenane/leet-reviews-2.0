@@ -37,6 +37,7 @@ export interface UserContextType {
           prevNotifications: ReceivedNotificationInterface[] | null,
         ) => ReceivedNotificationInterface[]),
   ) => void;
+  hasNewNotifications: boolean;
   setUserInfo: (user: User | ((prevUser: User) => User)) => void;
 }
 
@@ -53,6 +54,7 @@ const defaultUserContext: UserContextType = {
   setFeedbacks: () => {},
   notifications: [],
   setNotifications: () => {},
+  hasNewNotifications: false,
   pusherSubscriptions: [],
   setPusherSubscriptions: () => {},
   setUserInfo: () => {},
@@ -65,6 +67,7 @@ export const UserProvider: React.FC<{
 }> = ({ children }) => {
   const [userInfo, setUserInfo] = useState<User>(defaultUser);
   const [feedbacks, setFeedbacks] = useState<FeedbackInterface[] | []>([]);
+  const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const [notifications, setNotifications] = useState<
     ReceivedNotificationInterface[] | [] | null
   >(null);
@@ -95,6 +98,7 @@ export const UserProvider: React.FC<{
       const data = await response.json();
       //   console.log(data);
       setNotifications(data.notifications);
+      setHasNewNotifications(data.hasNewNotifications);
       setUserInfo((_prev) => data.userInfos);
       data.subscribedPusherChannelNames.forEach((channelName: string) => {
         // console.log("subscribe to", channelName);
@@ -107,6 +111,25 @@ export const UserProvider: React.FC<{
       pusherClient.unbind_all(); // Unbind all event listeners
     };
   }, [pathname]);
+
+  useEffect(() => {
+    const updateHasNewNotifications = async () => {
+      const isOnNotificationsPage = pathname === "/notifications";
+
+      if (isOnNotificationsPage) {
+        setHasNewNotifications(false);
+        await fetch("/api/user/update/notifications-counter", {
+          method: "POST",
+        });
+      } else if (notifications && notifications.length === 0) {
+        setHasNewNotifications(false);
+        await fetch("/api/user/update/notifications-counter", {
+          method: "POST",
+        });
+      }
+    };
+    updateHasNewNotifications();
+  }, [pathname, notifications]);
 
   useEffect(() => {
     if (userInfo.id === "default_id") return;
@@ -155,6 +178,7 @@ export const UserProvider: React.FC<{
     }) => {
       if (userInfo.id !== data.authorId && userInfo.id !== "default_id") {
         // console.log("add new received notification");
+        setHasNewNotifications(true);
         const receivedNotification: receivedNotificationDataInterface = {
           type: "vote",
           voteIsUp: data.voteIsUp,
@@ -202,6 +226,7 @@ export const UserProvider: React.FC<{
         setFeedbacks,
         notifications,
         setNotifications,
+        hasNewNotifications,
         pusherSubscriptions,
         setPusherSubscriptions,
       }}
