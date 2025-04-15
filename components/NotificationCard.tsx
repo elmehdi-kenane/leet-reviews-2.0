@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   NotificationInterface,
+  reactionTypes,
   ReceivedNotificationInterface,
 } from "@/lib/types";
 import likeFilled from "@/public/like-filled-white.svg";
@@ -34,21 +35,28 @@ const NotificationCard = ({
     else if (icon === saveFilled) return 7;
   };
   const getReactionIcon = (notification: NotificationInterface) => {
-    if (notification.type === "vote" && notification.voteIsUp === true)
-      return likeFilled;
-    else if (notification.type === "vote" && notification.voteIsUp === false)
-      return dislikeFilled;
-    else if (notification.type === "comment") return "";
-    else if (notification.type === "save") return saveFilled;
+    if (notification.type === reactionTypes.vote) {
+      if (notification.voteIsUp === true) return likeFilled;
+      else if (notification.voteIsUp === false) return dislikeFilled;
+    } else if (notification.type === reactionTypes.comment) return "";
+    else if (notification.type === reactionTypes.save) return saveFilled;
   };
 
   const getReactionVerb = (notification: NotificationInterface) => {
-    if (notification.type === "vote" && notification.voteIsUp === true)
+    if (
+      notification.type === reactionTypes.vote &&
+      notification.voteIsUp === true
+    )
       return "agreed with a feedback";
-    else if (notification.type === "vote" && notification.voteIsUp === false)
+    else if (
+      notification.type === reactionTypes.vote &&
+      notification.voteIsUp === false
+    )
       return "disagreed with a feedback";
-    else if (notification.type === "comment") return "commented on a feedback";
-    else if (notification.type === "save") return "saved a feedback";
+    else if (notification.type === reactionTypes.comment)
+      return "commented on a feedback";
+    else if (notification.type === reactionTypes.save)
+      return "saved a feedback";
   };
   const reactionIcon = getReactionIcon(receivedNotification.notification);
   const handleNotificationClick = async () => {
