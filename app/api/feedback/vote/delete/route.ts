@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
 import { deleteNotifications } from "@/lib/utils";
-import { reactionTypes } from "@/lib/types";
+import { reaction } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
   const notification = await prismaClient.notification.findFirst({
     where: {
       authorId: userId,
-      type: reactionTypes.vote,
+      type: reaction.vote,
       feedbackId: voteFeedbackId,
     },
   });

@@ -283,7 +283,7 @@ export interface FeedbackInterface {
   comments: commentInterface[];
 }
 
-export enum reactionTypes {
+export enum reaction {
   vote = "vote",
   comment = "comment",
   save = "save",

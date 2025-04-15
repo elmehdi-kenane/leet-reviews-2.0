@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
 import { createNotification } from "@/lib/utils";
-import { reactionTypes } from "@/lib/types";
+import { reaction } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
   if (votes.length > 0)
     return NextResponse.json({ message: "vote already exist" });
   if (feedbackId) {
-    await createNotification(reactionTypes.vote, isUp, userId, feedbackId);
+    await createNotification(reaction.vote, isUp, userId, feedbackId);
   } else console.log("invalid feedbackId for pusher-trigger");
 
   await prismaClient.vote.create({

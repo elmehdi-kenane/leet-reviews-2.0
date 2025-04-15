@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
 import { createNotification } from "@/lib/utils";
-import { reactionTypes } from "@/lib/types";
+import { reaction } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "save already exist" });
 
   if (feedbackId) {
-    await createNotification(reactionTypes.save, undefined, userId, feedbackId);
+    await createNotification(reaction.save, undefined, userId, feedbackId);
     await prismaClient.save.create({
       data: {
         authorId: userId,

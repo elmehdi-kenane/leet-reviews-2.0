@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   NotificationInterface,
-  reactionTypes,
+  reaction,
   ReceivedNotificationInterface,
 } from "@/lib/types";
 import likeFilled from "@/public/like-filled-white.svg";
@@ -35,28 +35,24 @@ const NotificationCard = ({
     else if (icon === saveFilled) return 7;
   };
   const getReactionIcon = (notification: NotificationInterface) => {
-    if (notification.type === reactionTypes.vote) {
+    if (notification.type === reaction.vote) {
       if (notification.voteIsUp === true) return likeFilled;
       else if (notification.voteIsUp === false) return dislikeFilled;
-    } else if (notification.type === reactionTypes.comment) return "";
-    else if (notification.type === reactionTypes.save) return saveFilled;
+    } else if (notification.type === reaction.comment) return "";
+    else if (notification.type === reaction.save) return saveFilled;
   };
 
   const getReactionVerb = (notification: NotificationInterface) => {
-    if (
-      notification.type === reactionTypes.vote &&
-      notification.voteIsUp === true
-    )
+    if (notification.type === reaction.vote && notification.voteIsUp === true)
       return "agreed with a feedback";
     else if (
-      notification.type === reactionTypes.vote &&
+      notification.type === reaction.vote &&
       notification.voteIsUp === false
     )
       return "disagreed with a feedback";
-    else if (notification.type === reactionTypes.comment)
+    else if (notification.type === reaction.comment)
       return "commented on a feedback";
-    else if (notification.type === reactionTypes.save)
-      return "saved a feedback";
+    else if (notification.type === reaction.save) return "saved a feedback";
   };
   const reactionIcon = getReactionIcon(receivedNotification.notification);
   const handleNotificationClick = async () => {

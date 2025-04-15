@@ -4,7 +4,7 @@ import { prismaClient } from "@/lib/auth";
 import { pusher } from "./pusher";
 import { pusherEventTypes } from "./pusher";
 import { notificationType } from "@prisma/client";
-import { reactionTypes } from "./types";
+import { reaction } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,18 +25,18 @@ export async function getUserNotificationReason(
 
   if (relatedNotification) {
     if (
-      relatedNotification.type === reactionTypes.vote &&
+      relatedNotification.type === reaction.vote &&
       relatedNotification.voteIsUp === true
     ) {
       reason = "you liked";
     } else if (
-      relatedNotification.type === reactionTypes.vote &&
+      relatedNotification.type === reaction.vote &&
       relatedNotification.voteIsUp === false
     ) {
       reason = "you disliked";
-    } else if (relatedNotification.type === reactionTypes.comment) {
+    } else if (relatedNotification.type === reaction.comment) {
       reason = "you commented on it";
-    } else if (relatedNotification.type === reactionTypes.save) {
+    } else if (relatedNotification.type === reaction.save) {
       reason = "you saved it";
     }
   }
