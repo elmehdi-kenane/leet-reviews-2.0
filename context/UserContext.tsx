@@ -116,7 +116,7 @@ export const UserProvider: React.FC<{
     const updateHasNewNotifications = async () => {
       const isOnNotificationsPage = pathname === "/notifications";
 
-      if (isOnNotificationsPage) {
+      if (isOnNotificationsPage && hasNewNotifications === true) {
         setHasNewNotifications(false);
         await fetch("/api/user/update/notifications-counter", {
           method: "POST",

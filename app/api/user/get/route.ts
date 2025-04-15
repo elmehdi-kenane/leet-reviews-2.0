@@ -29,7 +29,7 @@ export async function GET() {
             voteIsUp: true,
             id: true,
             type: true,
-            author: { select: { username: true, avatar: true, id: true } },
+            author: { select: { name: true, avatar: true, id: true } },
           },
         },
         id: true,

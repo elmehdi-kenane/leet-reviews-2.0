@@ -239,7 +239,7 @@ export interface saveInterface {
 export interface NotificationAuthorInterface {
   id: string;
   avatar: string;
-  username: string;
+  name: string;
 }
 
 export interface NotificationInterface {

@@ -95,7 +95,7 @@ const NotificationCard = ({
             className="hover:text-primary hover:underline cursor-pointer font-semibold"
             onClick={(e) => handleProfileClick(e, receivedNotification)}
           >
-            {receivedNotification.notification.author.username}
+            {receivedNotification.notification.author.name}
           </span>{" "}
           {getReactionVerb(receivedNotification.notification)}{" "}
           {receivedNotification.reason}.
