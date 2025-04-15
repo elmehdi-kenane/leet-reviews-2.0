@@ -61,10 +61,16 @@ export async function createNotification(
       authorId: authorId,
       feedbackId: feedbackId,
     },
+    select: {
+      createdAt: true,
+      id: true,
+      author: true,
+    },
   });
   if (feedbackNotifications) {
+    console.log("feedbackNotifications", feedbackNotifications);
     feedbackNotifications.forEach(async (feedbackNotification) => {
-      if (authorId !== feedbackNotification.authorId)
+      if (authorId !== feedbackNotification.authorId) {
         // except the author of the new notification
         await prismaClient.notificationReceiver.create({
           data: {
@@ -72,12 +78,16 @@ export async function createNotification(
             notificationId: notification.id,
           },
         });
+      }
     });
   } else console.log("this notification is the first one");
 
   console.log(`trigger a new ${type} event`);
   await pusher.trigger(feedbackId, pusherEventTypes.newReaction, {
     authorId: authorId,
+    authorAvatar: notification.author.avatar,
+    authorName: notification.author.name,
+    createdAt: notification.createdAt,
     feedbackId: feedbackId,
     voteIsUp: isUp,
     type: type,

@@ -25,6 +25,7 @@ export async function GET() {
         notification: {
           select: {
             feedback: true,
+            feedbackId: true,
             createdAt: true,
             voteIsUp: true,
             id: true,

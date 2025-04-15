@@ -250,7 +250,7 @@ export interface NotificationInterface {
   voteIsUp: boolean;
   author: NotificationAuthorInterface;
   createdAt: string;
-  feedback: FeedbackInterface;
+  //   feedback: FeedbackInterface;
 }
 
 export interface ReceivedNotificationInterface {

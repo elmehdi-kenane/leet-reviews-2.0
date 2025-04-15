@@ -25,7 +25,7 @@ import saveIcon from "@/public/save-icon.svg";
 import saveFilledIcon from "@/public/save-filled-icon.svg";
 import saveBlueIcon from "@/public/save-icon-blue.svg";
 import commentIcon from "@/public/CommentIconBlue.svg";
-import commentFilledIcon from "@/public/CommentIconFilledBlue.svg";
+import commentFilledIcon from "@/public/CommentIconFilledWhite.svg";
 import saveFilledWhiteIcon from "@/public/save-filled-icon-white.svg";
 import AnonymousIcon from "@/public/AnonymousIcon.svg";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";

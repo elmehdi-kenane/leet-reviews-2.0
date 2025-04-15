@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prismaClient } from "@/lib/auth";
 import { validateRequest } from "@/lib/auth";
+import { reaction } from "@/lib/types";
+import { createNotification } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const result = await validateRequest();
@@ -22,24 +24,25 @@ export async function POST(request: NextRequest) {
       { error: "feedback not found or empty comment-text" },
       { status: 400 },
     );
-  const createAt = new Date();
-  const newComment = await prismaClient.comment.create({
-    data: {
-      authorId: userId,
-      feedbackId: feedbackId ? feedbackId : "",
-      text: text ? text : "",
-      createdAt: createAt,
-    },
-    include: {
-      author: {
-        select: {
-          id: true,
-          name: true,
-          avatar: true,
+  if (feedbackId) {
+    await createNotification(reaction.comment, undefined, userId, feedbackId);
+    const newComment = await prismaClient.comment.create({
+      data: {
+        authorId: userId,
+        feedbackId: feedbackId ? feedbackId : "",
+        text: text ? text : "",
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true,
+          },
         },
       },
-    },
-  });
-
-  return NextResponse.json({ newComment: newComment });
+    });
+    return NextResponse.json({ newComment: newComment });
+  } else console.log("invalid feedbackId for pusher-trigger");
+  return NextResponse.json({ status: 400 });
 }

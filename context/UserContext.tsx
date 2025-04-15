@@ -116,12 +116,10 @@ export const UserProvider: React.FC<{
     const updateHasNewNotifications = async () => {
       const isOnNotificationsPage = pathname === "/notifications";
 
-      if (isOnNotificationsPage && hasNewNotifications === true) {
-        setHasNewNotifications(false);
-        await fetch("/api/user/update/notifications-counter", {
-          method: "POST",
-        });
-      } else if (notifications && notifications.length === 0) {
+      if (
+        (isOnNotificationsPage && hasNewNotifications === true) ||
+        (notifications && notifications.length === 0)
+      ) {
         setHasNewNotifications(false);
         await fetch("/api/user/update/notifications-counter", {
           method: "POST",
@@ -138,53 +136,69 @@ export const UserProvider: React.FC<{
       type: string;
       voteIsUp: boolean;
       authorId: string;
+      authorAvatar: string;
+      createdAt: string;
+      authorName: string;
       feedbackId: string;
     }
     const addReceivedNotification = async (
-      receivedNotification: receivedNotificationDataInterface,
+      receivedNotificationData: receivedNotificationDataInterface,
     ) => {
-      const res = await fetch("/api/received-notification/create", {
+      const res = await fetch("/api/received-notification/get-reason", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type: receivedNotification.type,
-          voteIsUp: receivedNotification.voteIsUp,
-          authorId: receivedNotification.authorId,
-          feedbackId: receivedNotification.feedbackId,
+          feedbackId: receivedNotificationData.feedbackId,
         }),
       });
       if (res.ok) {
         const data = await res.json();
-        // console.log(
-        //   "data.newReceivedNotification",
-        //   data.newReceivedNotification
-        // );
-        setNotifications((prevNotifications) => {
-          const updatedList = (prevNotifications ?? []).filter(
-            (notification) =>
-              notification.id !== data.newReceivedNotification.id,
-          );
-          return [data.newReceivedNotification, ...updatedList];
-        });
+        const receivedNotificationWithReason: ReceivedNotificationInterface = {
+          reason: data.reason,
+          id: "xd",
+          isRead: false,
+          notification: {
+            id: "xd",
+            type: receivedNotificationData.type,
+            feedbackId: receivedNotificationData.feedbackId,
+            authorId: receivedNotificationData.authorId,
+            voteIsUp: receivedNotificationData.voteIsUp,
+            author: {
+              id: receivedNotificationData.authorId,
+              avatar: receivedNotificationData.authorAvatar,
+              name: receivedNotificationData.authorName,
+            },
+            createdAt: receivedNotificationData.createdAt,
+          },
+        };
+        setNotifications([
+          receivedNotificationWithReason,
+          ...(notifications ?? []),
+        ]);
         // console.log("add", data.newReceivedNotification, "to", notifications);
       }
     };
     const newReactionCallback = (data: {
       voteIsUp: boolean;
       authorId: string;
+      authorAvatar: string;
+      createdAt: string;
+      authorName: string;
       feedbackId: string;
       type: string;
     }) => {
       if (userInfo.id !== data.authorId && userInfo.id !== "default_id") {
-        // console.log("add new received notification");
         setHasNewNotifications(true);
         const receivedNotification: receivedNotificationDataInterface = {
           type: data.type,
           voteIsUp: data.voteIsUp,
           feedbackId: data.feedbackId,
           authorId: data.authorId,
+          createdAt: data.createdAt,
+          authorAvatar: data.authorAvatar,
+          authorName: data.authorName,
         };
         addReceivedNotification(receivedNotification);
       }

@@ -7,6 +7,7 @@ import {
   ReceivedNotificationInterface,
 } from "@/lib/types";
 import likeFilled from "@/public/like-filled-white.svg";
+import commentFilled from "@/public/CommentIconFilledWhite.svg";
 import saveFilled from "@/public/save-filled-icon-white.svg";
 import dislikeFilled from "@/public/dislike-filled-white.svg";
 import { useContext } from "react";
@@ -33,12 +34,13 @@ const NotificationCard = ({
   const getReactionIconSize = (icon: string) => {
     if (icon === likeFilled || icon === dislikeFilled) return 30;
     else if (icon === saveFilled) return 7;
+    else if (icon === commentFilled) return 15;
   };
   const getReactionIcon = (notification: NotificationInterface) => {
     if (notification.type === reaction.vote) {
       if (notification.voteIsUp === true) return likeFilled;
       else if (notification.voteIsUp === false) return dislikeFilled;
-    } else if (notification.type === reaction.comment) return "";
+    } else if (notification.type === reaction.comment) return commentFilled;
     else if (notification.type === reaction.save) return saveFilled;
   };
 
@@ -71,9 +73,9 @@ const NotificationCard = ({
   return (
     <Link
       onClick={handleNotificationClick}
-      href={`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/home?feedbackId=${receivedNotification.notification.feedback.id}`}
+      href={`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/home?feedbackId=${receivedNotification.notification.feedbackId}`}
       key={receivedNotification.id}
-      className={`w-full flex items-center h-14 ${receivedNotification.isRead === false ? "text-secondary bg-neutral hover:bg-gray" : " border-neutral text-neutral"} rounded-2xl border p-2 `}
+      className={`w-full flex items-center h-14 ${receivedNotification.isRead === false ? "text-secondary bg-neutral" : " border-neutral text-neutral"} rounded-2xl border p-2 hover:bg-gray hover:text-secondary`}
     >
       <div className="flex mr-2 relative">
         <Image
