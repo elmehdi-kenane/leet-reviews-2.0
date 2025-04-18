@@ -27,18 +27,19 @@ export async function getUserNotificationReason(
     if (
       relatedNotification.type === reaction.vote &&
       relatedNotification.voteIsUp === true
-    ) {
+    )
       reason = "you liked";
-    } else if (
+    else if (
       relatedNotification.type === reaction.vote &&
       relatedNotification.voteIsUp === false
-    ) {
+    )
       reason = "you disliked";
-    } else if (relatedNotification.type === reaction.comment) {
+    else if (relatedNotification.type === reaction.comment)
       reason = "you commented on it";
-    } else if (relatedNotification.type === reaction.save) {
+    else if (relatedNotification.type === reaction.save)
       reason = "you saved it";
-    }
+    else if (relatedNotification.type === reaction.creation)
+      reason = "you created";
   }
   return reason;
 }

@@ -287,4 +287,5 @@ export enum reaction {
   vote = "vote",
   comment = "comment",
   save = "save",
+  creation = "creation",
 }

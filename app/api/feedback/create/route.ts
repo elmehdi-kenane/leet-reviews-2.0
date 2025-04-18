@@ -3,6 +3,8 @@ import { prismaClient } from "@/lib/auth";
 import { FeedbackCreateInput } from "@/lib/prisma";
 import { validateRequest } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary";
+import { createNotification } from "@/lib/utils";
+import { reaction } from "@/lib/types";
 
 export interface CloudinaryUploadResult {
   secure_url: string;
@@ -139,5 +141,12 @@ export async function POST(request: NextRequest) {
       linkedAccountProfileUrl: linkedAccountProfileUrl,
     },
   };
+  if (newFeedback.id)
+    await createNotification(
+      reaction.creation,
+      undefined,
+      userId,
+      newFeedback.id,
+    );
   return NextResponse.json({ newFeedback: updatedNewFeedback });
 }
