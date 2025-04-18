@@ -68,7 +68,6 @@ export async function createNotification(
     },
   });
   if (feedbackNotifications) {
-    console.log("feedbackNotifications", feedbackNotifications);
     feedbackNotifications.forEach(async (feedbackNotification) => {
       if (authorId !== feedbackNotification.authorId) {
         // except the author of the new notification
@@ -80,9 +79,8 @@ export async function createNotification(
         });
       }
     });
-  } else console.log("this notification is the first one");
-
-  console.log(`trigger a new ${type} event`);
+  }
+  //   console.log(`trigger a new ${type} event`);
   await pusher.trigger(feedbackId, pusherEventTypes.newReaction, {
     authorId: authorId,
     authorAvatar: notification.author.avatar,

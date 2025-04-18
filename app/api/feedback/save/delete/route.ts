@@ -39,10 +39,8 @@ export async function POST(request: NextRequest) {
       feedbackId: saveFeedbackId,
     },
   });
-  if (notification) {
-    console.log("delete", notification);
+  if (notification)
     await deleteNotifications(saveFeedbackId, notification, userId);
-  }
   await prismaClient.save.delete({
     where: {
       id: save.id,

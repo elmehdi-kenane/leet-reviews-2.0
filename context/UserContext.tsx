@@ -206,9 +206,6 @@ export const UserProvider: React.FC<{
 
     /** the author of the notification has (unlike - delete comment - un save) the feedback */
     const deleteNotificationCallback = (data: { notificationId: string }) => {
-      console.log("delete notification from the state", data.notificationId);
-      console.log("notifications", notifications);
-
       setNotifications((prevNotifications) => {
         const updatedList = (prevNotifications ?? []).filter(
           (notification) =>

@@ -293,11 +293,7 @@ const PreviewFeedbackCard = ({
       );
       if (res.ok) {
         const previousChannel = pusherClient.channel(feedbackId);
-        if (!previousChannel) {
-          // prevent re-subscription (subscribe only if the user isn't already subscribed)
-          pusherClient.subscribe(feedbackId);
-          console.log("subscribe channel", feedbackId);
-        } else console.log("already subscribed", feedbackId);
+        if (!previousChannel) pusherClient.subscribe(feedbackId);
       }
     } catch (error) {
       console.error("Error", error);
