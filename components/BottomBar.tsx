@@ -14,7 +14,7 @@ import { UserContext } from "@/context/UserContext";
 import { usePathname, useSearchParams } from "next/navigation";
 
 const BottomBar = () => {
-  const { userInfo } = useContext(UserContext);
+  const { userInfo, hasNewNotifications } = useContext(UserContext);
   const [fullPath, setFullPath] = useState("");
 
   const Buttons: button[] = [
@@ -151,7 +151,9 @@ const BottomBar = () => {
                     className="mx-auto w-full h-full"
                   ></Image>
                   {item.text === "Notifications" && (
-                    <div className="p-1 bg-primary text-neutral absolute rounded-md text-[7px] left-5 top-5">
+                    <div
+                      className={`p-1 ${hasNewNotifications === true ? "bg-[red]" : "bg-primary"} text-neutral absolute rounded-md text-[7px] left-5 top-5`}
+                    >
                       NEW
                     </div>
                   )}
