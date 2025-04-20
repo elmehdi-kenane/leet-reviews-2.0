@@ -104,6 +104,7 @@ export default function SignIn() {
                   key={option.provider}
                   href={option.href}
                   className="flex gap-3 max-sm:text-[12px] shadow-[0_5px_20px_5px_rgba(0,0,0,0.25)] justify-center items-center w-full bg-secondary border-2 border-secondary hover:bg-neutral hover:text-secondary text-neutral rounded-xl p-2 font-SpaceGrotesk font-semibold transition-colors duration-300"
+                  prefetch={false}
                 >
                   <p>Login with {option.provider}</p>
                   <div className="w-[40px] p-2 h-[40px] flex justify-center items-center rounded-full">

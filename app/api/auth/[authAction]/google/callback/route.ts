@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
   const error = url.searchParams.get("error");
   const cookieStore = cookies();
   const storedState = cookieStore.get("google_oauth_state")?.value ?? null;
+  console.log("==================== 1 =====================");
 
   if (
     !code ||
@@ -35,6 +36,7 @@ export async function GET(request: NextRequest) {
     });
   }
   try {
+    console.log("==================== 2 =====================");
     const tokens = await google.validateAuthorizationCode(
       code,
       storedCodeVerifier,
@@ -49,6 +51,7 @@ export async function GET(request: NextRequest) {
     );
 
     const googleUser: GoogleUser = await googleUserResponse.json();
+    console.log("==================== 3 =====================");
     const accountUserId = googleUser.id.toString();
     const googleUsername = googleUser.name.replace(/\s+/g, "_");
     const googleFullName = googleUser.name;
@@ -78,6 +81,7 @@ export async function GET(request: NextRequest) {
         },
       });
     }
+    console.log("==================== 4 =====================");
     const existingUser = await prismaClient.account.findFirst({
       where: {
         providerAccountId: accountUserId,
@@ -87,6 +91,7 @@ export async function GET(request: NextRequest) {
     });
     if (existingUser) {
       if (storedAuthAction === "sign-up") {
+        console.log("==================== 5 =====================");
         return new Response(null, {
           status: 302,
           headers: {
@@ -112,6 +117,7 @@ export async function GET(request: NextRequest) {
         },
       });
     }
+    console.log("==================== 6 =====================");
     if (storedAuthAction === "sign-in") {
       return new Response(null, {
         status: 302,
@@ -124,6 +130,7 @@ export async function GET(request: NextRequest) {
         },
       });
     }
+    console.log("==================== 7 =====================");
     const newUser = await prismaClient.user.create({
       data: {
         username: googleUsername,
@@ -142,6 +149,7 @@ export async function GET(request: NextRequest) {
         },
       },
     });
+    console.log("==================== 8 =====================");
     if (!existingAccount) {
       await prismaClient.account.create({
         data: {
@@ -166,6 +174,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    console.log("==================== 9 =====================");
     const session = await lucia.createSession(newUser.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
@@ -175,6 +184,7 @@ export async function GET(request: NextRequest) {
       sessionCookie.attributes,
     );
 
+    console.log("==================== 10 =====================");
     return new Response(null, {
       status: 302,
       headers: {
