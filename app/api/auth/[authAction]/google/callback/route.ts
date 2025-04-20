@@ -58,12 +58,14 @@ export async function GET(request: NextRequest) {
     const user = await prismaClient.user.findFirst({
       where: { email: googleUser.email },
     });
+    console.log("==================== 4 =====================");
     const account =
       user === null
         ? null
         : await prismaClient.account.findFirst({
             where: { userId: user?.id },
           });
+    console.log("==================== 5 =====================");
     if (
       googleUser.email !== undefined &&
       googleUser.email !== null &&
@@ -81,7 +83,6 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-    console.log("==================== 4 =====================");
     const existingUser = await prismaClient.account.findFirst({
       where: {
         providerAccountId: accountUserId,
@@ -91,7 +92,6 @@ export async function GET(request: NextRequest) {
     });
     if (existingUser) {
       if (storedAuthAction === "sign-up") {
-        console.log("==================== 5 =====================");
         return new Response(null, {
           status: 302,
           headers: {
@@ -117,7 +117,6 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-    console.log("==================== 6 =====================");
     if (storedAuthAction === "sign-in") {
       return new Response(null, {
         status: 302,
@@ -130,7 +129,6 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-    console.log("==================== 7 =====================");
     const newUser = await prismaClient.user.create({
       data: {
         username: googleUsername,
@@ -149,7 +147,6 @@ export async function GET(request: NextRequest) {
         },
       },
     });
-    console.log("==================== 8 =====================");
     if (!existingAccount) {
       await prismaClient.account.create({
         data: {
@@ -174,7 +171,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.log("==================== 9 =====================");
     const session = await lucia.createSession(newUser.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
@@ -184,7 +180,6 @@ export async function GET(request: NextRequest) {
       sessionCookie.attributes,
     );
 
-    console.log("==================== 10 =====================");
     return new Response(null, {
       status: 302,
       headers: {
