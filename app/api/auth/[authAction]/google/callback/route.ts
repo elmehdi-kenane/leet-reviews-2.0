@@ -59,16 +59,21 @@ export async function GET(request: NextRequest) {
     const accountUserId = googleUser.id.toString();
     const googleUsername = googleUser.name.replace(/\s+/g, "_");
     const googleFullName = googleUser.name;
-    const user = await prismaClient.user.findFirst({
-      where: { email: googleUser.email },
-    });
-    console.log("==================== 4 =====================");
-    const account =
-      user === null
-        ? null
-        : await prismaClient.account.findFirst({
-            where: { userId: user?.id },
-          });
+    let account = null;
+    try {
+      const user = await prismaClient.user.findFirst({
+        where: { email: googleUser.email },
+      });
+      console.log("==================== 4 =====================", "user", user);
+      account =
+        user === null
+          ? null
+          : await prismaClient.account.findFirst({
+              where: { userId: user?.id },
+            });
+    } catch (error) {
+      console.log(error);
+    }
     console.log("==================== 5 =====================");
     if (
       googleUser.email !== undefined &&
