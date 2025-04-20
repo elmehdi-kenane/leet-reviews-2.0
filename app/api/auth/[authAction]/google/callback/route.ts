@@ -51,7 +51,11 @@ export async function GET(request: NextRequest) {
     );
 
     const googleUser: GoogleUser = await googleUserResponse.json();
-    console.log("==================== 3 =====================");
+    console.log(
+      "==================== 3 =====================",
+      "googleUser",
+      googleUser,
+    );
     const accountUserId = googleUser.id.toString();
     const googleUsername = googleUser.name.replace(/\s+/g, "_");
     const googleFullName = googleUser.name;
