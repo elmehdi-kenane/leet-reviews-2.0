@@ -586,7 +586,7 @@ const FooterSection = ({
         </div>
         <div className="w-full flex justify-between items-end max-md:items-center mt-auto mb-10">
           <Link
-            href={"https://www.eken3ane.tech"}
+            href={"https://www.eken3ane.dev"}
             className="flex max-md:min-w-[75px] md:min-w-[120px]"
           >
             <Image
